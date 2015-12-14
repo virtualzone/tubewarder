@@ -1,0 +1,12 @@
+target/
+**/.sass-cache
+**/.sass-cache/*
+build/
+deployments/
+node/
+node_modules/
+target/*
+.idea/
+*.class
+*.war
+*.ear
