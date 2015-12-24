@@ -7,7 +7,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class AbstractOutputHandlerConfiguration extends AbstractPersistentObject {
-    public String name;
+    private String name;
 
     public String getName() {
         return name;

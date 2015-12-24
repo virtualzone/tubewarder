@@ -1,0 +1,11 @@
+{
+  "id": "",
+  "type": "EMAIL",
+  "smtpServer": "smtp.gmail.com",
+  "port": 587,
+  "auth": true,
+  "username": "testuser",
+  "password": "testpass",
+  "security": "TLS",
+  "contentType": "text/plain"
+}

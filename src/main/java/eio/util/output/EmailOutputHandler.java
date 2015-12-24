@@ -91,7 +91,7 @@ public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandler
 
     private void sendMail(Session session, EmailOutputHandlerConfiguration config, MimeMessage message) throws MessagingException {
         Transport tr = session.getTransport("smtp");
-        if (!config.getAuthorization()) {
+        if (!config.getAuth()) {
             tr.connect(
                     config.getSmtpServer(),
                     config.getPort(),

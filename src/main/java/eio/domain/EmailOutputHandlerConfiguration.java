@@ -10,7 +10,7 @@ import javax.persistence.Enumerated;
 public class EmailOutputHandlerConfiguration extends AbstractOutputHandlerConfiguration {
     private String smtpServer;
     private Integer port;
-    private Boolean authorization;
+    private Boolean auth;
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -33,12 +33,12 @@ public class EmailOutputHandlerConfiguration extends AbstractOutputHandlerConfig
         this.port = port;
     }
 
-    public Boolean getAuthorization() {
-        return authorization;
+    public Boolean getAuth() {
+        return auth;
     }
 
-    public void setAuthorization(Boolean authorization) {
-        this.authorization = authorization;
+    public void setAuth(Boolean auth) {
+        this.auth = auth;
     }
 
     public String getUsername() {

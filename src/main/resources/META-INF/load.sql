@@ -1,6 +1,6 @@
 INSERT INTO AbstractOutputHandlerConfiguration SET DTYPE = 'SYSOUT', prefix = 'Template Processing Result: [', suffix = ']';
-INSERT INTO AbstractOutputHandlerConfiguration SET DTYPE = 'EMAIL', smtpServer = 'smtp.gmail.com', port = 587, authorization = 1, username = 'test', password = 'test', security = 'TLS', contentType = 'text/plain';
-INSERT INTO AbstractOutputHandlerConfiguration SET DTYPE = 'EMAIL', smtpServer = 'smtp.gmail.com', port = 465, authorization = 1, username = 'test', password = 'test', security = 'SSL', contentType = 'text/html';
+INSERT INTO AbstractOutputHandlerConfiguration SET DTYPE = 'EMAIL', smtpServer = 'smtp.gmail.com', port = 587, auth = 1, username = 'test', password = 'test', security = 'TLS', contentType = 'text/plain';
+INSERT INTO AbstractOutputHandlerConfiguration SET DTYPE = 'EMAIL', smtpServer = 'smtp.gmail.com', port = 465, auth = 1, username = 'test', password = 'test', security = 'SSL', contentType = 'text/html';
 
 INSERT INTO Channel SET name = 'email_html', outputHandler = 'EMAIL', config_id = 3;
 INSERT INTO Channel SET name = 'email_text', outputHandler = 'EMAIL', config_id = 2;
