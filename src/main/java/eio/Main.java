@@ -32,7 +32,12 @@ public class Main {
         appDeployment.addPackage("eio.dao");
         appDeployment.addPackage("eio.domain");
         appDeployment.addPackage("eio.exception");
-        appDeployment.addPackage("eio.rest");
+        appDeployment.addPackage("eio.service");
+        appDeployment.addPackage("eio.service.model");
+        appDeployment.addPackage("eio.service.rest");
+        appDeployment.addPackage("eio.service.soap");
+        appDeployment.addPackage("eio.util");
+        appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/load.sql", Main.class.getClassLoader()), "classes/META-INF/load.sql");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
         appDeployment.addAllDependencies();
         container.deploy(appDeployment);

@@ -1,0 +1,7 @@
+{
+  "template": "DOI",
+  "channel": "sms",
+  "model": {
+    "code": "1234567890"
+  }
+}
