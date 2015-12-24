@@ -37,6 +37,7 @@ public class Main {
         appDeployment.addPackage("eio.service.rest");
         appDeployment.addPackage("eio.service.soap");
         appDeployment.addPackage("eio.util");
+        appDeployment.addPackage("eio.util.output");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/load.sql", Main.class.getClassLoader()), "classes/META-INF/load.sql");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
         appDeployment.addAllDependencies();

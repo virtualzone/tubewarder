@@ -1,9 +1,9 @@
 {
   "template": "DOI",
-  "channel": "sms",
+  "channel": "email_text",
   "recipient": {
-    "name": "Unknown",
-    "address": "+49000000000000"
+    "name": "Some Recipient",
+    "address": "test@localhost"
   },
   "model": {
     "firstname": "John",

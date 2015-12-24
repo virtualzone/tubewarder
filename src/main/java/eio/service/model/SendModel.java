@@ -7,5 +7,6 @@ import java.util.Map;
 public class SendModel {
     public String template;
     public String channel;
+    public AddressModel recipient;
     public Map<String, Object> model;
 }

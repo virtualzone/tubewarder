@@ -27,6 +27,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>undertow</artifactId>
             <version>${version.wildfly-swarm}</version>
@@ -49,6 +54,11 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>transactions</artifactId>
+            <version>${version.wildfly-swarm}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>mail</artifactId>
             <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
