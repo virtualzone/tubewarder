@@ -2,6 +2,7 @@ package eio.util.output;
 
 import eio.domain.EmailOutputHandlerConfiguration;
 import eio.domain.MailSecurity;
+import eio.service.model.AttachmentModel;
 import eio.util.Address;
 import org.apache.commons.validator.GenericValidator;
 
@@ -11,15 +12,18 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Properties;
 
 public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandlerConfiguration> {
     @Override
-    public void process(EmailOutputHandlerConfiguration config, Address sender, Address recipient, String subject, String content) {
+    public void process(EmailOutputHandlerConfiguration config, Address sender, Address recipient, String subject, String content, List<AttachmentModel> attachments) {
         Session session = getSession(config);
         try {
             MimeMessage message = createMimeMessage(session, sender);
-            prepareMessage(config, message, recipient, subject, content);
+            MimeMultipart multipart = prepareMessage(config, message, recipient, subject, content);
+            appendAttachments(multipart, attachments);
+            message.setContent(multipart);
             sendMail(session, config, message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +51,7 @@ public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandler
         return message;
     }
 
-    private void prepareMessage(EmailOutputHandlerConfiguration config, MimeMessage message, Address recipient, String subject, String content) throws MessagingException, UnsupportedEncodingException {
+    private MimeMultipart prepareMessage(EmailOutputHandlerConfiguration config, MimeMessage message, Address recipient, String subject, String content) throws MessagingException, UnsupportedEncodingException {
         String contentType = config.getContentType() + "; charset=\"utf-8\"";
 
         if (GenericValidator.isBlankOrNull(recipient.getName())) {
@@ -57,15 +61,32 @@ public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandler
         }
 
         message.setHeader("Content-Type", contentType);
-
         message.setSubject(subject, "UTF-8");
 
         MimeMultipart multipart = new MimeMultipart();
+
         MimeBodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setHeader("Content-Type", contentType);
         messageBodyPart.setContent(content, contentType);
         multipart.addBodyPart(messageBodyPart);
-        message.setContent(multipart);
+
+        return multipart;
+    }
+
+    private void appendAttachments(MimeMultipart multipart, List<AttachmentModel> attachments) throws MessagingException {
+        for (AttachmentModel attachment : attachments) {
+            appendAttachment(multipart, attachment);
+        }
+    }
+
+    private void appendAttachment(MimeMultipart multipart, AttachmentModel attachment) throws MessagingException {
+        MimeBodyPart messageBodyPart = new PreencodedMimeBodyPart("base64");
+        if (!GenericValidator.isBlankOrNull(attachment.contentType)) {
+            messageBodyPart.setHeader("Content-Type", attachment.contentType);
+        }
+        messageBodyPart.setFileName(attachment.filename);
+        messageBodyPart.setText(attachment.payload);
+        multipart.addBodyPart(messageBodyPart);
     }
 
     private void sendMail(Session session, EmailOutputHandlerConfiguration config, MimeMessage message) throws MessagingException {

@@ -64,7 +64,7 @@ public class SendService {
         AbstractOutputHandler outputHandler = OutputHandlerFactory.getOutputHandler(channel.getOutputHandler());
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
         Address recipient = new Address((GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name), sendModel.recipient.address);
-        outputHandler.process(channel.getConfig(), sender, recipient, subject, content);
+        outputHandler.process(channel.getConfig(), sender, recipient, subject, content, sendModel.attachments);
     }
 
     public ChannelTemplateDao getChannelTemplateDao() {

@@ -10,5 +10,11 @@
     "lastname": "Doe",
     "code": "1234567890",
     "includeDisclaimer": true
-  }
+  },
+  "attachments": [
+    {
+      "filename": "test.txt",
+      "payload": "SGVsbG8gV29ybGQhClRoaXMgaXMgYW4gYXR0YWNobWVudCB0ZXN0Lgo="
+    }
+  ]
 }
