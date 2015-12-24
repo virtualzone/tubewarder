@@ -30,7 +30,7 @@ The server listens on port 8080 by default.
 
 ## Connecting to the server
 For sending messages, use one of the following URLs:
-* SOAP: http://localhost:8080/ws/send (WSDL available at http://localhost:8080/rs/send?wsdl)
+* SOAP: http://localhost:8080/ws/send (WSDL available at http://localhost:8080/ws/send?wsdl)
 * REST: http://localhost:8080/rs/send
 
 ## Coming soon
