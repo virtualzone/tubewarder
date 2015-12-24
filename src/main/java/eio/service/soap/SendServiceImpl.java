@@ -1,4 +1,4 @@
-package eio.service.rest;
+package eio.service.soap;
 
 import eio.service.common.SendServiceCommon;
 import eio.service.model.AbstractResponse;
@@ -6,22 +6,18 @@ import eio.service.model.SendModel;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import javax.xml.bind.annotation.XmlElement;
 
 @RequestScoped
-@Path("/send")
-public class SendService {
+@WebService(endpointInterface = "eio.service.soap.SendService", serviceName = "ws/send", portName = "ws/send/port")
+public class SendServiceImpl implements SendService {
     @Inject
     private SendServiceCommon sendServiceCommon;
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public AbstractResponse action(SendModel sendModel) {
+    @Override
+    public AbstractResponse send(@XmlElement(name = "message", required = true) @WebParam(name = "message") SendModel sendModel) {
         return getSendServiceCommon().process(sendModel);
     }
 

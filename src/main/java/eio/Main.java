@@ -33,6 +33,7 @@ public class Main {
         appDeployment.addPackage("eio.domain");
         appDeployment.addPackage("eio.exception");
         appDeployment.addPackage("eio.service");
+        appDeployment.addPackage("eio.service.common");
         appDeployment.addPackage("eio.service.model");
         appDeployment.addPackage("eio.service.rest");
         appDeployment.addPackage("eio.service.soap");
@@ -42,6 +43,5 @@ public class Main {
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
         appDeployment.addAllDependencies();
         container.deploy(appDeployment);
-
     }
 }
