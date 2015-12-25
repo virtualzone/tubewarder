@@ -2,9 +2,11 @@ package tubewarder.service.common;
 
 import tubewarder.dao.AppTokenDao;
 import tubewarder.dao.ChannelTemplateDao;
+import tubewarder.dao.LogDao;
 import tubewarder.domain.AppToken;
 import tubewarder.domain.Channel;
 import tubewarder.domain.ChannelTemplate;
+import tubewarder.domain.Log;
 import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
 import tubewarder.exception.PermissionException;
@@ -21,6 +23,7 @@ import org.apache.commons.validator.GenericValidator;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RequestScoped
@@ -33,6 +36,9 @@ public class SendServiceCommon {
 
     @Inject
     private AppTokenDao appTokenDao;
+
+    @Inject
+    private LogDao logDao;
 
     public AbstractResponse process(SendModel sendModel) {
         AbstractResponse response = new AbstractResponse();
@@ -78,6 +84,23 @@ public class SendServiceCommon {
         Address recipient = new Address((GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name), sendModel.recipient.address);
         List<AttachmentModel> attachments = (sendModel.attachments == null ? new ArrayList<>() : sendModel.attachments);
         outputHandler.process(channel.getConfig(), sender, recipient, subject, content, attachments);
+        log(sendModel, channelTemplate, recipient, subject, content);
+    }
+
+    private void log(SendModel model, ChannelTemplate channelTemplate, Address recipient, String subject, String content) {
+        Log log = new Log();
+        log.setDate(new Date());
+        log.setKeyword(model.keyword);
+        log.setDetails(model.details);
+        log.setTemplateName(channelTemplate.getTemplate().getName());
+        log.setTemplateId(channelTemplate.getTemplate().getExposableId());
+        log.setChannelName(channelTemplate.getChannel().getName());
+        log.setChannelId(channelTemplate.getChannel().getExposableId());
+        log.setRecipientName(recipient.getName());
+        log.setRecipientAddress(recipient.getAddress());
+        log.setSubject(subject);
+        log.setContent(content);
+        getLogDao().store(log);
     }
 
     public ChannelTemplateDao getChannelTemplateDao() {
@@ -102,5 +125,13 @@ public class SendServiceCommon {
 
     public void setAppTokenDao(AppTokenDao appTokenDao) {
         this.appTokenDao = appTokenDao;
+    }
+
+    public LogDao getLogDao() {
+        return logDao;
+    }
+
+    public void setLogDao(LogDao logDao) {
+        this.logDao = logDao;
     }
 }
