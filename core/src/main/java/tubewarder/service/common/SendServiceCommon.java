@@ -1,10 +1,13 @@
 package tubewarder.service.common;
 
+import tubewarder.dao.AppTokenDao;
 import tubewarder.dao.ChannelTemplateDao;
+import tubewarder.domain.AppToken;
 import tubewarder.domain.Channel;
 import tubewarder.domain.ChannelTemplate;
 import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
+import tubewarder.exception.PermissionException;
 import tubewarder.service.response.AbstractResponse;
 import tubewarder.service.model.AttachmentModel;
 import tubewarder.service.model.ErrorCode;
@@ -28,15 +31,21 @@ public class SendServiceCommon {
     @Inject
     private TemplateRenderer templateRenderer;
 
+    @Inject
+    private AppTokenDao appTokenDao;
+
     public AbstractResponse process(SendModel sendModel) {
         AbstractResponse response = new AbstractResponse();
         try {
             validateInputParameters(sendModel);
+            checkPermission(sendModel);
             renderAndSend(sendModel);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
         }
         return response;
     }
@@ -45,8 +54,17 @@ public class SendServiceCommon {
         if (GenericValidator.isBlankOrNull(sendModel.template) ||
                 GenericValidator.isBlankOrNull(sendModel.channel) ||
                 sendModel.recipient == null ||
-                GenericValidator.isBlankOrNull(sendModel.recipient.address)) {
+                GenericValidator.isBlankOrNull(sendModel.recipient.address) ||
+                GenericValidator.isBlankOrNull(sendModel.token)) {
             throw new InvalidInputParametersException();
+        }
+    }
+
+    private void checkPermission(SendModel sendModel) throws PermissionException {
+        try {
+            AppToken appToken = getAppTokenDao().get(sendModel.token);
+        } catch (ObjectNotFoundException e) {
+            throw new PermissionException();
         }
     }
 
@@ -76,5 +94,13 @@ public class SendServiceCommon {
 
     public void setTemplateRenderer(TemplateRenderer templateRenderer) {
         this.templateRenderer = templateRenderer;
+    }
+
+    public AppTokenDao getAppTokenDao() {
+        return appTokenDao;
+    }
+
+    public void setAppTokenDao(AppTokenDao appTokenDao) {
+        this.appTokenDao = appTokenDao;
     }
 }

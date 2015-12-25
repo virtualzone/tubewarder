@@ -8,6 +8,8 @@ import java.util.Map;
 @XmlRootElement
 public class SendModel {
     @XmlElement(required = true)
+    public String token;
+    @XmlElement(required = true)
     public String template;
     @XmlElement(required = true)
     public String channel;
@@ -15,4 +17,6 @@ public class SendModel {
     public AddressModel recipient;
     public Map<String, Object> model;
     public List<AttachmentModel> attachments;
+    public String keyword;
+    public String details;
 }

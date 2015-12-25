@@ -1,4 +1,7 @@
 {
+  "token": "00000000-0000-0000-0000-000000000000",
+  "keyword": "DOI",
+  "details": "",
   "template": "DOI",
   "channel": "sms",
   "recipient": {

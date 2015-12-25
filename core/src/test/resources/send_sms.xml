@@ -4,6 +4,9 @@
   <soapenv:Body>
     <soap:send>
       <message>
+        <token>00000000-0000-0000-0000-000000000000</token>
+        <keyword>DOI</keyword>
+        <details></details>
         <template>DOI</template>
         <channel>sms</channel>
         <recipient>
