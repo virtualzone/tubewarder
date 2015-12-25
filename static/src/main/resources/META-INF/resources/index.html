@@ -1,10 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-This is tubewarder
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Tubewarder</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" />
+        <link href="css/screen.css" rel="stylesheet" />
+    </head>
+    <body data-ng-controller="RootController">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#/">Tubewarder</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li id="nav-item-home"><a href="#/home">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="page-content" data-ng-view>
+        </div>
+        <script src="js/lib/require.js"></script>
+        <script>
+            require.config({
+                baseUrl: "js/",
+                waitSeconds: 30,
+                urlArgs: "bust=" + new Date().getTime(),
+                paths: {
+                    'main': 'config'
+                }
+            });
+            require(['main']);
+        </script>
+    </body>
 </html>
