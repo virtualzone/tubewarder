@@ -23,7 +23,8 @@ Use the following commands to get the source and run the server:
 ```
 git clone git://github.com/virtualzone/tubewarder.git
 cd tubewarder
-mvn wildfly-swarm:run
+mvn package
+java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar
 ```
 
 The server listens on port 8080 by default.

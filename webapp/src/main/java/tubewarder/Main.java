@@ -42,6 +42,7 @@ public class Main {
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/load.sql", Main.class.getClassLoader()), "classes/META-INF/load.sql");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
         appDeployment.addAllDependencies();
+        appDeployment.staticContent();
         container.deploy(appDeployment);
     }
 }
