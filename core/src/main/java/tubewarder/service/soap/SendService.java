@@ -1,6 +1,6 @@
 package tubewarder.service.soap;
 
-import tubewarder.service.model.AbstractResponse;
+import tubewarder.service.response.AbstractResponse;
 import tubewarder.service.model.SendModel;
 
 import javax.jws.WebMethod;

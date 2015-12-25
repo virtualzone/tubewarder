@@ -4,8 +4,8 @@ import tubewarder.dao.SysoutOutputHandlerConfigurationDao;
 import tubewarder.domain.SysoutOutputHandlerConfiguration;
 import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
-import tubewarder.service.model.AbstractResponse;
 import tubewarder.service.model.ErrorCode;
+import tubewarder.service.response.SetObjectRestResponse;
 import tubewarder.service.model.SysoutOutputHandlerConfigurationModel;
 
 import javax.enterprise.context.RequestScoped;
@@ -26,11 +26,12 @@ public class SetSysoutOutputHandlerConfiguration extends AbstractSetObjectServic
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
     
-    public AbstractResponse action(SysoutOutputHandlerConfigurationModel model) {
-        AbstractResponse response = new AbstractResponse();
+    public SetObjectRestResponse action(SysoutOutputHandlerConfigurationModel model) {
+        SetObjectRestResponse response = new SetObjectRestResponse();
         try {
             validateInputParameters(model);
-            createUpdateObject(model);
+            SysoutOutputHandlerConfiguration object = createUpdateObject(model);
+            response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {

@@ -1,4 +1,6 @@
-package tubewarder.service.model;
+package tubewarder.service.response;
+
+import tubewarder.service.model.ErrorCode;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

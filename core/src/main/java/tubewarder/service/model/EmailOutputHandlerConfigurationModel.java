@@ -1,5 +1,7 @@
 package tubewarder.service.model;
 
+import tubewarder.domain.EmailOutputHandlerConfiguration;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -11,4 +13,14 @@ public class EmailOutputHandlerConfigurationModel extends AbstractOutputHandlerC
     public String password;
     public String security;
     public String contentType;
+
+    public static void completeFactory(EmailOutputHandlerConfigurationModel model, EmailOutputHandlerConfiguration config) {
+        model.smtpServer = config.getSmtpServer();
+        model.port = config.getPort();
+        model.auth = config.getAuth();
+        model.username = config.getUsername();
+        model.password = config.getPassword();
+        model.security = config.getSecurity().toString();
+        model.contentType = config.getContentType();
+    }
 }

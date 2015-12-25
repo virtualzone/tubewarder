@@ -35,6 +35,7 @@ public class Main {
         appDeployment.addPackage("tubewarder.service");
         appDeployment.addPackage("tubewarder.service.common");
         appDeployment.addPackage("tubewarder.service.model");
+        appDeployment.addPackage("tubewarder.service.response");
         appDeployment.addPackage("tubewarder.service.rest");
         appDeployment.addPackage("tubewarder.service.soap");
         appDeployment.addPackage("tubewarder.util");

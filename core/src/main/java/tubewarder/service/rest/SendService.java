@@ -1,7 +1,7 @@
 package tubewarder.service.rest;
 
 import tubewarder.service.common.SendServiceCommon;
-import tubewarder.service.model.AbstractResponse;
+import tubewarder.service.response.AbstractResponse;
 import tubewarder.service.model.SendModel;
 
 import javax.enterprise.context.RequestScoped;

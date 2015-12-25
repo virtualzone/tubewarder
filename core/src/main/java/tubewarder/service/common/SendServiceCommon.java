@@ -5,7 +5,7 @@ import tubewarder.domain.Channel;
 import tubewarder.domain.ChannelTemplate;
 import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
-import tubewarder.service.model.AbstractResponse;
+import tubewarder.service.response.AbstractResponse;
 import tubewarder.service.model.AttachmentModel;
 import tubewarder.service.model.ErrorCode;
 import tubewarder.service.model.SendModel;
