@@ -18,10 +18,6 @@ define(['angular-route-resolver'], function(moment) {
             },
             setActiveNavItem: function(item) {
                 $rootScope.activeNavItem = item;
-                /*
-                $('.navbar-nav li').removeClass('active');
-                $('#nav-item-'+item).addClass('active');
-                */
             }
         };
         return appServices;
@@ -57,6 +53,9 @@ define(['angular-route-resolver'], function(moment) {
             .when('/channels', route.resolve('channels', 'ChannelsController'))
             .when('/channels/edit', route.resolve('channels-edit', 'ChannelsEditController'))
             .when('/channels/edit/:id', route.resolve('channels-edit', 'ChannelsEditController'))
+            .when('/tokens', route.resolve('tokens', 'TokensController'))
+            .when('/tokens/edit', route.resolve('tokens-edit', 'TokensEditController'))
+            .when('/tokens/edit/:id', route.resolve('tokens-edit', 'TokensEditController'))
             .when('/api', route.resolve('api', 'ApiController'))
             .otherwise({
                 redirectTo: '/home'

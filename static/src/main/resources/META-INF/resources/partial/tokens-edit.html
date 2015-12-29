@@ -1,0 +1,18 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-6">
+            <h1>Edit App Token</h1>
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="App Token name" data-ng-model="model.name" autofocus="autofocus" required="required" />
+                </div>
+                <div class="form-group" data-ng-show="model.id">
+                    <label>ID</label>
+                    <p class="form-control-static">{{model.id}}</p>
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
