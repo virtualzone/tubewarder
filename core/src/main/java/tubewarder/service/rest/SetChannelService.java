@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/channel/set")
-public class SetChannel extends AbstractSetObjectService<ChannelModel, Channel> {
+public class SetChannelService extends AbstractSetObjectService<ChannelModel, Channel> {
     @Inject
     private ChannelDao channelDao;
 

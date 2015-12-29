@@ -21,14 +21,13 @@ import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/emailoutputhandlerconfiguration/set")
-public class SetEmailOutputHandlerConfiguration extends AbstractSetObjectService<EmailOutputHandlerConfigurationModel, EmailOutputHandlerConfiguration> {
+public class SetEmailOutputHandlerConfigurationService extends AbstractSetObjectService<EmailOutputHandlerConfigurationModel, EmailOutputHandlerConfiguration> {
     @Inject
     private EmailOutputHandlerConfigurationDao outputHandlerConfigurationDao;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    
     public SetObjectRestResponse action(SetEmailOutputHandlerConfigurationRequest request) {
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {

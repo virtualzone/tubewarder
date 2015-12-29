@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/apptoken/set")
-public class SetAppToken extends AbstractSetObjectService<AppTokenModel, AppToken> {
+public class SetAppTokenService extends AbstractSetObjectService<AppTokenModel, AppToken> {
     @Inject
     private AppTokenDao appTokenDao;
 

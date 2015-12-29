@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/sysoutoutputhandlerconfiguration/set")
-public class SetSysoutOutputHandlerConfiguration extends AbstractSetObjectService<SysoutOutputHandlerConfigurationModel, SysoutOutputHandlerConfiguration> {
+public class SetSysoutOutputHandlerConfigurationService extends AbstractSetObjectService<SysoutOutputHandlerConfigurationModel, SysoutOutputHandlerConfiguration> {
     @Inject
     private SysoutOutputHandlerConfigurationDao outputHandlerConfigurationDao;
 

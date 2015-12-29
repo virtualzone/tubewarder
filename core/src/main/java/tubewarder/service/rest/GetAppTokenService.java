@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequestScoped
 @Path("/apptoken/get")
-public class GetAppToken {
+public class GetAppTokenService {
     @Inject
     private AppTokenDao appTokenDao;
 

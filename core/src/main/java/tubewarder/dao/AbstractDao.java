@@ -84,8 +84,14 @@ public abstract class AbstractDao<T extends Serializable> {
 	}
 
 	public void delete(T item) {
-		item = getEntityManager().merge(item);
-		getEntityManager().remove(item);
+		try {
+			UserTransaction tx = getBeginTransaction();
+			item = getEntityManager().merge(item);
+			getEntityManager().remove(item);
+			tx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	protected EntityManager getEntityManager() {

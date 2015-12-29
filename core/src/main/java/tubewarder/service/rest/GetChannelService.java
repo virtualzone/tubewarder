@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequestScoped
 @Path("/channel/get")
-public class GetChannel {
+public class GetChannelService {
     @Inject
     private ChannelDao channelDao;
 
