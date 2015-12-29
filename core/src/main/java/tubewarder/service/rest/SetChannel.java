@@ -10,6 +10,7 @@ import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
 import tubewarder.service.model.ChannelModel;
 import tubewarder.service.model.ErrorCode;
+import tubewarder.service.request.SetChannelRequest;
 import tubewarder.service.response.SetObjectRestResponse;
 
 import javax.enterprise.context.RequestScoped;
@@ -32,11 +33,11 @@ public class SetChannel extends AbstractSetObjectService<ChannelModel, Channel> 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public SetObjectRestResponse action(ChannelModel model) {
+    public SetObjectRestResponse action(SetChannelRequest request) {
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
-            validateInputParameters(model);
-            Channel object = createUpdateObject(model);
+            validateInputParameters(request.object);
+            Channel object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;

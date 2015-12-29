@@ -7,9 +7,11 @@ require.config({
         'bootstrap': 'lib/bootstrap-3.3.6.min'
 	},
 	shim: {
+        /*
         'bootstrap': {
 			deps: ['jquery'],
 		},
+        */
 		'angular': {
 			exports: 'angular'
 		},
@@ -21,10 +23,9 @@ require.config({
 		},
 		'app': {
 			deps: [
-				'bootstrap',
+				// 'bootstrap',
 				'angular-route',
-				'angular-route-resolver',
-				'bootstrap'
+				'angular-route-resolver'
 			],
 			exports: 'app'
 		},

@@ -17,8 +17,11 @@ define(['angular-route-resolver'], function(moment) {
                 return !isNaN(parseFloat(n)) && isFinite(n);
             },
             setActiveNavItem: function(item) {
+                $rootScope.activeNavItem = item;
+                /*
                 $('.navbar-nav li').removeClass('active');
                 $('#nav-item-'+item).addClass('active');
+                */
             }
         };
         return appServices;
@@ -51,6 +54,10 @@ define(['angular-route-resolver'], function(moment) {
 
         $routeProvider
             .when('/home', route.resolve('home', 'HomeController'))
+            .when('/channels', route.resolve('channels', 'ChannelsController'))
+            .when('/channels/edit', route.resolve('channels-edit', 'ChannelsEditController'))
+            .when('/channels/edit/:id', route.resolve('channels-edit', 'ChannelsEditController'))
+            .when('/api', route.resolve('api', 'ApiController'))
             .otherwise({
                 redirectTo: '/home'
             });

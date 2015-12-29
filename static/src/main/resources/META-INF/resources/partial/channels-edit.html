@@ -1,0 +1,69 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-6">
+            <h1>Edit Channel</h1>
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Channel name" data-ng-model="model.name" autofocus="autofocus" required="required" />
+                </div>
+                <div class="form-group">
+                    <label for="outputHandler">Output Handler</label>
+                    <select class="form-control" id="outputHandler" name="outputHandler" data-ng-model="model.outputHandler">
+                        <option value="SYSOUT">Console</option>
+                        <option value="EMAIL">Email</option>
+                    </select>
+                </div>
+                <div data-ng-show="model.outputHandler == 'SYSOUT'">
+                    <div class="form-group">
+                        <label for="sysout-prefix">Prefix</label>
+                        <input type="text" class="form-control" id="sysout-prefix" name="sysout-prefix" placeholder="Prefix" data-ng-model="model.sysout.prefix" />
+                    </div>
+                    <div class="form-group">
+                        <label for="sysout-suffix">Suffix</label>
+                        <input type="text" class="form-control" id="sysout-suffix" name="sysout-suffix" placeholder="Suffix" data-ng-model="model.sysout.suffix" />
+                    </div>
+                </div>
+                <div data-ng-show="model.outputHandler == 'EMAIL'">
+                    <div class="form-group">
+                        <label for="email-smtpServer">SMTP Server</label>
+                        <input type="text" class="form-control" id="email-smtpServer" name="email-smtpServer" placeholder="SMTP Server" data-ng-model="model.email.smtpServer" data-ng-required="model.outputHandler == 'EMAIL'" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email-port">Port</label>
+                        <input type="number" class="form-control" id="email-port" name="email-port" placeholder="Port" data-ng-model="model.email.port" data-ng-required="model.outputHandler == 'EMAIL'" />
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" data-ng-model="model.email.auth" /> Server requires authentication
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-username">Username</label>
+                        <input type="text" class="form-control" id="email-username" name="email-username" placeholder="Username" data-ng-model="model.email.username" data-ng-disabled="!model.email.auth" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email-password">Password</label>
+                        <input type="text" class="form-control" id="email-password" name="email-password" placeholder="Password" data-ng-model="model.email.password" data-ng-disabled="!model.email.auth" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email-security">Security</label>
+                        <select class="form-control" id="email-security" name="email-security" data-ng-model="model.email.security" data-ng-required="model.outputHandler == 'EMAIL'">
+                            <option value="NONE">None</option>
+                            <option value="TLS">TLS</option>
+                            <option value="SSL">SSL</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-contentType">Content Type</label>
+                        <select class="form-control" id="email-contentType" name="email-contentType" data-ng-model="model.email.contentType" data-ng-required="model.outputHandler == 'EMAIL'">
+                            <option value="text/plain">text/plain</option>
+                            <option value="text/html">text/html</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
+            </form>
+        </div>
+    </div>
+</div>

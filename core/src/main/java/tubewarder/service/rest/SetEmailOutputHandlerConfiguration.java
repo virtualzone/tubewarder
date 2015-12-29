@@ -8,6 +8,7 @@ import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
 import tubewarder.service.model.EmailOutputHandlerConfigurationModel;
 import tubewarder.service.model.ErrorCode;
+import tubewarder.service.request.SetEmailOutputHandlerConfigurationRequest;
 import tubewarder.service.response.SetObjectRestResponse;
 
 import javax.enterprise.context.RequestScoped;
@@ -28,11 +29,11 @@ public class SetEmailOutputHandlerConfiguration extends AbstractSetObjectService
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
     
-    public SetObjectRestResponse action(EmailOutputHandlerConfigurationModel model) {
+    public SetObjectRestResponse action(SetEmailOutputHandlerConfigurationRequest request) {
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
-            validateInputParameters(model);
-            EmailOutputHandlerConfiguration object = createUpdateObject(model);
+            validateInputParameters(request.object);
+            EmailOutputHandlerConfiguration object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;

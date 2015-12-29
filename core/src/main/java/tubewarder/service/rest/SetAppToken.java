@@ -6,6 +6,7 @@ import tubewarder.exception.InvalidInputParametersException;
 import tubewarder.exception.ObjectNotFoundException;
 import tubewarder.service.model.AppTokenModel;
 import tubewarder.service.model.ErrorCode;
+import tubewarder.service.request.SetAppTokenRequest;
 import tubewarder.service.response.SetObjectRestResponse;
 
 import javax.enterprise.context.RequestScoped;
@@ -25,11 +26,11 @@ public class SetAppToken extends AbstractSetObjectService<AppTokenModel, AppToke
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public SetObjectRestResponse action(AppTokenModel model) {
+    public SetObjectRestResponse action(SetAppTokenRequest request) {
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
-            validateInputParameters(model);
-            AppToken object = createUpdateObject(model);
+            validateInputParameters(request.object);
+            AppToken object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;

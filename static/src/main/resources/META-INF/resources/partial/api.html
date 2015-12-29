@@ -1,0 +1,67 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>API</h1>
+            <h2>1. Sending messages</h2>
+            <p>You can either use the SOAP web service API or the REST API for sending messages through Tubewarder. Both provide exactly the same functionality.</p>
+            
+            <h3>1.1 SOAP API</h3>
+            <p>Endpoint: /ws/send</p>
+            <p>WSDL: <a href="/ws/send?wsdl" target="_blank">/ws/send?wsdl</a></p>
+            <p>Request method: POST</p>
+            <p>Request format: SOAP-XML (application/soap+xml)</p>
+            <p>Response format: SOAP-XML (application/soap+xml)</p>
+            
+            <h3>1.2 REST API</h3>
+            <p>Endpoint: /rs/send</p>
+            <p>Request method: POST</p>
+            <p>Request format: JSON (application/json)</p>
+            <p>Response format: JSON (application/json)</p>
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">Example request</div>
+                <div class="panel-body">
+                    <code>
+{<br />
+&nbsp;&nbsp;&nbsp;"token": "00000000-0000-0000-0000-000000000000",<br />
+&nbsp;&nbsp;&nbsp;"keyword": "DOI",<br />
+&nbsp;&nbsp;&nbsp;"details": "",<br />
+&nbsp;&nbsp;&nbsp;"template": "DOI",<br />
+&nbsp;&nbsp;&nbsp;"channel": "sms",<br />
+&nbsp;&nbsp;&nbsp;"recipient": {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "Unknown",<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"address": "+49000000000000"<br />
+&nbsp;&nbsp;&nbsp;},<br />
+&nbsp;&nbsp;&nbsp;"model": {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"firstname": "John",<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lastname": "Doe",<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": "1234567890",<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"includeDisclaimer": false<br />
+&nbsp;&nbsp;&nbsp;}<br />
+}
+                    </code>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Request schema</div>
+                <div class="panel-body">
+                    <code>
+Request {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;token (string, required - your client app's token)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;keyword (string, optional - a keyword for controlling purposes in logging)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;details (string, optional - additional details for controlling purposes)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;template (string, required - the template's name)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;channel (string, required - the channel's name)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;recipient (Address, required - the recipient's address)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;model (Object, optional - a key-value-list of template parameters)<br />
+}<br />
+Address {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;name (string, optional - recipient's name)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;address (string, required - recipient's address (email, number, ...))<br />
+}
+                    </code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
