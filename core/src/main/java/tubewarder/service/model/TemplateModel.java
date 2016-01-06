@@ -17,7 +17,7 @@ public class TemplateModel extends AbstractRestModel {
         model.id = template.getExposableId();
         model.name = template.getName();
         for (ChannelTemplate channelTemplate : template.getChannelTemplates()) {
-            model.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate));
+            model.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, false));
         }
         return model;
     }

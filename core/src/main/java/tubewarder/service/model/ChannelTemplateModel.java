@@ -13,14 +13,20 @@ public class ChannelTemplateModel extends AbstractRestModel {
     public String senderAddress;
     public String senderName;
 
-    public static ChannelTemplateModel factory(ChannelTemplate channelTemplate) {
+    public static ChannelTemplateModel factory(ChannelTemplate channelTemplate, boolean includeTemplate) {
         ChannelTemplateModel model = new ChannelTemplateModel();
-        model.template = TemplateModel.factory(channelTemplate.getTemplate());
+        if (includeTemplate) {
+            model.template = TemplateModel.factory(channelTemplate.getTemplate());
+        }
         model.channel = ChannelModel.factory(channelTemplate.getChannel());
         model.subject = channelTemplate.getSubject();
         model.content = channelTemplate.getContent();
         model.senderAddress = channelTemplate.getSenderAddress();
         model.senderName = channelTemplate.getSenderName();
         return model;
+    }
+
+    public static ChannelTemplateModel factory(ChannelTemplate channelTemplate) {
+        return factory(channelTemplate, true);
     }
 }
