@@ -52,6 +52,29 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         if (GenericValidator.isBlankOrNull(model.name)) {
             throw new InvalidInputParametersException();
         }
+
+        // Check if object is to be created, but name already exists
+        if (GenericValidator.isBlankOrNull(model.id)) {
+            try {
+                getObjectDao().getByName(model.name);
+                throw new InvalidInputParametersException();
+            } catch (ObjectNotFoundException e) {
+                // This is okay
+            }
+        }
+
+        // Check if object is to be updated, but (new) name already exists
+        if (!GenericValidator.isBlankOrNull(model.id)) {
+            try {
+                Channel channel = getObjectDao().getByName(model.name);
+                // Match found - okay if it's the object to be updated itself
+                if (!model.id.equals(channel.getExposableId())) {
+                    throw new InvalidInputParametersException();
+                }
+            } catch (ObjectNotFoundException e) {
+                // This is okay
+            }
+        }
     }
 
     @Override
