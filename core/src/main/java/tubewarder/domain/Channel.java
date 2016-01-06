@@ -1,12 +1,10 @@
 package tubewarder.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Channel extends AbstractPersistentObject {
+    @Column(unique = true)
     private String name;
     @Enumerated(EnumType.STRING)
     private OutputHandler outputHandler;

@@ -75,7 +75,7 @@ public class SendServiceCommon {
     }
 
     private void renderAndSend(SendModel sendModel) throws ObjectNotFoundException {
-        ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplate(sendModel.template, sendModel.channel);
+        ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
         String subject = getTemplateRenderer().render(channelTemplate.getSubject(), sendModel.model);
         String content = getTemplateRenderer().render(channelTemplate.getContent(), sendModel.model);
