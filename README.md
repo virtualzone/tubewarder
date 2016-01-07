@@ -34,6 +34,31 @@ For sending messages, use one of the following URLs:
 * SOAP: http://localhost:8080/ws/send (WSDL available at http://localhost:8080/ws/send?wsdl)
 * REST: http://localhost:8080/rs/send
 
+## Configuration
+Tubewarder can be configured using command line arguments.
+
+The following command prints out the available commands:
+
+```
+java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -help
+```
+
+Probably most important is the configuration of the database. Tubewarder uses the H2 database engine for persistence. If nothing else is set, it uses an in-memory database. This means, as soon as you stop the application, all modifications are lost.
+
+To specify a local file where the H2 database is to be stored:
+
+```
+java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -db /path/to/tubewarder-db
+```
+
+To use H2 in Server Mode:
+
+```
+java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -db tcp://localhost//data/tubewarder -dbUser tubewarder -dbPass tubewarder
+```
+
+Check out the [H2 website](http://www.h2database.com/html/cheatSheet.html) for more information.
+
 ## Current status
 * Core functionality is working as intended
 * There is an easy-to-use web frontend for all administrative tasks (e.g. managing app tokens, managing channels, and templates)
@@ -44,3 +69,4 @@ For sending messages, use one of the following URLs:
 * Add Authentication/authorization to the web fronted
 * Add authorization to the sending API (restrict App Tokens to specific templates/channels)
 * Improve error handling in web fronted 
+* Enable additional databases
