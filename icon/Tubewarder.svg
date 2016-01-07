@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="740"
+   height="740"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="Tubewarder.svg"
+   inkscape:export-filename="C:\Users\jan\ownCloud\weweave\Dnn Dynamic Redirect\Icon\DNN Dynamic Redirect Icon 256x256.png"
+   inkscape:export-xdpi="31.129999"
+   inkscape:export-ydpi="31.129999">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3788"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop3790" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.25"
+     inkscape:cx="170.13006"
+     inkscape:cy="506.21422"
+     inkscape:document-units="px"
+     inkscape:current-layer="g3552"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1156"
+     inkscape:window-x="36"
+     inkscape:window-y="13"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-1.813918,-312.36258)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:46.73371887;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 371.67068,335.76195 C 229.69336,333.70735 93.378764,429.25161 46.262314,563.25392 -3.4997509,694.71754 36.99222,854.08765 144.95674,944.62231 251.14058,1039.5165 417.23442,1056.218 540.47651,985.29774 662.37198,919.3955 734.64525,775.42397 715.34538,638.30536 698.99597,494.76418 583.21722,370.01266 441.49081,342.80549 c -22.95583,-4.70389 -46.38942,-7.04676 -69.82013,-7.04354 z"
+       id="path2985"
+       inkscape:connector-curvature="0" />
+    <g
+       id="g3552"
+       transform="translate(-25.199069,204.68948)">
+      <title
+         id="title3554">Layer 1</title>
+      <g
+         id="g3648"
+         transform="matrix(3.8577346,0,0,3.8577346,31.47384,158.04018)">
+        <title
+           id="title3650">Layer 1</title>
+        <g
+           id="layer1-7">
+          <g
+             id="g2423"
+             transform="matrix(0.810875,0,0,0.810875,5.90968,-403.3576)" />
+        </g>
+      </g>
+      <g
+         enable-background="new    "
+         id="INBOX__x2F__OUT_1_"
+         transform="matrix(7.9090909,0,0,7.9090909,143.92208,220.62765)">
+        <g
+           id="INBOX__x2F__OUT">
+          <g
+             id="g4166">
+            <path
+               id="path4168"
+               d="m 25,18 c 0.828,0 1.578,-0.336 2.121,-0.879 L 29,15.243 29,34 c 0,1.657 1.343,3 3,3 1.657,0 3,-1.343 3,-3 l 0,-18.757 1.879,1.879 C 37.422,17.664 38.172,18 39,18 c 1.657,0 3,-1.343 3,-3 0,-0.828 -0.336,-1.578 -0.879,-2.121 l -7,-7 C 33.578,5.336 32.829,5 32,5 31.172,5 30.422,5.336 29.879,5.879 l -7,7 C 22.336,13.422 22,14.172 22,15 c 0,1.657 1.343,3 3,3 z M 63.8,36.924 55.822,15.983 C 55.406,14.827 54.3,14 53,14 l -8.102,0 c 0.056,0.327 0.102,0.658 0.102,1 0,2.09 -1.07,3.926 -2.691,5 l 8.623,0 5.715,15 L 47,35 c -1.657,0 -3,1.343 -3,3 l 0,3 -24,0 0,-3 c 0,-1.657 -1.343,-3 -3,-3 l -9.647,0 5.714,-15 8.623,0 C 20.071,18.926 19,17.09 19,15 c 0,-0.342 0.046,-0.673 0.101,-1 L 11,14 11,14 C 9.7,14 8.594,14.827 8.177,15.982 L 0.2,36.924 C 0.071,37.258 0,37.621 0,38 l 0,19 c 0,1.657 1.343,3 3,3 l 58,0 c 1.657,0 3,-1.343 3,-3 l 0,-19 c 0,-0.379 -0.07,-0.742 -0.2,-1.076 z"
+               inkscape:connector-curvature="0" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
