@@ -1,0 +1,40 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-6">
+            <h1>Edit Template</h1>
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
+                    <label for="name">Unique Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Template name" data-ng-model="model.name" autofocus="autofocus" required="required" />
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
+            </form>
+            <div data-ng-show="model.id">
+                <h2>Associated channels</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th>Subject</th>
+                            <th>Content</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="channelTemplate in model.channelTemplates">
+                            <td>{{channelTemplate.channel.name}}</td>
+                            <td>{{channelTemplate.subject | limitTo:50}} [...]</td>
+                            <td>{{channelTemplate.content | limitTo:50}} [...]</td>
+                            <td><a data-ng-href="#/templates/channels/edit/{{model.id}}/{{channelTemplate.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                            <td><button data-ng-click="deleteChannelTemplate(channelTemplate.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    <a href="#/templates/channels/edit/{{model.id}}" class="btn btn-default">Add new</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
