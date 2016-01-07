@@ -10,7 +10,7 @@ Tubewarder makes sending messages to your users easier than ever:
 * Configurable outbound connectors
 * Central place for controllind and archiving our outbound communication
 
-Note: Tubewarder is still under active development. The current release is pre-alpha, but features the core functionality. Use it on your own risk.
+Note: Tubewarder is still under active development. The current release is 1.0-Alpha1, but features the core functionality. Use it on your own risk.
 
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications.
@@ -18,7 +18,7 @@ Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular
 ## Getting started
 Make sure you have Maven and Java 1.8 installed.
 
-Use the following commands to get the source and run the server:
+Use the following commands to get the latest source and run the server:
 
 ```
 git clone git://github.com/virtualzone/tubewarder.git
@@ -34,7 +34,13 @@ For sending messages, use one of the following URLs:
 * SOAP: http://localhost:8080/ws/send (WSDL available at http://localhost:8080/ws/send?wsdl)
 * REST: http://localhost:8080/rs/send
 
-## Coming soon
-* Edit all configuration options using RESTful services
-* Lightweight, easy-to-use web frontend for administrative tasks
-* Authentication/authorization
+## Current status
+* Core functionality is working as intended
+* There is an easy-to-use web frontend for all administrative tasks (e.g. managing app tokens, managing channels, and templates)
+* Authentication is implemented on the sending API, but it's not featuring authorization. This means: An application requires an App Token to access the sending API, but any valid App Token can access any template.
+* There is no authentication/authorization in the web frontend yet. You should definitely protect access to it using some other measures in the meantime.
+
+## Next steps
+* Add Authentication/authorization to the web fronted
+* Add authorization to the sending API (restrict App Tokens to specific templates/channels)
+* Improve error handling in web fronted 
