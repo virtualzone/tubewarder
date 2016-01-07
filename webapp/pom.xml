@@ -107,7 +107,7 @@
                 <artifactId>wildfly-swarm-plugin</artifactId>
                 <version>${version.wildfly-swarm}</version>
                 <configuration>
-                    <mainClass>tubewarder.Main</mainClass>
+                    <mainClass>net.weweave.tubewarder.Main</mainClass>
                 </configuration>
                 <executions>
                     <execution>
