@@ -21,7 +21,7 @@ Make sure you have Maven and Java 1.8 installed.
 Use the following commands to get the latest source and run the server:
 
 ```
-git clone git://github.com/virtualzone/tubewarder.git
+git clone git://github.com/weweave/tubewarder.git
 cd tubewarder
 mvn package
 java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar
