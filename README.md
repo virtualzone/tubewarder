@@ -59,6 +59,9 @@ java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -db tcp://localhost//data/
 
 Check out the [H2 website](http://www.h2database.com/html/cheatSheet.html) for more information.
 
+## License
+For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
+
 ## Current status
 * Core functionality is working as intended
 * There is an easy-to-use web frontend for all administrative tasks (e.g. managing app tokens, managing channels, and templates)
