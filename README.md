@@ -8,7 +8,7 @@ Tubewarder makes sending messages to your users easier than ever:
 * Connect your applications using SOAP web services or RESTful services
 * Get rid of message and templating code in your applications
 * Configurable outbound connectors
-* Central place for controllind and archiving our outbound communication
+* Central place for controlling and archiving your outbound communication
 
 Note: Tubewarder is still under active development. The current release is 1.0-Alpha1, but features the core functionality. Use it on your own risk.
 
