@@ -1,0 +1,31 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>Users</h1>
+            <p>Users can access the management web interface.</p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Display Name</th>
+                        <th>Username</th>
+                        <th>Last Login</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="user in model.users">
+                        <td>{{user.displayName}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.lastLogin}}</td>
+                        <td><a data-ng-href="#/users/edit/{{user.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                        <td><button data-ng-click="deleteUser(user.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                <a href="#/users/edit" class="btn btn-default">Add new</a>
+            </p>
+        </div>
+    </div>
+</div>

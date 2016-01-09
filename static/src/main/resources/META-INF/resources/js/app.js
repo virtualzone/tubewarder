@@ -61,6 +61,9 @@ define(['angular-route-resolver'], function(moment) {
             .when('/templates/edit/:id', route.resolve('templates-edit', 'TemplatesEditController'))
             .when('/templates/channels/edit/:templateId', route.resolve('channeltemplates-edit', 'ChannelTemplatesEditController'))
             .when('/templates/channels/edit/:templateId/:id', route.resolve('channeltemplates-edit', 'ChannelTemplatesEditController'))
+            .when('/users', route.resolve('users', 'UsersController'))
+            .when('/users/edit', route.resolve('users-edit', 'UsersEditController'))
+            .when('/users/edit/:id', route.resolve('users-edit', 'UsersEditController'))
             .when('/api', route.resolve('api', 'ApiController'))
             .otherwise({
                 redirectTo: '/home'

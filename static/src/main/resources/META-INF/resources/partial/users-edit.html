@@ -1,0 +1,58 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>Edit User</h1>
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.username.$dirty && form.username.$invalid}">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" data-ng-model="model.username" autofocus="autofocus" required="required" />
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.displayName.$dirty && form.displayName.$invalid}">
+                    <label for="displayName">Display Name</label>
+                    <input type="text" class="form-control" id="displayName" name="displayName" placeholder="Display Name" data-ng-model="model.displayName" required="required" />
+                </div>
+                <div class="checkbox" data-ng-show="model.id">
+                    <label>
+                        <input type="checkbox" id="changePassword" name="changePassword" data-ng-model="model.changePassword" />
+                        Change password
+                    </label>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.password.$dirty && form.password.$invalid}">
+                    <label for="password">Password</label>
+                    <input class="form-control" id="password" name="password" placeholder="Password" type="password" data-ng-model="model.password" data-ng-required="isRequirePassword()" data-ng-disabled="!isRequirePassword()" />
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="enabled" name="enabled" data-ng-model="model.enabled" />
+                        Account is enabled
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="allowAppTokens" name="allowAppTokens" data-ng-model="model.allowAppTokens" />
+                        Can manage App Tokens
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="allowChannels" name="allowChannels" data-ng-model="model.allowChannels" />
+                        Can manage Channels
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="allowTemplates" name="allowTemplates" data-ng-model="model.allowTemplates" />
+                        Can manage Templates
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="allowUsers" name="allowUsers" data-ng-model="model.allowUsers" />
+                        Can manage Users
+                    </label>
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
