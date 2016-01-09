@@ -19,6 +19,7 @@ public class UserModel extends AbstractRestModel {
 
     public static UserModel factory(User user) {
         UserModel model = new UserModel();
+        model.id = user.getExposableId();
         model.displayName = user.getDisplayName();
         model.username = user.getUsername();
         model.enabled = user.getEnabled();
