@@ -41,7 +41,7 @@ public abstract class AbstractDao<T extends Serializable> {
 		}
 	}
 
-	private UserTransaction getBeginTransaction() {
+	protected UserTransaction getBeginTransaction() {
 		try {
 			UserTransaction tx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
 			tx.begin();
