@@ -4,13 +4,13 @@ import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import org.apache.commons.validator.GenericValidator;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Query;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-@Stateless
+@ApplicationScoped
 public class SessionDao extends AbstractDao<Session> {
     public static final Integer TIMEOUT = 30;
 

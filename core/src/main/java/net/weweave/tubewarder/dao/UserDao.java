@@ -4,9 +4,11 @@ import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+@ApplicationScoped
 public class UserDao extends AbstractDao<User> {
     public User getByUsername(String username) throws ObjectNotFoundException {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
@@ -19,5 +21,17 @@ public class UserDao extends AbstractDao<User> {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
                 "ORDER BY u.username ASC", User.class);
         return query.getResultList();
+    }
+
+    public Boolean existsAnyAdminUser() {
+        TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
+                "WHERE u.allowUsers = 1 AND u.enabled = 1", User.class);
+        query.setMaxResults(1);
+        try {
+            DbValueRetriever.getObjectOrException(query);
+            return true;
+        } catch (ObjectNotFoundException e) {
+            return false;
+        }
     }
 }

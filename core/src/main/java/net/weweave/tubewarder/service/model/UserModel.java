@@ -22,7 +22,7 @@ public class UserModel extends AbstractRestModel {
         model.displayName = user.getDisplayName();
         model.username = user.getUsername();
         model.enabled = user.getEnabled();
-        model.lastLogin = DateTimeFormat.format(user.getLastLogin());
+        model.lastLogin = (user.getLastLogin() != null ? DateTimeFormat.format(user.getLastLogin()) : "");
         model.allowAppTokens = user.getAllowAppTokens();
         model.allowChannels = user.getAllowChannels();
         model.allowTemplates = user.getAllowTemplates();

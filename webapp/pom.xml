@@ -79,6 +79,11 @@
             <version>1.3.1</version>
         </dependency>
         <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.3m</version>
+        </dependency>
+        <dependency>
             <groupId>tubewarder</groupId>
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
