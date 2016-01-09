@@ -29,6 +29,7 @@ define(['angular', 'app'], function(angular, app) {
         
         var storeConfig = function(cb) {
             var payload = {
+                token: appServices.getToken(),
                 object: { }
             };
             var url = '';
@@ -47,6 +48,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.submit = function(form) {
             storeConfig(function(configId) {
                 var payload = {
+                    token: appServices.getToken(),
                     object: {
                         id: $scope.model.id,
                         name: $scope.model.name,
@@ -65,6 +67,7 @@ define(['angular', 'app'], function(angular, app) {
         
         if ($routeParams.id) {
             var payload = {
+                token: appServices.getToken(),
                 id: $routeParams.id
             };
             $http.get('/rs/channel/get', {params: payload}).success(function(data) {

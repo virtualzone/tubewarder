@@ -9,7 +9,10 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var load = function() {
-            $http.get('/rs/channel/get', {}).success(function(data) {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/channel/get', {params: payload}).success(function(data) {
                 $scope.model.channels = data.channels;
                 for (var i=0; i<$scope.model.channels.length; i++) {
                     var channel = $scope.model.channels[i];
@@ -21,7 +24,8 @@ define(['angular', 'app'], function(angular, app) {
         
         var deleteConfig = function(id, cb) {
             var payload = {
-                id: id
+                id: id,
+                token: appServices.getToken()
             };
             $http.post('/rs/outputhandlerconfiguration/delete', payload).success(function(data) {
                 cb();
@@ -32,7 +36,8 @@ define(['angular', 'app'], function(angular, app) {
             if (!confirm("Delete this channel?")) return;
             deleteConfig(configId, function() {
                 var payload = {
-                    id: channelId
+                    id: channelId,
+                    token: appServices.getToken()
                 };
                 $http.post('/rs/channel/delete', payload).success(function(data) {
                     load();

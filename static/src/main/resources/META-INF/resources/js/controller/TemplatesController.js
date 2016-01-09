@@ -20,7 +20,10 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var load = function() {
-            $http.get('/rs/template/get', {}).success(function(data) {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/template/get', {params: payload}).success(function(data) {
                 $scope.model.templates = data.templates;
                 for (var i=0; i<$scope.model.templates.length; i++) {
                     makeReadableChannelList($scope.model.templates[i]);
@@ -31,6 +34,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.deleteTemplate = function(id) {
             if (!confirm("Delete this template?")) return;
             var payload = {
+                token: appServices.getToken(),
                 id: id
             };
             $http.post('/rs/template/delete', payload).success(function(data) {

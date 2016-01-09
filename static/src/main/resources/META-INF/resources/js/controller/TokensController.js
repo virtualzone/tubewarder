@@ -9,7 +9,10 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var load = function() {
-            $http.get('/rs/apptoken/get', {}).success(function(data) {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/apptoken/get', {params: payload}).success(function(data) {
                 $scope.model.tokens = data.tokens;
             });
         };
@@ -17,6 +20,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.deleteToken = function(id) {
             if (!confirm("Delete this token?")) return;
             var payload = {
+                token: appServices.getToken(),
                 id: id
             };
             $http.post('/rs/apptoken/delete', payload).success(function(data) {

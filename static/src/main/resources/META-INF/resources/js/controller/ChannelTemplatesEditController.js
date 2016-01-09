@@ -19,6 +19,7 @@ define(['angular', 'app'], function(angular, app) {
 
         $scope.submit = function(form) {
             var payload = {
+                token: appServices.getToken(),
                 object: {
                     id: $scope.model.id,
                     template: {
@@ -53,7 +54,10 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var loadChannels = function() {
-            $http.get('/rs/channel/get', { }).success(function(data) {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/channel/get', {params: payload}).success(function(data) {
                 $scope.channels = data.channels;
                 limitChannelSelect();
             });
@@ -61,6 +65,7 @@ define(['angular', 'app'], function(angular, app) {
         
         var loadTemplate = function() {
             var payload = {
+                token: appServices.getToken(),
                 id: $routeParams.templateId
             };
             $http.get('/rs/template/get', {params: payload}).success(function(data) {
@@ -86,6 +91,7 @@ define(['angular', 'app'], function(angular, app) {
         
         var loadAllChannelTemplates = function() {
             var payload = {
+                token: appServices.getToken(),
                 templateId: $routeParams.templateId
             };
             $http.get('/rs/channeltemplate/get', {params: payload}).success(function(data) {
@@ -99,6 +105,7 @@ define(['angular', 'app'], function(angular, app) {
         
         if ($routeParams.id) {
             var payload = {
+                token: appServices.getToken(),
                 id: $routeParams.id
             };
             $http.get('/rs/channeltemplate/get', {params: payload}).success(function(data) {

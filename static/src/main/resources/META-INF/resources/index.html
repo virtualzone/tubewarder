@@ -23,10 +23,10 @@
                 <div class="collapse navbar-collapse" id="navbar-collapse-1">
                     <ul class="nav navbar-nav ng-cloak" data-ng-show="isLoggedIn">
                         <li data-ng-class="{'active': activeNavItem == 'home'}"><a href="#/home">Home</a></li>
-                        <li data-ng-class="{'active': activeNavItem == 'tokens'}"><a href="#/tokens">App Tokens</a></li>
-                        <li data-ng-class="{'active': activeNavItem == 'channels'}"><a href="#/channels">Channels</a></li>
-                        <li data-ng-class="{'active': activeNavItem == 'templates'}"><a href="#/templates">Templates</a></li>
-                        <li data-ng-class="{'active': activeNavItem == 'users'}"><a href="#/users">Users</a></li>
+                        <li data-ng-class="{'active': activeNavItem == 'tokens'}" data-ng-show="session.user.allowAppTokens"><a href="#/tokens">App Tokens</a></li>
+                        <li data-ng-class="{'active': activeNavItem == 'channels'}" data-ng-show="session.user.allowChannels"><a href="#/channels">Channels</a></li>
+                        <li data-ng-class="{'active': activeNavItem == 'templates'}" data-ng-show="session.user.allowTemplates"><a href="#/templates">Templates</a></li>
+                        <li data-ng-class="{'active': activeNavItem == 'users'}" data-ng-show="session.user.allowUsers"><a href="#/users">Users</a></li>
                         <li data-ng-class="{'active': activeNavItem == 'api'}"><a href="#/api">API</a></li>
                         <li><a href="" data-ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span></a></li>
                     </ul>

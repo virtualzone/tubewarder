@@ -12,6 +12,7 @@ define(['angular', 'app'], function(angular, app) {
 
         $scope.submit = function(form) {
             var payload = {
+                token: appServices.getToken(),
                 object: {
                     id: $scope.model.id,
                     name: $scope.model.name
@@ -25,6 +26,7 @@ define(['angular', 'app'], function(angular, app) {
         var load = function() {
             if ($routeParams.id) {
                 var payload = {
+                    token: appServices.getToken(),
                     id: $routeParams.id
                 };
                 $http.get('/rs/template/get', {params: payload}).success(function(data) {
@@ -39,6 +41,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.deleteChannelTemplate = function(id) {
             if (!confirm("Delete this channel association?")) return;
             var payload = {
+                token: appServices.getToken(),
                 id: id
             };
             $http.post('/rs/channeltemplate/delete', payload).success(function(data) {

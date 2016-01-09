@@ -23,6 +23,7 @@ define(['angular', 'app'], function(angular, app) {
         
         $scope.submit = function(form) {
             var payload = {
+                token: appServices.getToken(),
                 object: {
                     id: $scope.model.id,
                     username: $scope.model.username,
@@ -42,6 +43,7 @@ define(['angular', 'app'], function(angular, app) {
         
         if ($routeParams.id) {
             var payload = {
+                token: appServices.getToken(),
                 id: $routeParams.id
             };
             $http.get('/rs/user/get', {params: payload}).success(function(data) {

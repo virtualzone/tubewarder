@@ -9,7 +9,10 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var load = function() {
-            $http.get('/rs/user/get', {}).success(function(data) {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/user/get', {params: payload}).success(function(data) {
                 $scope.model.users = data.users;
             });
         };
@@ -17,6 +20,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.deleteUser = function(id) {
             if (!confirm("Delete this user?")) return;
             var payload = {
+                token: appServices.getToken(),
                 id: id
             };
             $http.post('/rs/user/delete', payload).success(function(data) {
