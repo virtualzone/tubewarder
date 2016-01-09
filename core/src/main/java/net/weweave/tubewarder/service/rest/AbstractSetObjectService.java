@@ -8,7 +8,7 @@ import org.apache.commons.validator.GenericValidator;
 
 import java.io.Serializable;
 
-public abstract class AbstractSetObjectService<I extends AbstractRestModel, O extends Serializable> {
+public abstract class AbstractSetObjectService<I extends AbstractRestModel, O extends Serializable> extends AbstractService {
     protected abstract void validateInputParameters(I model) throws InvalidInputParametersException;
     protected abstract O createObject(I model) throws ObjectNotFoundException;
     protected abstract void updateObject(O output, I model) throws ObjectNotFoundException;
