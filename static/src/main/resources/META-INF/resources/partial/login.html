@@ -1,0 +1,18 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-6">
+            <h1>Login</h1>
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.username.$dirty && form.username.$invalid}">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" data-ng-model="model.username" autofocus="autofocus" required="required" />
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.password.$dirty && form.password.$invalid}">
+                    <label for="password">Password</label>
+                    <input class="form-control" id="password" name="password" placeholder="Password" type="password" data-ng-model="model.password" required="required" data-ng-change="onPasswordChange(form)" />
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Login</button>
+            </form>
+        </div>
+    </div>
+</div>

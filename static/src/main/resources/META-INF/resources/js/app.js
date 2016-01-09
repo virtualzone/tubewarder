@@ -2,7 +2,11 @@ define(['angular-route-resolver'], function(moment) {
     'use strict';
 
     var ERROR = {
-        OK: 0
+        OK: 0,
+        INVALID_INPUT_PARAMETERS: 1,
+        OBJECT_LOOKUP_ERROR: 2,
+        PERMISSION_DENIED: 3,
+        AUTH_REQUIRED: 4
     };
 
     var angular = require('angular');
@@ -12,6 +16,37 @@ define(['angular-route-resolver'], function(moment) {
         var appServices = {
             clone: function(obj) {
                 return $.extend(true, {}, obj);
+            },
+            setSession: function(session) {
+                $rootScope.session = session;
+                if (session) {
+                    $rootScope.isLoggedIn = true;
+                    window.sessionStorage.setItem('session', JSON.stringify(session));
+                } else {
+                    $rootScope.isLoggedIn = false;
+                    window.sessionStorage.removeItem('session');
+                }
+            },
+            loadSession: function() {
+                $rootScope.session = null;
+                $rootScope.isLoggedIn = false;
+                var session = window.sessionStorage.getItem('session');
+                if (session) {
+                    $rootScope.session = JSON.parse(session);
+                    $rootScope.isLoggedIn = true;
+                }
+            },
+            getToken: function() {
+                if ($rootScope.session) {
+                    return $rootScope.session.token;
+                }
+                return '';
+            },
+            getSessionUser: function() {
+                if ($rootScope.session) {
+                    return $rootScope.session.user;
+                }
+                return {};
             },
             isNumeric: function(n) {
                 return !isNaN(parseFloat(n)) && isFinite(n);
@@ -50,6 +85,7 @@ define(['angular-route-resolver'], function(moment) {
 
         $routeProvider
             .when('/home', route.resolve('home', 'HomeController'))
+            .when('/login', route.resolve('login', 'LoginController'))
             .when('/channels', route.resolve('channels', 'ChannelsController'))
             .when('/channels/edit', route.resolve('channels-edit', 'ChannelsEditController'))
             .when('/channels/edit/:id', route.resolve('channels-edit', 'ChannelsEditController'))
@@ -68,6 +104,19 @@ define(['angular-route-resolver'], function(moment) {
             .otherwise({
                 redirectTo: '/home'
             });
+            
+        $httpProvider.interceptors.push(['$q', '$injector', '$location', 'appServices', function($q, $injector, $location, appServices) {
+            return {
+                'response': function(response) {
+                    if (!response || !response.data || response.data.error === ERROR.AUTH_REQUIRED) {
+                        appServices.setSession(null);
+                        $location.path('/login');
+                        return $q.reject(response);
+                    }
+                    return response;
+                }
+            };
+        }]);
     }]);
 
     app.init = function() {

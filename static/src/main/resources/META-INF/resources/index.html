@@ -21,13 +21,14 @@
                     <a class="navbar-brand" href="#/">Tubewarder</a>
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                    <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav ng-cloak" data-ng-show="isLoggedIn">
                         <li data-ng-class="{'active': activeNavItem == 'home'}"><a href="#/home">Home</a></li>
                         <li data-ng-class="{'active': activeNavItem == 'tokens'}"><a href="#/tokens">App Tokens</a></li>
                         <li data-ng-class="{'active': activeNavItem == 'channels'}"><a href="#/channels">Channels</a></li>
                         <li data-ng-class="{'active': activeNavItem == 'templates'}"><a href="#/templates">Templates</a></li>
                         <li data-ng-class="{'active': activeNavItem == 'users'}"><a href="#/users">Users</a></li>
                         <li data-ng-class="{'active': activeNavItem == 'api'}"><a href="#/api">API</a></li>
+                        <li><a href="" data-ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span></a></li>
                     </ul>
                 </div>
             </div>
