@@ -1,8 +1,12 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.AbstractOutputHandlerConfigurationDao;
+import net.weweave.tubewarder.domain.Session;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.AbstractIdRestRequest;
 import net.weweave.tubewarder.service.response.AbstractResponse;
@@ -19,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/outputhandlerconfiguration/delete")
-public class DeleteOutputHandlerConfigurationService {
+public class DeleteOutputHandlerConfigurationService extends AbstractService {
     @Inject
     private AbstractOutputHandlerConfigurationDao outputHandlerConfigurationDao;
 
@@ -29,14 +33,27 @@ public class DeleteOutputHandlerConfigurationService {
     public AbstractResponse action(AbstractIdRestRequest request) {
         AbstractResponse response = new AbstractResponse();
         try {
+            Session session = getSession(request.token);
+            checkPermissions(session.getUser());
             validateInputParameters(request);
             deleteObject(request.id);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !user.getAllowChannels()) {
+            throw new PermissionException();
+        }
     }
 
     private void validateInputParameters(AbstractIdRestRequest request) throws InvalidInputParametersException {

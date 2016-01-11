@@ -2,16 +2,16 @@ package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.AbstractOutputHandlerConfigurationDao;
 import net.weweave.tubewarder.dao.ChannelDao;
-import net.weweave.tubewarder.domain.Channel;
-import net.weweave.tubewarder.domain.OutputHandler;
+import net.weweave.tubewarder.domain.*;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.SetChannelRequest;
 import net.weweave.tubewarder.service.response.SetObjectRestResponse;
 import org.apache.commons.validator.GenericValidator;
-import net.weweave.tubewarder.domain.AbstractOutputHandlerConfiguration;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -36,6 +36,8 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     public SetObjectRestResponse action(SetChannelRequest request) {
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
+            Session session = getSession(request.token);
+            checkPermissions(session.getUser());
             validateInputParameters(request.object);
             Channel object = createUpdateObject(request.object);
             response.id = object.getExposableId();
@@ -43,8 +45,19 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !user.getAllowChannels()) {
+            throw new PermissionException();
+        }
     }
 
     @Override

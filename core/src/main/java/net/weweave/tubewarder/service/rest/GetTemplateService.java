@@ -1,6 +1,10 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.domain.Session;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.response.GetTemplateResponse;
 import org.apache.commons.validator.GenericValidator;
 import net.weweave.tubewarder.dao.TemplateDao;
@@ -15,22 +19,36 @@ import java.util.List;
 
 @RequestScoped
 @Path("/template/get")
-public class GetTemplateService {
+public class GetTemplateService extends AbstractService {
     @Inject
     private TemplateDao templateDao;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public GetTemplateResponse action(@QueryParam("id") @DefaultValue("") String id) {
+    public GetTemplateResponse action(@QueryParam("token") @DefaultValue("") String token,
+                                      @QueryParam("id") @DefaultValue("") String id) {
         GetTemplateResponse response = new GetTemplateResponse();
 
         try {
+            Session session = getSession(token);
+            checkPermissions(session.getUser());
             setResponseList(response, id);
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
 
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !user.getAllowTemplates()) {
+            throw new PermissionException();
+        }
     }
 
     private void setResponseList(GetTemplateResponse response, String id) throws ObjectNotFoundException {

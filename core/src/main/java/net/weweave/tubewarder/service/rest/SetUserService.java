@@ -1,9 +1,12 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.UserDao;
+import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.UserModel;
 import net.weweave.tubewarder.service.request.SetUserRequest;
@@ -31,6 +34,8 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
     public SetObjectRestResponse action(SetUserRequest request) {
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
+            Session session = getSession(request.token);
+            checkPermissions(session.getUser());
             validateInputParameters(request.object);
             User object = createUpdateObject(request.object);
             response.id = object.getExposableId();
@@ -38,8 +43,19 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !user.getAllowUsers()) {
+            throw new PermissionException();
+        }
     }
 
     @Override

@@ -1,5 +1,9 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.domain.Session;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.exception.AuthRequiredException;
+import net.weweave.tubewarder.exception.PermissionException;
 import org.apache.commons.validator.GenericValidator;
 import net.weweave.tubewarder.dao.TemplateDao;
 import net.weweave.tubewarder.domain.Template;
@@ -19,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/template/delete")
-public class DeleteTemplateService {
+public class DeleteTemplateService extends AbstractService {
     @Inject
     private TemplateDao templateDao;
 
@@ -29,14 +33,27 @@ public class DeleteTemplateService {
     public AbstractResponse action(AbstractIdRestRequest request) {
         AbstractResponse response = new AbstractResponse();
         try {
+            Session session = getSession(request.token);
+            checkPermissions(session.getUser());
             validateInputParameters(request);
             deleteObject(request.id);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !user.getAllowTemplates()) {
+            throw new PermissionException();
+        }
     }
 
     private void validateInputParameters(AbstractIdRestRequest request) throws InvalidInputParametersException {

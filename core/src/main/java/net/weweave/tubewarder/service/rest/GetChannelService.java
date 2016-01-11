@@ -1,6 +1,10 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.domain.Session;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.response.GetChannelResponse;
@@ -15,22 +19,36 @@ import java.util.List;
 
 @RequestScoped
 @Path("/channel/get")
-public class GetChannelService {
+public class GetChannelService extends AbstractService {
     @Inject
     private ChannelDao channelDao;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public GetChannelResponse action(@QueryParam("id") @DefaultValue("") String id) {
+    public GetChannelResponse action(@QueryParam("token") @DefaultValue("") String token,
+                                     @QueryParam("id") @DefaultValue("") String id) {
         GetChannelResponse response = new GetChannelResponse();
 
         try {
+            Session session = getSession(token);
+            checkPermissions(session.getUser());
             setResponseList(response, id);
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
 
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !(user.getAllowChannels() || user.getAllowTemplates())) {
+            throw new PermissionException();
+        }
     }
 
     private void setResponseList(GetChannelResponse response, String id) throws ObjectNotFoundException {

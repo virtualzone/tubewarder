@@ -1,6 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
-import net.weweave.tubewarder.exception.PermissionException;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.AbstractRestRequest;
 import net.weweave.tubewarder.service.response.AbstractResponse;
@@ -30,7 +30,7 @@ public class PingService extends AbstractService {
         return response;
     }
 
-    private void loadSession(String token) throws PermissionException {
+    private void loadSession(String token) throws AuthRequiredException {
         getSession(token);
     }
 }

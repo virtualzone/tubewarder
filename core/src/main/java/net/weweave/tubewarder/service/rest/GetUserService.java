@@ -1,8 +1,11 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.UserDao;
+import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.UserModel;
 import net.weweave.tubewarder.service.response.GetUserResponse;
@@ -15,22 +18,36 @@ import java.util.List;
 
 @RequestScoped
 @Path("/user/get")
-public class GetUserService {
+public class GetUserService extends AbstractService {
     @Inject
     private UserDao userDao;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public GetUserResponse action(@QueryParam("id") @DefaultValue("") String id) {
+    public GetUserResponse action(@QueryParam("token") @DefaultValue("") String token,
+                                  @QueryParam("id") @DefaultValue("") String id) {
         GetUserResponse response = new GetUserResponse();
 
         try {
+            Session session = getSession(token);
+            checkPermissions(session.getUser());
             setResponseList(response, id);
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+        } catch (PermissionException e) {
+            response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (AuthRequiredException e) {
+            response.error = ErrorCode.AUTH_REQUIRED;
         }
 
         return response;
+    }
+
+    private void checkPermissions(User user) throws PermissionException {
+        if (user == null ||
+                !user.getAllowUsers()) {
+            throw new PermissionException();
+        }
     }
 
     private void setResponseList(GetUserResponse response, String id) throws ObjectNotFoundException {

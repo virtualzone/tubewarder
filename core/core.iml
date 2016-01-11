@@ -35,9 +35,9 @@
     <orderEntry type="library" name="Maven: org.wildfly.swarm:bootstrap:1.0.0.Alpha6-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.sql:jboss-javax-sql-api_7.0_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.wildfly.swarm:container-modules:1.0.0.Alpha6-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api:0.3.23" level="project" />
-    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api-runtime:0.3.23" level="project" />
-    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api-modules:0.3.23" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api:0.3.25" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api-runtime:0.3.25" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api-modules:0.3.25" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.shrinkwrap:shrinkwrap-api:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.shrinkwrap:shrinkwrap-spi:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.shrinkwrap:shrinkwrap-impl-base:1.1.2" level="project" />
