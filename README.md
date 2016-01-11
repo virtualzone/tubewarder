@@ -10,7 +10,7 @@ Tubewarder makes sending messages to your users easier than ever:
 * Configurable outbound connectors
 * Central place for controlling and archiving your outbound communication
 
-Note: Tubewarder is still under active development. The current release is 1.0-Alpha1, but features the core functionality. Use it on your own risk.
+Note: Tubewarder is still under active development. The current release is 1.0-Alpha2, but features the core functionality. Use it on your own risk.
 
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications.
@@ -66,10 +66,9 @@ For non-commercial projects, you may use Tubewarder under the terms of the GPLv3
 * Core functionality is working as intended
 * There is an easy-to-use web frontend for all administrative tasks (e.g. managing app tokens, managing channels, and templates)
 * Authentication is implemented on the sending API, but it's not featuring authorization. This means: An application requires an App Token to access the sending API, but any valid App Token can access any template.
-* There is no authentication/authorization in the web frontend yet. You should definitely protect access to it using some other measures in the meantime.
+* The management web frontend features authentication/authorization as of 1.0-Alpha2.
 
 ## Next steps
-* Add Authentication/authorization to the web fronted
 * Add authorization to the sending API (restrict App Tokens to specific templates/channels)
 * Improve error handling in web fronted 
 * Enable additional databases
