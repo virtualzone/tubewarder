@@ -25,32 +25,7 @@
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs-weld</artifactId>
-            <version>${version.wildfly-swarm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>datasources</artifactId>
-            <version>${version.wildfly-swarm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jpa</artifactId>
-            <version>${version.wildfly-swarm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>transactions</artifactId>
-            <version>${version.wildfly-swarm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>webservices</artifactId>
-            <version>${version.wildfly-swarm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>mail</artifactId>
+            <artifactId>bootstrap</artifactId>
             <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
@@ -98,6 +73,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>
@@ -113,6 +89,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
