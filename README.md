@@ -24,7 +24,7 @@ Use the following commands to get the latest source and run the server:
 git clone git://github.com/weweave/tubewarder.git
 cd tubewarder
 mvn package
-java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar
+java -jar target/tubewarder-swarm.jar
 ```
 
 The server listens on port 8080 by default.
@@ -40,7 +40,7 @@ Tubewarder can be configured using command line arguments.
 The following command prints out the available commands:
 
 ```
-java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -help
+java -jar target/tubewarder-swarm.jar -help
 ```
 
 Probably most important is the configuration of the database. Tubewarder uses the H2 database engine for persistence. If nothing else is set, it uses an in-memory database. This means, as soon as you stop the application, all modifications are lost.
@@ -48,13 +48,13 @@ Probably most important is the configuration of the database. Tubewarder uses th
 To specify a local file where the H2 database is to be stored:
 
 ```
-java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -db /path/to/tubewarder-db
+java -jar target/tubewarder-swarm.jar -db /path/to/tubewarder-db
 ```
 
 To use H2 in Server Mode:
 
 ```
-java -jar webapp/target/webapp-1.0-SNAPSHOT-swarm.jar -db tcp://localhost//data/tubewarder -dbUser tubewarder -dbPass tubewarder
+java -jar target/tubewarder-swarm.jar -db tcp://localhost//data/tubewarder -dbUser tubewarder -dbPass tubewarder
 ```
 
 Check out the [H2 website](http://www.h2database.com/html/cheatSheet.html) for more information.

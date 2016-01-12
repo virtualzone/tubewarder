@@ -87,6 +87,8 @@
     </dependencies>
 
     <build>
+        <directory>../target/</directory>
+        <finalName>tubewarder</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
