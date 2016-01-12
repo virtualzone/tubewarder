@@ -43,21 +43,27 @@ The following command prints out the available commands:
 java -jar target/tubewarder-swarm.jar -help
 ```
 
-Probably most important is the configuration of the database. Tubewarder uses the H2 database engine for persistence. If nothing else is set, it uses an in-memory database. This means, as soon as you stop the application, all modifications are lost.
+Probably most important is the configuration of the database. You can choose between the H2 database engine or MySQL for persistence. If nothing else is set, it uses an H2 in-memory database. This means, as soon as you stop the application, all modifications are lost.
 
 To specify a local file where the H2 database is to be stored:
 
 ```
-java -jar target/tubewarder-swarm.jar -db /path/to/tubewarder-db
+java -jar target/tubewarder-swarm.jar -db h2 -h2 /path/to/tubewarder-db
 ```
 
 To use H2 in Server Mode:
 
 ```
-java -jar target/tubewarder-swarm.jar -db tcp://localhost//data/tubewarder -dbUser tubewarder -dbPass tubewarder
+java -jar target/tubewarder-swarm.jar -db h2 -h2 tcp://localhost//data/tubewarder -dbUser tubewarder -dbPass tubewarder
 ```
 
 Check out the [H2 website](http://www.h2database.com/html/cheatSheet.html) for more information.
+
+To connect to a MySQL Server:
+
+```
+java -jar target/tubewarder-swarm.jar -db mysql -mysql localhost:3306/tubewarder -dbUser tubewarder -dbPass tubewarder
+```
 
 ## License
 For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
