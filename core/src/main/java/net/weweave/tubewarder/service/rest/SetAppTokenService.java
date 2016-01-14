@@ -12,6 +12,7 @@ import net.weweave.tubewarder.service.model.AppTokenModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.SetAppTokenRequest;
 import net.weweave.tubewarder.service.response.SetObjectRestResponse;
+import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -59,7 +60,9 @@ public class SetAppTokenService extends AbstractSetObjectService<AppTokenModel, 
 
     @Override
     protected void validateInputParameters(AppTokenModel model) throws InvalidInputParametersException {
-
+        if (GenericValidator.isBlankOrNull(model.name)) {
+            throw new InvalidInputParametersException();
+        }
     }
 
     @Override

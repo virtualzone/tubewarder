@@ -13,11 +13,6 @@ import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
 public class TestAuthService extends AbstractRestTest {
-    @Override
-    public String getServiceName() {
-        return "auth";
-    }
-
     @Test
     public void testValidAuth() {
         createAdminUser();
@@ -35,7 +30,7 @@ public class TestAuthService extends AbstractRestTest {
                 .body("error", equalTo(ErrorCode.OK))
                 .body("token", not(isEmptyOrNullString()))
         .when()
-                .post(getUri())
+                .post(getUri("auth"))
                 .asString();
     }
 
@@ -54,7 +49,7 @@ public class TestAuthService extends AbstractRestTest {
                 .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
                 .body("token", isEmptyOrNullString())
         .when()
-                .post(getUri())
+                .post(getUri("auth"))
                 .asString();
     }
 
@@ -75,7 +70,7 @@ public class TestAuthService extends AbstractRestTest {
                 .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
                 .body("token", isEmptyOrNullString())
         .when()
-                .post(getUri())
+                .post(getUri("auth"))
                 .asString();
     }
 
@@ -96,7 +91,7 @@ public class TestAuthService extends AbstractRestTest {
                 .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
                 .body("token", isEmptyOrNullString())
         .when()
-                .post(getUri())
+                .post(getUri("auth"))
                 .asString();
     }
 }

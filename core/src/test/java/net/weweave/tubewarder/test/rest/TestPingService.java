@@ -15,11 +15,6 @@ import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
 public class TestPingService extends AbstractRestTest {
-    @Override
-    public String getServiceName() {
-        return "ping";
-    }
-
     @Test
     public void testInvalidToken() {
         JSONObject payload = new JSONObject();
@@ -33,7 +28,7 @@ public class TestPingService extends AbstractRestTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
         .when()
-                .post(getUri())
+                .post(getUri("ping"))
                 .asString();
     }
 
@@ -50,7 +45,7 @@ public class TestPingService extends AbstractRestTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
         .when()
-                .post(getUri())
+                .post(getUri("ping"))
                 .asString();
     }
 
@@ -70,7 +65,7 @@ public class TestPingService extends AbstractRestTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("error", equalTo(ErrorCode.OK))
         .when()
-                .post(getUri())
+                .post(getUri("ping"))
                 .asString();
     }
 }

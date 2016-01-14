@@ -47,11 +47,9 @@ public abstract class AbstractRestTest {
         return war;
     }
 
-    public String getUri() {
-        return deploymentUrl + "rs/" + getServiceName();
+    public String getUri(String serviceName) {
+        return deploymentUrl + "rs/" + serviceName;
     }
-
-    public abstract String getServiceName();
 
     protected User createAdminUser() {
         User user = new User();
@@ -76,7 +74,7 @@ public abstract class AbstractRestTest {
                 .body(payload.toString())
                 .contentType(ContentType.JSON)
         .when()
-                .post(deploymentUrl + "rs/auth")
+                .post(getUri("auth"))
                 .asString());
         return result.getString("token");
     }
