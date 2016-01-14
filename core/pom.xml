@@ -58,6 +58,7 @@
             <artifactId>jbcrypt</artifactId>
             <version>0.3m</version>
         </dependency>
+        <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -88,38 +89,6 @@
             <version>5.0.7.Final</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>arquillian-tomee-embedded</artifactId>
-            <version>1.7.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>tomee-embedded</artifactId>
-            <version>1.7.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>tomee-webservices</artifactId>
-            <version>1.7.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>tomee-jaxrs</artifactId>
-            <version>1.7.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>openejb-cxf-rs</artifactId>
-            <version>4.7.3</version>
-            <scope>test</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.apache.tomee</groupId>
             <artifactId>arquillian-tomee-embedded</artifactId>
@@ -150,10 +119,6 @@
             <version>7.0.0-M1</version>
             <scope>test</scope>
         </dependency>
-
-
-
-
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-jaxrs</artifactId>
@@ -188,7 +153,6 @@
     
     <build>
         <finalName>${project.artifactId}</finalName>
-    
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
