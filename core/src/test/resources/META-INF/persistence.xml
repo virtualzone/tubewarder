@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.0">
+	<persistence-unit name="default" transaction-type="JTA">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>java:jboss/datasources/TubewarderDS</jta-data-source>
+		<class>net.weweave.tubewarder.domain.AppToken</class>
+		<class>net.weweave.tubewarder.domain.Channel</class>
+		<class>net.weweave.tubewarder.domain.ChannelTemplate</class>
+		<class>net.weweave.tubewarder.domain.EmailOutputHandlerConfiguration</class>
+		<class>net.weweave.tubewarder.domain.Log</class>
+		<class>net.weweave.tubewarder.domain.MailSecurity</class>
+		<class>net.weweave.tubewarder.domain.OutputHandler</class>
+		<class>net.weweave.tubewarder.domain.Session</class>
+		<class>net.weweave.tubewarder.domain.SysoutOutputHandlerConfiguration</class>
+		<class>net.weweave.tubewarder.domain.Template</class>
+		<class>net.weweave.tubewarder.domain.User</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.hbm2ddl.foreign-key" value="none" />
+			<property name="hibernate.archive.autodetection" value="class, hbm" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+			<property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
+			<property name="hibernate.connection.url" value="jdbc:hsqldb:mem:tubewarder;sql.syntax_mys=true" />
+			<property name="hibernate.connection.user" value="sa" />
+			<property name="hibernate.flushMode" value="FLUSH_AUTO" />
+		</properties>
+	</persistence-unit>
+</persistence>
