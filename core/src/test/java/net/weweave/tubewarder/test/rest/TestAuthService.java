@@ -8,59 +8,23 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.UUID;
-
-import static com.jayway.restassured.RestAssured.*;
+import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
-public class TestPingService extends AbstractRestTest {
+public class TestAuthService extends AbstractRestTest {
     @Override
     public String getServiceName() {
-        return "ping";
+        return "auth";
     }
 
     @Test
-    public void testInvalidToken() {
-        JSONObject payload = new JSONObject();
-        payload.put("token", UUID.randomUUID().toString());
-
-        given()
-                .body(payload.toString())
-                .contentType(ContentType.JSON)
-        .expect()
-                .contentType(ContentType.JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
-        .when()
-                .post(getUri())
-                .asString();
-    }
-
-    @Test
-    public void testEmptyToken() {
-        JSONObject payload = new JSONObject();
-        payload.put("token", "");
-
-        given()
-                .body(payload.toString())
-                .contentType(ContentType.JSON)
-        .expect()
-                .contentType(ContentType.JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
-        .when()
-                .post(getUri())
-                .asString();
-    }
-
-    @Test
-    public void testValidToken() {
+    public void testValidAuth() {
         createAdminUser();
-        String token = authAdminGetToken();
 
         JSONObject payload = new JSONObject();
-        payload.put("token", token);
+        payload.put("username", "admin");
+        payload.put("password", "admin");
 
         given()
                 .body(payload.toString())
@@ -69,6 +33,68 @@ public class TestPingService extends AbstractRestTest {
                 .contentType(ContentType.JSON)
                 .statusCode(HttpStatus.SC_OK)
                 .body("error", equalTo(ErrorCode.OK))
+                .body("token", not(isEmptyOrNullString()))
+        .when()
+                .post(getUri())
+                .asString();
+    }
+
+    @Test
+    public void testEmptyPayload() {
+        createAdminUser();
+
+        JSONObject payload = new JSONObject();
+
+        given()
+                .body(payload.toString())
+                .contentType(ContentType.JSON)
+        .expect()
+                .contentType(ContentType.JSON)
+                .statusCode(HttpStatus.SC_OK)
+                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
+                .body("token", isEmptyOrNullString())
+        .when()
+                .post(getUri())
+                .asString();
+    }
+
+    @Test
+    public void testInvalidPassword() {
+        createAdminUser();
+
+        JSONObject payload = new JSONObject();
+        payload.put("username", "admin");
+        payload.put("password", "12345");
+
+        given()
+                .body(payload.toString())
+                .contentType(ContentType.JSON)
+        .expect()
+                .contentType(ContentType.JSON)
+                .statusCode(HttpStatus.SC_OK)
+                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
+                .body("token", isEmptyOrNullString())
+        .when()
+                .post(getUri())
+                .asString();
+    }
+
+    @Test
+    public void testEmptyPassword() {
+        createAdminUser();
+
+        JSONObject payload = new JSONObject();
+        payload.put("username", "admin");
+        payload.put("password", "");
+
+        given()
+                .body(payload.toString())
+                .contentType(ContentType.JSON)
+        .expect()
+                .contentType(ContentType.JSON)
+                .statusCode(HttpStatus.SC_OK)
+                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
+                .body("token", isEmptyOrNullString())
         .when()
                 .post(getUri())
                 .asString();
