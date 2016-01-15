@@ -135,6 +135,20 @@ public abstract class AbstractRestTest {
         return result.getString("token");
     }
 
+    protected JSONObject getDeleteRequestPayload(String token, String id) {
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
+        payload.put("id", id);
+        return payload;
+    }
+
+    protected JSONObject getSetRequestPayload(String token, JSONObject object) {
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
+        payload.put("object", object);
+        return payload;
+    }
+
     protected String authAdminGetToken() {
         return authGetToken("admin", "admin");
     }

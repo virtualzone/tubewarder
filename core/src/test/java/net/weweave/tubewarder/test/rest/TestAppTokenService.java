@@ -216,18 +216,7 @@ public class TestAppTokenService extends AbstractRestTest {
         JSONObject object = new JSONObject();
         object.put("id", id);
         object.put("name", name);
-
-        JSONObject payload = new JSONObject();
-        payload.put("token", token);
-        payload.put("object", object);
-        return payload;
-    }
-
-    private JSONObject getDeleteRequestPayload(String token, String id) {
-        JSONObject payload = new JSONObject();
-        payload.put("token", token);
-        payload.put("id", id);
-        return payload;
+        return super.getSetRequestPayload(token, object);
     }
 
     private JSONObject validateGetTokenResponse(String token, String expectedId, String expectedName) {

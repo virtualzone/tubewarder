@@ -62,7 +62,9 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
 
     @Override
     protected void validateInputParameters(ChannelModel model) throws InvalidInputParametersException {
-        if (GenericValidator.isBlankOrNull(model.name)) {
+        if (GenericValidator.isBlankOrNull(model.name) ||
+                model.config == null ||
+                GenericValidator.isBlankOrNull(model.config.id)) {
             throw new InvalidInputParametersException();
         }
 

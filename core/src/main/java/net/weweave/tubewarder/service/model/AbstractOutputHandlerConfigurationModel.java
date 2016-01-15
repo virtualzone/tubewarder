@@ -13,17 +13,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonTypeIdResolver(OutputHandlerConfigurationModelResolver.class)
 public abstract class AbstractOutputHandlerConfigurationModel extends AbstractRestModel {
     public String name;
-    public String type;
+    //public String type;
 
     public static AbstractOutputHandlerConfigurationModel factory(AbstractOutputHandlerConfiguration config) {
         AbstractOutputHandlerConfigurationModel model = null;
         if (config instanceof SysoutOutputHandlerConfiguration) {
             model = new SysoutOutputHandlerConfigurationModel();
-            model.type = "SYSOUT";
             SysoutOutputHandlerConfigurationModel.completeFactory((SysoutOutputHandlerConfigurationModel)model, (SysoutOutputHandlerConfiguration)config);
         } else if (config instanceof EmailOutputHandlerConfiguration) {
             model = new EmailOutputHandlerConfigurationModel();
-            model.type = "EMAIL";
             EmailOutputHandlerConfigurationModel.completeFactory((EmailOutputHandlerConfigurationModel)model, (EmailOutputHandlerConfiguration)config);
         }
         model.id = config.getExposableId();
