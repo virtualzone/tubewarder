@@ -1,14 +1,13 @@
 package net.weweave.tubewarder.test.rest;
 
-import com.jayway.restassured.http.ContentType;
+import com.jayway.restassured.specification.ResponseSpecification;
 import net.weweave.tubewarder.service.model.ErrorCode;
-import org.apache.http.HttpStatus;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
@@ -16,82 +15,64 @@ public class TestAuthService extends AbstractRestTest {
     @Test
     public void testValidAuth() {
         createAdminUser();
+        validateAuthResponse("admin", "admin",
+                "error", equalTo(ErrorCode.OK),
+                "token", not(isEmptyOrNullString()));
+    }
 
-        JSONObject payload = new JSONObject();
-        payload.put("username", "admin");
-        payload.put("password", "admin");
+    @Test
+    public void testValidSecondAuth() {
+        createUserWithNoRights("user1", "123456");
+        createUserWithNoRights("user2", "098765");
 
-        given()
-                .body(payload.toString())
-                .contentType(ContentType.JSON)
-        .expect()
-                .contentType(ContentType.JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("error", equalTo(ErrorCode.OK))
-                .body("token", not(isEmptyOrNullString()))
-        .when()
-                .post(getUri("auth"))
-                .asString();
+        JSONObject r1 = validateAuthResponse("user1", "123456",
+                "error", equalTo(ErrorCode.OK),
+                "token", not(isEmptyOrNullString()),
+                "user.username", equalTo("user1"));
+
+        JSONObject r2 = validateAuthResponse("user2", "098765",
+                "error", equalTo(ErrorCode.OK),
+                "token", not(isEmptyOrNullString()),
+                "user.username", equalTo("user2"));
+
+        Assert.assertNotEquals(r1.getString("token"), r2.getString("token"));
     }
 
     @Test
     public void testEmptyPayload() {
         createAdminUser();
-
-        JSONObject payload = new JSONObject();
-
-        given()
-                .body(payload.toString())
-                .contentType(ContentType.JSON)
-        .expect()
-                .contentType(ContentType.JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
-                .body("token", isEmptyOrNullString())
-        .when()
-                .post(getUri("auth"))
-                .asString();
+        validateAuthResponse(null, null,
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
+                "token", isEmptyOrNullString());
     }
 
     @Test
     public void testInvalidPassword() {
         createAdminUser();
-
-        JSONObject payload = new JSONObject();
-        payload.put("username", "admin");
-        payload.put("password", "12345");
-
-        given()
-                .body(payload.toString())
-                .contentType(ContentType.JSON)
-        .expect()
-                .contentType(ContentType.JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
-                .body("token", isEmptyOrNullString())
-        .when()
-                .post(getUri("auth"))
-                .asString();
+        validateAuthResponse("admin", "12345",
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
+                "token", isEmptyOrNullString());
     }
 
     @Test
     public void testEmptyPassword() {
         createAdminUser();
+        validateAuthResponse("admin", "",
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
+                "token", isEmptyOrNullString());
+    }
 
+    private JSONObject validateAuthResponse(String username, String password, Object... body) {
+        JSONObject payload = getAuthRequestPayload(username, password);
+        ResponseSpecification response = getResponseSpecificationPost(payload);
+        setExpectedBodies(response, body);
+        return getPostResponse(response, "auth");
+    }
+
+    private JSONObject getAuthRequestPayload(String username, String password) {
         JSONObject payload = new JSONObject();
-        payload.put("username", "admin");
-        payload.put("password", "");
-
-        given()
-                .body(payload.toString())
-                .contentType(ContentType.JSON)
-        .expect()
-                .contentType(ContentType.JSON)
-                .statusCode(HttpStatus.SC_OK)
-                .body("error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS))
-                .body("token", isEmptyOrNullString())
-        .when()
-                .post(getUri("auth"))
-                .asString();
+        payload.put("username", username);
+        payload.put("password", password);
+        return payload;
     }
 }
