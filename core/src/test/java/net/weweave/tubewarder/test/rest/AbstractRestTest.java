@@ -1,11 +1,12 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.http.ContentType;
+import com.jayway.restassured.specification.ResponseSpecification;
 import net.weweave.tubewarder.dao.UserDao;
 import net.weweave.tubewarder.domain.User;
-import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.test.DbTestAssist;
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matcher;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -18,9 +19,6 @@ import javax.inject.Inject;
 import java.net.URL;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
 
 public abstract class AbstractRestTest {
     @ArquillianResource
@@ -49,6 +47,53 @@ public abstract class AbstractRestTest {
 
     public String getUri(String serviceName) {
         return deploymentUrl + "rs/" + serviceName;
+    }
+
+    protected ResponseSpecification getResponseSpecificationGet(String var1, Object var2, Object... var3) {
+        ResponseSpecification response = given()
+                .parameters(var1, var2, var3)
+                .contentType(ContentType.JSON)
+        .expect()
+                .contentType(ContentType.JSON)
+                .statusCode(HttpStatus.SC_OK);
+        return response;
+    }
+
+    protected ResponseSpecification getResponseSpecificationPost(JSONObject payload) {
+        ResponseSpecification response = given()
+                .body(payload.toString())
+                .contentType(ContentType.JSON)
+        .expect()
+                .contentType(ContentType.JSON)
+                .statusCode(HttpStatus.SC_OK);
+        return response;
+    }
+
+    protected void setExpectedBodies(ResponseSpecification response, Object... body) {
+        String oName = "";
+        int i = 1;
+        for (Object o : body) {
+            if (i%2 == 1) {
+                oName = (String)o;
+            } else {
+                response.body(oName, (Matcher)o);
+            }
+            i++;
+        }
+    }
+
+    protected JSONObject getPostResponse(ResponseSpecification response, String service) {
+        String responseString = response.when()
+                .post(getUri(service))
+                .asString();
+        return new JSONObject(responseString);
+    }
+
+    protected JSONObject getGetResponse(ResponseSpecification response, String service) {
+        String responseString = response.when()
+                .get(getUri(service))
+                .asString();
+        return new JSONObject(responseString);
     }
 
     protected User createAdminUser() {
