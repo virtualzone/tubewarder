@@ -67,6 +67,26 @@ public class TestSetAppTokenService extends AbstractRestTest {
                 "id", isEmptyOrNullString());
     }
 
+    @Test
+    public void testInsufficientRights() {
+        createUserWithNoRights("dummy", "dummy");
+        String token = authGetToken("dummy", "dummy");
+
+        validateSetTokenResponse(token, null, "App Token 1",
+                "error", equalTo(ErrorCode.PERMISSION_DENIED),
+                "id", isEmptyOrNullString());
+    }
+
+    @Test
+    public void testUpdateNonExistingObject() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        validateSetTokenResponse(token, UUID.randomUUID().toString(), "App Token 1",
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "id", isEmptyOrNullString());
+    }
+
     private JSONObject validateSetTokenResponse(String token, String id, String name, Object... body) {
         JSONObject payload = getSetRequestPayload(token, id, name);
         ResponseSpecification response = getResponseSpecificationPost(payload);

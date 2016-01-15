@@ -17,6 +17,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.util.UUID;
 
 import static com.jayway.restassured.RestAssured.given;
 
@@ -110,10 +111,20 @@ public abstract class AbstractRestTest {
         return user;
     }
 
-    protected String authAdminGetToken() {
+    protected User createUserWithNoRights(String username, String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setDisplayName(UUID.randomUUID().toString());
+        user.setHashedPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+        user.setEnabled(true);
+        getUserDao().store(user);
+        return user;
+    }
+
+    protected String authGetToken(String username, String password) {
         JSONObject payload = new JSONObject();
-        payload.put("username", "admin");
-        payload.put("password", "admin");
+        payload.put("username", username);
+        payload.put("password", password);
 
         JSONObject result = new JSONObject(given()
                 .body(payload.toString())
@@ -122,6 +133,10 @@ public abstract class AbstractRestTest {
                 .post(getUri("auth"))
                 .asString());
         return result.getString("token");
+    }
+
+    protected String authAdminGetToken() {
+        return authGetToken("admin", "admin");
     }
 
     public DbTestAssist getDbTestAssist() {
