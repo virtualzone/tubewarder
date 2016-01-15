@@ -1,4 +1,4 @@
 <resources>
-    <Service id="json" class-name="org.codehaus.jackson.jaxrs.JacksonJsonProvider">
+    <Service id="json" class-name="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider">
     </Service>
 </resources>

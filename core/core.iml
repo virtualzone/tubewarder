@@ -240,10 +240,9 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.johnzon:johnzon-jaxrs:0.8-incubating" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.johnzon:johnzon-mapper:0.8-incubating" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.johnzon:johnzon-core:0.8-incubating" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.13" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.jackson:jackson-xc:1.9.13" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.7.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: javax.el:el-api:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.glassfish.web:el-impl:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.json:json:20151123" level="project" />
