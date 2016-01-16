@@ -17,6 +17,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -95,6 +97,21 @@ public abstract class AbstractRestTest {
                 .get(getUri(service))
                 .asString();
         return new JSONObject(responseString);
+    }
+
+    protected Map<String, Object> createMap(Object... content) {
+        Map<String, Object> result = new HashMap<>();
+        String key = "";
+        int i = 1;
+        for (Object o : content) {
+            if (i%2 == 1) {
+                key = (String)o;
+            } else {
+                result.put(key, o);
+            }
+            i++;
+        }
+        return result;
     }
 
     protected User createAdminUser() {
