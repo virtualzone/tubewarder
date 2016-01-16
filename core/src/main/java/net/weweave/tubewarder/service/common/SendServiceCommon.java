@@ -13,7 +13,7 @@ import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.SendModel;
-import net.weweave.tubewarder.service.response.SendResponse;
+import net.weweave.tubewarder.service.response.SendServiceResponse;
 import net.weweave.tubewarder.util.Address;
 import net.weweave.tubewarder.util.TemplateRenderer;
 import net.weweave.tubewarder.util.output.AbstractOutputHandler;
@@ -40,8 +40,8 @@ public class SendServiceCommon {
     @Inject
     private LogDao logDao;
 
-    public SendResponse process(SendModel sendModel) {
-        SendResponse response = new SendResponse();
+    public SendServiceResponse process(SendModel sendModel) {
+        SendServiceResponse response = new SendServiceResponse();
         try {
             validateInputParameters(sendModel);
             checkPermission(sendModel);
@@ -74,7 +74,7 @@ public class SendServiceCommon {
         }
     }
 
-    private void renderAndSend(SendModel sendModel, SendResponse response) throws ObjectNotFoundException {
+    private void renderAndSend(SendModel sendModel, SendServiceResponse response) throws ObjectNotFoundException {
         ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
 
