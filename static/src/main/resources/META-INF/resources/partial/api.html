@@ -26,6 +26,7 @@
 &nbsp;&nbsp;&nbsp;"token": "00000000-0000-0000-0000-000000000000",<br />
 &nbsp;&nbsp;&nbsp;"keyword": "DOI",<br />
 &nbsp;&nbsp;&nbsp;"details": "",<br />
+&nbsp;&nbsp;&nbsp;"echo": true,<br />
 &nbsp;&nbsp;&nbsp;"template": "DOI",<br />
 &nbsp;&nbsp;&nbsp;"channel": "sms",<br />
 &nbsp;&nbsp;&nbsp;"recipient": {<br />
@@ -50,6 +51,7 @@ Request {<br />
 &nbsp;&nbsp;&nbsp;&nbsp;token (string, required - your client app's token)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;keyword (string, optional - a keyword for controlling purposes in logging)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;details (string, optional - additional details for controlling purposes)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;echo (bool, optional - if true, rendered subject and content will be returned)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;template (string, required - the template's name)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;channel (string, required - the channel's name)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;recipient (Address, required - the recipient's address)<br />
@@ -60,6 +62,40 @@ Address {<br />
 &nbsp;&nbsp;&nbsp;&nbsp;address (string, required - recipient's address (email, number, ...))<br />
 }
                     </code>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Example response</div>
+                <div class="panel-body">
+                    <code>
+{<br />
+&nbsp;&nbsp;&nbsp;"error": 0,<br />
+&nbsp;&nbsp;&nbsp;"subject": "Hi John, thanks for signing up!",<br />
+&nbsp;&nbsp;&nbsp;"content": "Dear John Doe, here's your activation code: 1234567890"<br />
+}
+                    </code>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Response schema</div>
+                <div class="panel-body">
+                    <code>
+Response {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;error (int - error code, see below)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;subject (string, included if echo=true - the rendered subject)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;content (string, included if echo=true - the rendered content)<br />
+}
+                    </code>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Error Codes</div>
+                <div class="panel-body">
+                    <p>0: OK</p>
+                    <p>1: INVALID_INPUT_PARAMETERS</p>
+                    <p>2: OBJECT_LOOKUP_ERROR</p>
+                    <p>3: PERMISSION_DENIED</p>
+                    <p>4: AUTH_REQUIRED</p>
                 </div>
             </div>
         </div>
