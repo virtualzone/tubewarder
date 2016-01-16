@@ -19,4 +19,5 @@ public class SendModel {
     public List<AttachmentModel> attachments;
     public String keyword;
     public String details;
+    public Boolean echo = false;
 }

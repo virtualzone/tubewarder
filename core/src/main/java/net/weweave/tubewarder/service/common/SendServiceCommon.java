@@ -10,10 +10,10 @@ import net.weweave.tubewarder.domain.Log;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
-import net.weweave.tubewarder.service.response.AbstractResponse;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.SendModel;
+import net.weweave.tubewarder.service.response.SendResponse;
 import net.weweave.tubewarder.util.Address;
 import net.weweave.tubewarder.util.TemplateRenderer;
 import net.weweave.tubewarder.util.output.AbstractOutputHandler;
@@ -40,12 +40,12 @@ public class SendServiceCommon {
     @Inject
     private LogDao logDao;
 
-    public AbstractResponse process(SendModel sendModel) {
-        AbstractResponse response = new AbstractResponse();
+    public SendResponse process(SendModel sendModel) {
+        SendResponse response = new SendResponse();
         try {
             validateInputParameters(sendModel);
             checkPermission(sendModel);
-            renderAndSend(sendModel);
+            renderAndSend(sendModel, response);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
@@ -74,11 +74,17 @@ public class SendServiceCommon {
         }
     }
 
-    private void renderAndSend(SendModel sendModel) throws ObjectNotFoundException {
+    private void renderAndSend(SendModel sendModel, SendResponse response) throws ObjectNotFoundException {
         ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
+
         String subject = getTemplateRenderer().render(channelTemplate.getSubject(), sendModel.model);
         String content = getTemplateRenderer().render(channelTemplate.getContent(), sendModel.model);
+        if (sendModel.echo) {
+            response.subject = subject;
+            response.content = content;
+        }
+
         AbstractOutputHandler outputHandler = OutputHandlerFactory.getOutputHandler(channel.getOutputHandler());
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
         Address recipient = new Address((GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name), sendModel.recipient.address);
