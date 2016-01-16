@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
@@ -25,6 +27,289 @@ public class TestChannelTemplateService extends AbstractRestTest {
         validateGetSingleChannelTemplateResponse(token, id, templateId, channelId);
     }
 
+    @Test
+    public void testCreateDuplicateChannel() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId = createChannelGetId(token, "c1");
+
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+
+        ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
+                "id", isEmptyOrNullString());
+    }
+
+    @Test
+    public void testCreateTwoTemplatesSameChannel() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId1 = createTemplateGetId(token, "t1");
+        String templateId2 = createTemplateGetId(token, "t2");
+        String channelId = createChannelGetId(token, "c1");
+
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId1, channelId);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id = response.getString("id");
+        validateGetSingleChannelTemplateResponse(token, id, templateId1, channelId);
+
+        ctObject = getJsonObjectForChannelTemplate(null, templateId2, channelId);
+        response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        id = response.getString("id");
+        validateGetSingleChannelTemplateResponse(token, id, templateId2, channelId);
+    }
+
+    @Test
+    public void testCreateInsufficientRights() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId = createChannelGetId(token, "c1");
+
+        createUserWithNoRights("dummy", "dummy");
+        token = authGetToken("dummy", "dummy");
+
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.PERMISSION_DENIED),
+                "id", isEmptyOrNullString());
+    }
+
+    @Test
+    public void testCreateInvalidToken() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId = createChannelGetId(token, "c1");
+
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        JSONObject response = validateSetChannelTemplateResponse(UUID.randomUUID().toString(), ctObject,
+                "error", equalTo(ErrorCode.AUTH_REQUIRED),
+                "id", isEmptyOrNullString());
+    }
+
+    @Test
+    public void testUpdateSuccess() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId1 = createTemplateGetId(token, "t1");
+        String channelId1 = createChannelGetId(token, "c1");
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId1, channelId1);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id = response.getString("id");
+
+
+        String templateId2 = createTemplateGetId(token, "t2");
+        String channelId2 = createChannelGetId(token, "c2");
+        ctObject = getJsonObjectForChannelTemplate(id, templateId2, channelId2);
+        response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+
+        validateGetSingleChannelTemplateResponse(token, id, templateId2, channelId2);
+    }
+
+    @Test
+    public void testUpdateNonExistingObject() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId1 = createChannelGetId(token, "c1");
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId1);
+        validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+
+        String channelId2 = createChannelGetId(token, "c2");
+        ctObject = getJsonObjectForChannelTemplate(UUID.randomUUID().toString(), templateId, channelId2);
+        validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "id", isEmptyOrNullString());
+    }
+
+    @Test
+    public void testUpdateDuplicateChannel() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId1 = createChannelGetId(token, "c1");
+        String channelId2 = createChannelGetId(token, "c2");
+
+        // Create channel template for channel 1
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId1);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id = response.getString("id");
+
+        // Create channel template for channel 2
+        ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId2);
+        validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+
+        // Try to update channel template from channel 1 to channel 2
+        ctObject = getJsonObjectForChannelTemplate(id, templateId, channelId2);
+        validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
+                "id", isEmptyOrNullString());
+    }
+
+    @Test
+    public void testDeleteSuccess() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId = createChannelGetId(token, "c1");
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id = response.getString("id");
+
+        validateDeleteChannelTemplateResponse(token, id,
+                "error", equalTo(ErrorCode.OK));
+        validateGetChannelTemplateResponse(token, id, null,
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "channelTemplates.size()", is(0));
+    }
+
+    @Test
+    public void testDeleteNonExistingObject() {
+        createAdminUser();
+        String token = authAdminGetToken();
+        validateDeleteChannelTemplateResponse(token, UUID.randomUUID().toString(),
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
+    }
+
+    @Test
+    public void testDeleteInvalidToken() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId = createChannelGetId(token, "c1");
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id = response.getString("id");
+
+        validateDeleteChannelTemplateResponse(UUID.randomUUID().toString(), id,
+                "error", equalTo(ErrorCode.AUTH_REQUIRED));
+    }
+
+    @Test
+    public void testDeleteInsufficientRights() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId = createChannelGetId(token, "c1");
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id = response.getString("id");
+
+        createUserWithNoRights("dummy", "dummy");
+        token = authGetToken("dummy", "dummy");
+        validateDeleteChannelTemplateResponse(token, id,
+                "error", equalTo(ErrorCode.PERMISSION_DENIED));
+    }
+
+    @Test
+    public void testGetWithoutIdOrTemplateId() {
+        createAdminUser();
+        String token = authAdminGetToken();
+        validateGetChannelTemplateResponse(token, null, null,
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
+                "channelTemplates.size()", is(0));
+    }
+
+    @Test
+    public void testGetEmptyList() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+
+        validateGetChannelTemplateResponse(token, null, templateId,
+                "error", equalTo(ErrorCode.OK),
+                "channelTemplates.size()", is(0));
+    }
+
+    @Test
+    public void testGetNonExistingTemplate() {
+        createAdminUser();
+        String token = authAdminGetToken();
+        validateGetChannelTemplateResponse(token, null, UUID.randomUUID().toString(),
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "channelTemplates.size()", is(0));
+    }
+
+    @Test
+    public void testGetNonExistingObject() {
+        createAdminUser();
+        String token = authAdminGetToken();
+        validateGetChannelTemplateResponse(token, UUID.randomUUID().toString(), null,
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "channelTemplates.size()", is(0));
+    }
+
+    @Test
+    public void testGetTwoItems() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        String templateId = createTemplateGetId(token, "t1");
+        String channelId1 = createChannelGetId(token, "c1");
+        String channelId2 = createChannelGetId(token, "c2");
+
+        // Create channel template for channel 1
+        JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId1);
+        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id1 = response.getString("id");
+
+        // Create channel template for channel 2
+        ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId2);
+        response = validateSetChannelTemplateResponse(token, ctObject,
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        String id2 = response.getString("id");
+
+        validateGetChannelTemplateResponse(token, null, templateId,
+                "error", equalTo(ErrorCode.OK),
+                "channelTemplates.size()", is(2),
+                "channelTemplates[0].id", equalTo(id1),
+                "channelTemplates[1].id", equalTo(id2),
+                "channelTemplates[0].template.id", equalTo(templateId),
+                "channelTemplates[1].template.id", equalTo(templateId),
+                "channelTemplates[0].channel.id", equalTo(channelId1),
+                "channelTemplates[1].channel.id", equalTo(channelId2));
+    }
+
     private String createChannelGetId(String token, String name) {
         String configId = createSysoutConfig(token);
 
@@ -37,10 +322,8 @@ public class TestChannelTemplateService extends AbstractRestTest {
         object.put("outputHandler", "SYSOUT");
         object.put("config", config);
         JSONObject payload = super.getSetRequestPayload(token, object);
-        System.out.println(payload.toString());
         ResponseSpecification response = getResponseSpecificationPost(payload);
         JSONObject json = getPostResponse(response, "channel/set");
-        System.out.println(json.toString());
         return json.getString("id");
     }
 

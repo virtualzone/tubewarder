@@ -6,6 +6,7 @@ import net.weweave.tubewarder.domain.ChannelTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @ApplicationScoped
 public class ChannelTemplateDao extends AbstractDao<ChannelTemplate> {
@@ -25,5 +26,13 @@ public class ChannelTemplateDao extends AbstractDao<ChannelTemplate> {
         query.setParameter("templateId", templateId);
         query.setParameter("channelId", channelId);
         return (ChannelTemplate) DbValueRetriever.getObjectOrException(query);
+    }
+
+    public List<ChannelTemplate> getChannelTemplatesForTemplate(Long templateId) {
+        TypedQuery<ChannelTemplate> query = getEntityManager().createQuery("SELECT ct FROM ChannelTemplate ct " +
+                "WHERE ct.template.id = :templateId " +
+                "ORDER BY ct.channel.name ASC", ChannelTemplate.class);
+        query.setParameter("templateId", templateId);
+        return query.getResultList();
     }
 }

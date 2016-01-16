@@ -3,6 +3,7 @@ package net.weweave.tubewarder.service.rest;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
+import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.PermissionException;
 import org.apache.commons.validator.GenericValidator;
 import net.weweave.tubewarder.dao.ChannelTemplateDao;
@@ -17,6 +18,7 @@ import net.weweave.tubewarder.service.response.GetChannelTemplateResponse;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import java.util.List;
 
 @RequestScoped
 @Path("/channeltemplate/get")
@@ -37,6 +39,7 @@ public class GetChannelTemplateService extends AbstractService {
         try {
             Session session = getSession(token);
             checkPermissions(session.getUser());
+            validateInputParameters(id, templateId);
             setResponseList(response, id, templateId);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
@@ -44,9 +47,17 @@ public class GetChannelTemplateService extends AbstractService {
             response.error = ErrorCode.PERMISSION_DENIED;
         } catch (AuthRequiredException e) {
             response.error = ErrorCode.AUTH_REQUIRED;
+        } catch (InvalidInputParametersException e) {
+            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         }
 
         return response;
+    }
+
+    private void validateInputParameters(String id, String templateId) throws InvalidInputParametersException {
+        if (GenericValidator.isBlankOrNull(id) && GenericValidator.isBlankOrNull(templateId)) {
+            throw new InvalidInputParametersException();
+        }
     }
 
     private void checkPermissions(User user) throws PermissionException {
@@ -62,7 +73,8 @@ public class GetChannelTemplateService extends AbstractService {
             response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate));
         } else if (!GenericValidator.isBlankOrNull(templateId)) {
             Template template = getTemplateDao().get(templateId);
-            for (ChannelTemplate channelTemplate : template.getChannelTemplates()) {
+            List<ChannelTemplate> channelTemplates = getChannelTemplateDao().getChannelTemplatesForTemplate(template.getId());
+            for (ChannelTemplate channelTemplate : channelTemplates) {
                 response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate));
             }
         }
