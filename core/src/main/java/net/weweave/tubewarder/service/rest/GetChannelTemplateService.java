@@ -39,7 +39,7 @@ public class GetChannelTemplateService extends AbstractService {
             checkPermissions(session.getUser());
             setResponseList(response, id, templateId);
         } catch (ObjectNotFoundException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
             response.error = ErrorCode.PERMISSION_DENIED;
         } catch (AuthRequiredException e) {
