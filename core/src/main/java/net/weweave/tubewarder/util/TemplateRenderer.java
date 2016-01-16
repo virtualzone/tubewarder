@@ -1,9 +1,12 @@
 package net.weweave.tubewarder.util;
 
+import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import net.weweave.tubewarder.exception.TemplateCorruptException;
+import net.weweave.tubewarder.exception.TemplateModelException;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -17,18 +20,19 @@ import java.util.UUID;
 public class TemplateRenderer {
     private static Configuration CONFIG = null;
 
-    public String render(String content, Map<String, Object> dataModel) {
+    public String render(String content, Map<String, Object> dataModel) throws TemplateCorruptException, TemplateModelException {
         try {
             Template freemarkerTemplate = new Template(UUID.randomUUID().toString(), new StringReader(content), getConfiguration());
             Writer out = new StringWriter();
             freemarkerTemplate.process(dataModel, out);
             return out.toString();
+        } catch (ParseException e) {
+            throw new TemplateCorruptException();
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         } catch (TemplateException e) {
-            e.printStackTrace();
-            return "";
+            throw new TemplateModelException();
         }
     }
 

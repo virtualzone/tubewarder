@@ -7,9 +7,7 @@ import net.weweave.tubewarder.domain.AppToken;
 import net.weweave.tubewarder.domain.Channel;
 import net.weweave.tubewarder.domain.ChannelTemplate;
 import net.weweave.tubewarder.domain.Log;
-import net.weweave.tubewarder.exception.InvalidInputParametersException;
-import net.weweave.tubewarder.exception.ObjectNotFoundException;
-import net.weweave.tubewarder.exception.PermissionException;
+import net.weweave.tubewarder.exception.*;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.SendModel;
@@ -52,6 +50,10 @@ public class SendServiceCommon {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
             response.error = ErrorCode.PERMISSION_DENIED;
+        } catch (TemplateCorruptException e) {
+            response.error = ErrorCode.TEMPLATE_CORRUPT;
+        } catch (TemplateModelException e) {
+            response.error = ErrorCode.MISSING_MODEL_PARAMETER;
         }
         return response;
     }
@@ -74,7 +76,7 @@ public class SendServiceCommon {
         }
     }
 
-    private void renderAndSend(SendModel sendModel, SendServiceResponse response) throws ObjectNotFoundException {
+    private void renderAndSend(SendModel sendModel, SendServiceResponse response) throws ObjectNotFoundException, TemplateCorruptException, TemplateModelException {
         ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
 

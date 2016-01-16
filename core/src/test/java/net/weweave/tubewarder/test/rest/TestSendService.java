@@ -50,6 +50,36 @@ public class TestSendService extends AbstractRestTest {
                 "content", equalTo("Hi John Doe, here is your activation code: 1234567890"));
     }
 
+    @Test
+    public void testMissingModelParameter() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        ChannelTemplate ct = createChannelTemplate(template, channel,
+                "${firstname}",
+                "${firstname} ${lastname}");
+
+        Map<String, Object> model = createMap(
+                "firstname", "John");
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
+                "error", equalTo(ErrorCode.MISSING_MODEL_PARAMETER));
+    }
+
+    @Test
+    public void testCorruptTemplate() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        ChannelTemplate ct = createChannelTemplate(template, channel,
+                "${firstname)",
+                "Nothing");
+
+        Map<String, Object> model = createMap(
+                "firstname", "John");
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
+                "error", equalTo(ErrorCode.TEMPLATE_CORRUPT));
+    }
+
     private JSONObject validateSendResponse(String token, String templateName, String channelName, Map<String, Object> model, String recipientName, String recipientAddress, Object... body) {
         JSONObject payload = getSendRequestPayload(token, templateName, channelName, model, recipientName, recipientAddress);
         ResponseSpecification response = getResponseSpecificationPost(payload);
