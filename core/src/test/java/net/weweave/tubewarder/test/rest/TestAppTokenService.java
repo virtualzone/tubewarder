@@ -24,7 +24,7 @@ public class TestAppTokenService extends AbstractRestTest {
 
         String id = response.getString("id");
 
-        validateGetTokenResponse(token, id, "App Token 1");
+        validateGetSingleTokenResponse(token, id, "App Token 1");
     }
 
     @Test
@@ -38,13 +38,13 @@ public class TestAppTokenService extends AbstractRestTest {
 
         String id = response.getString("id");
 
-        validateGetTokenResponse(token, id, "App Token 1");
+        validateGetSingleTokenResponse(token, id, "App Token 1");
 
         validateSetTokenResponse(token, id, "Renamed App Token",
                 "error", equalTo(ErrorCode.OK),
                 "id", equalTo(id));
 
-        validateGetTokenResponse(token, id, "Renamed App Token");
+        validateGetSingleTokenResponse(token, id, "Renamed App Token");
     }
 
     @Test
@@ -148,9 +148,7 @@ public class TestAppTokenService extends AbstractRestTest {
     public void testGetEmptyList() {
         createAdminUser();
         String token = authAdminGetToken();
-
-        ResponseSpecification response = getResponseSpecificationGet("token", token);
-        setExpectedBodies(response,
+        validateGetTokenResponse(token, null,
                 "error", equalTo(ErrorCode.OK),
                 "tokens.size()", is(0));
     }
@@ -159,9 +157,7 @@ public class TestAppTokenService extends AbstractRestTest {
     public void testGetInvalidId() {
         createAdminUser();
         String token = authAdminGetToken();
-
-        ResponseSpecification response = getResponseSpecificationGet("token", token, "id", UUID.randomUUID().toString());
-        setExpectedBodies(response,
+        validateGetTokenResponse(token, UUID.randomUUID().toString(),
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
                 "tokens.size()", is(0));
     }
@@ -170,9 +166,7 @@ public class TestAppTokenService extends AbstractRestTest {
     public void testGetInsufficientRights() {
         createUserWithNoRights("dummy", "dummy");
         String token = authGetToken("dummy", "dummy");
-
-        ResponseSpecification response = getResponseSpecificationGet("token", token);
-        setExpectedBodies(response,
+        validateGetTokenResponse(token, null,
                 "error", equalTo(ErrorCode.PERMISSION_DENIED),
                 "tokens.size()", is(0));
     }
@@ -187,9 +181,7 @@ public class TestAppTokenService extends AbstractRestTest {
         response = validateSetTokenResponse(token, null, "App Token 2");
         String id2 = response.getString("id");
 
-
-        ResponseSpecification rs = getResponseSpecificationGet("token", token);
-        setExpectedBodies(rs,
+        validateGetTokenResponse(token, null,
                 "error", equalTo(ErrorCode.OK),
                 "tokens.size()", is(2),
                 "tokens[0].id", equalTo(id1),
@@ -212,6 +204,12 @@ public class TestAppTokenService extends AbstractRestTest {
         return getPostResponse(response, "apptoken/delete");
     }
 
+    private JSONObject validateGetTokenResponse(String token, String id, Object... body) {
+        ResponseSpecification response = getResponseSpecificationGet("token", token, "id", id);
+        setExpectedBodies(response, body);
+        return getGetResponse(response, "apptoken/get");
+    }
+
     private JSONObject getSetRequestPayload(String token, String id, String name) {
         JSONObject object = new JSONObject();
         object.put("id", id);
@@ -219,13 +217,11 @@ public class TestAppTokenService extends AbstractRestTest {
         return super.getSetRequestPayload(token, object);
     }
 
-    private JSONObject validateGetTokenResponse(String token, String expectedId, String expectedName) {
-        ResponseSpecification response = getResponseSpecificationGet("token", token, "id", expectedId);
-        setExpectedBodies(response,
+    private JSONObject validateGetSingleTokenResponse(String token, String expectedId, String expectedName) {
+        return validateGetTokenResponse(token, expectedId,
                 "error", equalTo(ErrorCode.OK),
                 "tokens.size()", is(1),
                 "tokens[0].id", equalTo(expectedId),
                 "tokens[0].name", equalTo(expectedName));
-        return getGetResponse(response, "apptoken/get");
     }
 }
