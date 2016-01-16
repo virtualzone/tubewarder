@@ -144,6 +144,9 @@ public class TestChannelService extends AbstractRestTest {
         String id = response.getString("id");
         validateDeleteChannelResponse(token, id,
                 "error", equalTo(ErrorCode.OK));
+        validateGetChannelResponse(token, id,
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "channels.size()", is(0));
     }
 
     @Test

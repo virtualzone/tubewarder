@@ -100,6 +100,9 @@ public class TestAppTokenService extends AbstractRestTest {
 
         validateDeleteTokenResponse(token, id,
                 "error", equalTo(ErrorCode.OK));
+        validateGetTokenResponse(token, id,
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
+                "tokens.size()", is(0));
     }
 
     @Test
