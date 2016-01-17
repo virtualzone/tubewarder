@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
@@ -62,6 +64,52 @@ public class TestAuthService extends AbstractRestTest {
                 "token", isEmptyOrNullString());
     }
 
+    @Test
+    public void testLogoutSuccess() {
+        createAdminUser();
+        JSONObject response = validateAuthResponse("admin", "admin",
+                "error", equalTo(ErrorCode.OK),
+                "token", not(isEmptyOrNullString()));
+        String token = response.getString("token");
+        validateLogoutResponse(token,
+                "error", equalTo(ErrorCode.OK));
+        validatePingResponse(token,
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+    }
+
+    @Test
+    public void testLogoutInvalidToken() {
+        createAdminUser();
+        JSONObject response = validateAuthResponse("admin", "admin",
+                "error", equalTo(ErrorCode.OK),
+                "token", not(isEmptyOrNullString()));
+        String token = response.getString("token");
+        validateLogoutResponse(UUID.randomUUID().toString(),
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+        validatePingResponse(token,
+                "error", equalTo(ErrorCode.OK));
+    }
+
+    @Test
+    public void testPingInvalidToken() {
+        validatePingResponse(UUID.randomUUID().toString(),
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+    }
+
+    @Test
+    public void testPingEmptyToken() {
+        validatePingResponse("",
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+    }
+
+    @Test
+    public void testPingValidToken() {
+        createAdminUser();
+        String token = authAdminGetToken();
+        validatePingResponse(token,
+                "error", equalTo(ErrorCode.OK));
+    }
+
     private JSONObject validateAuthResponse(String username, String password, Object... body) {
         JSONObject payload = getAuthRequestPayload(username, password);
         ResponseSpecification response = getResponseSpecificationPost(payload);
@@ -69,10 +117,36 @@ public class TestAuthService extends AbstractRestTest {
         return getPostResponse(response, "auth");
     }
 
+    private JSONObject validateLogoutResponse(String token, Object... body) {
+        JSONObject payload = getLogoutRequestPayload(token);
+        ResponseSpecification response = getResponseSpecificationPost(payload);
+        setExpectedBodies(response, body);
+        return getPostResponse(response, "logout");
+    }
+
     private JSONObject getAuthRequestPayload(String username, String password) {
         JSONObject payload = new JSONObject();
         payload.put("username", username);
         payload.put("password", password);
+        return payload;
+    }
+
+    private JSONObject getLogoutRequestPayload(String token) {
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
+        return payload;
+    }
+
+    private JSONObject validatePingResponse(String token, Object... body) {
+        JSONObject payload = getPingRequestPayload(token);
+        ResponseSpecification response = getResponseSpecificationPost(payload);
+        setExpectedBodies(response, body);
+        return getPostResponse(response, "ping");
+    }
+
+    private JSONObject getPingRequestPayload(String token) {
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
         return payload;
     }
 }
