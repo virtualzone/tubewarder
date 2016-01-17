@@ -43,6 +43,7 @@ public class TemplateRenderer {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
             cfg.setDefaultEncoding("UTF-8");
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            cfg.setLogTemplateExceptions(false);
             CONFIG = cfg;
         }
         return CONFIG;
