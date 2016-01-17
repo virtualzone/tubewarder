@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -36,7 +37,7 @@ public class TestSendService extends AbstractRestTest {
         AppToken token = createAppToken();
         Channel channel = createChannel();
         Template template = createTemplate();
-        ChannelTemplate ct = createChannelTemplate(template, channel,
+        createChannelTemplate(template, channel,
                 "Welcome to Tubewarder, ${firstname}!",
                 "Hi ${firstname} ${lastname}, here is your activation code: ${code}");
 
@@ -55,7 +56,7 @@ public class TestSendService extends AbstractRestTest {
         AppToken token = createAppToken();
         Channel channel = createChannel();
         Template template = createTemplate();
-        ChannelTemplate ct = createChannelTemplate(template, channel,
+        createChannelTemplate(template, channel,
                 "${firstname}",
                 "${firstname} ${lastname}");
 
@@ -70,7 +71,7 @@ public class TestSendService extends AbstractRestTest {
         AppToken token = createAppToken();
         Channel channel = createChannel();
         Template template = createTemplate();
-        ChannelTemplate ct = createChannelTemplate(template, channel,
+        createChannelTemplate(template, channel,
                 "${firstname)",
                 "Nothing");
 
@@ -78,6 +79,84 @@ public class TestSendService extends AbstractRestTest {
                 "firstname", "John");
         validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
                 "error", equalTo(ErrorCode.TEMPLATE_CORRUPT));
+    }
+
+    @Test
+    public void testInvalidTemplate() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse(token.getExposableId(), "Unknown", channel.getName(), createMap(), "John", "+490000",
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
+    }
+
+    @Test
+    public void testInvalidChannel() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse(token.getExposableId(), template.getName(), "Unknown", createMap(), "John", "+490000",
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
+    }
+
+    @Test
+    public void testUnassignedChannel() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Channel channel2 = createChannel("email");
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse(token.getExposableId(), template.getName(), channel2.getName(), createMap(), "John", "+490000",
+                "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
+    }
+
+    @Test
+    public void testInvalidToken() {
+        createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), "John", "+490000",
+                "error", equalTo(ErrorCode.PERMISSION_DENIED));
+    }
+
+    @Test
+    public void testMissingRecipientAddress() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), "John", "",
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+    }
+
+    @Test
+    public void testEmptyToken() {
+        createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse("", template.getName(), channel.getName(), createMap(), "John", "+490000",
+                "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+    }
+
+    @Test
+    public void testEmptyRecipientName() {
+        AppToken token = createAppToken();
+        Channel channel = createChannel();
+        Template template = createTemplate();
+        createChannelTemplate(template, channel, "", "");
+
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), "", "+490000",
+                "error", equalTo(ErrorCode.OK));
     }
 
     private JSONObject validateSendResponse(String token, String templateName, String channelName, Map<String, Object> model, String recipientName, String recipientAddress, Object... body) {
@@ -94,7 +173,7 @@ public class TestSendService extends AbstractRestTest {
 
         JSONObject modelJson = new JSONObject();
         for (String key : model.keySet()) {
-            modelJson.put(key, (String)model.get(key));
+            modelJson.put(key, model.get(key));
         }
 
         JSONObject payload = new JSONObject();
@@ -114,18 +193,22 @@ public class TestSendService extends AbstractRestTest {
         return token;
     }
 
-    private Channel createChannel() {
+    private Channel createChannel(String name) {
         SysoutOutputHandlerConfiguration config = new SysoutOutputHandlerConfiguration();
         config.setPrefix("Debug: [");
         config.setSuffix("]");
         getConfigurationDao().store(config);
 
         Channel channel = new Channel();
-        channel.setName("sms");
+        channel.setName(name);
         channel.setOutputHandler(OutputHandler.SYSOUT);
         channel.setConfig(config);
         getChannelDao().store(channel);
         return channel;
+    }
+
+    private Channel createChannel() {
+        return createChannel("sms");
     }
 
     private Template createTemplate() {
