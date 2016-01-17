@@ -10,6 +10,7 @@ import net.weweave.tubewarder.domain.Log;
 import net.weweave.tubewarder.exception.*;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
+import net.weweave.tubewarder.service.model.KeyValueModel;
 import net.weweave.tubewarder.service.model.SendModel;
 import net.weweave.tubewarder.service.response.SendServiceResponse;
 import net.weweave.tubewarder.util.Address;
@@ -20,9 +21,7 @@ import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RequestScoped
 public class SendServiceCommon {
@@ -80,8 +79,9 @@ public class SendServiceCommon {
         ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
 
-        String subject = getTemplateRenderer().render(channelTemplate.getSubject(), sendModel.model);
-        String content = getTemplateRenderer().render(channelTemplate.getContent(), sendModel.model);
+        Map<String, Object> model = convertDataModelToMap(sendModel.model == null ? new ArrayList<>() : sendModel.model);
+        String subject = getTemplateRenderer().render(channelTemplate.getSubject(), model);
+        String content = getTemplateRenderer().render(channelTemplate.getContent(), model);
         if (sendModel.echo) {
             response.subject = subject;
             response.content = content;
@@ -93,6 +93,15 @@ public class SendServiceCommon {
         List<AttachmentModel> attachments = (sendModel.attachments == null ? new ArrayList<>() : sendModel.attachments);
         outputHandler.process(channel.getConfig(), sender, recipient, subject, content, attachments);
         log(sendModel, channelTemplate, recipient, subject, content);
+    }
+
+
+    private Map<String, Object> convertDataModelToMap(List<KeyValueModel> dataModel) {
+        Map<String, Object> result = new HashMap<>();
+        for (KeyValueModel entry : dataModel) {
+            result.put(entry.key, entry.value);
+        }
+        return result;
     }
 
     private void log(SendModel model, ChannelTemplate channelTemplate, Address recipient, String subject, String content) {

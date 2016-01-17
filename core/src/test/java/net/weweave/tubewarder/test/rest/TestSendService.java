@@ -1,10 +1,11 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
-import net.weweave.tubewarder.dao.*;
 import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.service.model.ErrorCode;
+import net.weweave.tubewarder.test.TestSendServiceCommon;
 import org.jboss.arquillian.junit.Arquillian;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,26 +19,14 @@ import static org.hamcrest.Matchers.equalTo;
 @RunWith(Arquillian.class)
 public class TestSendService extends AbstractRestTest {
     @Inject
-    private ChannelDao channelDao;
-
-    @Inject
-    private ChannelTemplateDao channelTemplateDao;
-
-    @Inject
-    private TemplateDao templateDao;
-
-    @Inject
-    private AppTokenDao appTokenDao;
-
-    @Inject
-    private SysoutOutputHandlerConfigurationDao configurationDao;
+    private TestSendServiceCommon common;
 
     @Test
     public void testSendSuccess() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel,
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
                 "Welcome to Tubewarder, ${firstname}!",
                 "Hi ${firstname} ${lastname}, here is your activation code: ${code}");
 
@@ -53,10 +42,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testMissingModelParameter() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel,
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
                 "${firstname}",
                 "${firstname} ${lastname}");
 
@@ -68,10 +57,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testCorruptTemplate() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel,
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
                 "${firstname)",
                 "Nothing");
 
@@ -83,10 +72,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testInvalidTemplate() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse(token.getExposableId(), "Unknown", channel.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
@@ -94,10 +83,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testInvalidChannel() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse(token.getExposableId(), template.getName(), "Unknown", createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
@@ -105,11 +94,11 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testUnassignedChannel() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Channel channel2 = createChannel("email");
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Channel channel2 = getCommon().createChannel("email");
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse(token.getExposableId(), template.getName(), channel2.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
@@ -117,10 +106,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testInvalidToken() {
-        createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.PERMISSION_DENIED));
@@ -128,10 +117,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testMissingRecipientAddress() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), "John", "",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
@@ -139,10 +128,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testEmptyToken() {
-        createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse("", template.getName(), channel.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
@@ -150,10 +139,10 @@ public class TestSendService extends AbstractRestTest {
 
     @Test
     public void testEmptyRecipientName() {
-        AppToken token = createAppToken();
-        Channel channel = createChannel();
-        Template template = createTemplate();
-        createChannelTemplate(template, channel, "", "");
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel, "", "");
 
         validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), "", "+490000",
                 "error", equalTo(ErrorCode.OK));
@@ -171,9 +160,12 @@ public class TestSendService extends AbstractRestTest {
         recipient.put("name", recipientName);
         recipient.put("address", recipientAddress);
 
-        JSONObject modelJson = new JSONObject();
+        JSONArray modelArray = new JSONArray();
         for (String key : model.keySet()) {
-            modelJson.put(key, model.get(key));
+            JSONObject entry = new JSONObject();
+            entry.put("key", key);
+            entry.put("value", model.get(key));
+            modelArray.put(entry);
         }
 
         JSONObject payload = new JSONObject();
@@ -182,91 +174,15 @@ public class TestSendService extends AbstractRestTest {
         payload.put("template", templateName);
         payload.put("channel", channelName);
         payload.put("recipient", recipient);
-        payload.put("model", modelJson);
+        payload.put("model", modelArray);
         return payload;
     }
 
-    private AppToken createAppToken() {
-        AppToken token = new AppToken();
-        token.setName("Default");
-        getAppTokenDao().store(token);
-        return token;
+    public TestSendServiceCommon getCommon() {
+        return common;
     }
 
-    private Channel createChannel(String name) {
-        SysoutOutputHandlerConfiguration config = new SysoutOutputHandlerConfiguration();
-        config.setPrefix("Debug: [");
-        config.setSuffix("]");
-        getConfigurationDao().store(config);
-
-        Channel channel = new Channel();
-        channel.setName(name);
-        channel.setOutputHandler(OutputHandler.SYSOUT);
-        channel.setConfig(config);
-        getChannelDao().store(channel);
-        return channel;
-    }
-
-    private Channel createChannel() {
-        return createChannel("sms");
-    }
-
-    private Template createTemplate() {
-        Template template = new Template();
-        template.setName("DOI");
-        getTemplateDao().store(template);
-        return template;
-    }
-
-    private ChannelTemplate createChannelTemplate(Template template, Channel channel, String subject, String content) {
-        ChannelTemplate ct = new ChannelTemplate();
-        ct.setTemplate(template);
-        ct.setChannel(channel);
-        ct.setSubject(subject);
-        ct.setContent(content);
-        ct.setSenderName("weweave");
-        ct.setSenderAddress("noreply@weweave.net");
-        getChannelTemplateDao().store(ct);
-        return ct;
-    }
-
-    public ChannelDao getChannelDao() {
-        return channelDao;
-    }
-
-    public void setChannelDao(ChannelDao channelDao) {
-        this.channelDao = channelDao;
-    }
-
-    public ChannelTemplateDao getChannelTemplateDao() {
-        return channelTemplateDao;
-    }
-
-    public void setChannelTemplateDao(ChannelTemplateDao channelTemplateDao) {
-        this.channelTemplateDao = channelTemplateDao;
-    }
-
-    public TemplateDao getTemplateDao() {
-        return templateDao;
-    }
-
-    public void setTemplateDao(TemplateDao templateDao) {
-        this.templateDao = templateDao;
-    }
-
-    public AppTokenDao getAppTokenDao() {
-        return appTokenDao;
-    }
-
-    public void setAppTokenDao(AppTokenDao appTokenDao) {
-        this.appTokenDao = appTokenDao;
-    }
-
-    public SysoutOutputHandlerConfigurationDao getConfigurationDao() {
-        return configurationDao;
-    }
-
-    public void setConfigurationDao(SysoutOutputHandlerConfigurationDao configurationDao) {
-        this.configurationDao = configurationDao;
+    public void setCommon(TestSendServiceCommon common) {
+        this.common = common;
     }
 }

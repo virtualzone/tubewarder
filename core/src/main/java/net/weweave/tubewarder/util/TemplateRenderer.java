@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.util;
 
+import freemarker.core.InvalidReferenceException;
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -13,8 +14,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @ApplicationScoped
 public class TemplateRenderer {
@@ -26,6 +26,8 @@ public class TemplateRenderer {
             Writer out = new StringWriter();
             freemarkerTemplate.process(dataModel, out);
             return out.toString();
+        } catch (InvalidReferenceException e) {
+            throw new TemplateModelException();
         } catch (ParseException e) {
             throw new TemplateCorruptException();
         } catch (IOException e) {

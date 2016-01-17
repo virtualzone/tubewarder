@@ -33,12 +33,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "Unknown",<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"address": "+49000000000000"<br />
 &nbsp;&nbsp;&nbsp;},<br />
-&nbsp;&nbsp;&nbsp;"model": {<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"firstname": "John",<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lastname": "Doe",<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": "1234567890",<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"includeDisclaimer": false<br />
-&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;"model": [<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "firstname", "value": "John"},<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "lastname", "value": "Doe"},<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "code", "value": "1234567890"},<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{"key": "includeDisclaimer", "value": false}<br />
+&nbsp;&nbsp;&nbsp;],<br />
+&nbsp;&nbsp;&nbsp;"attachments": [<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"filename": "Terms.pdf",<br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"contentType": "application/pdf",<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"payload": "..."<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;],<br />
 }
                     </code>
                 </div>
@@ -55,11 +62,21 @@ Request {<br />
 &nbsp;&nbsp;&nbsp;&nbsp;template (string, required - the template's name)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;channel (string, required - the channel's name)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;recipient (Address, required - the recipient's address)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;model (Object, optional - a key-value-list of template parameters)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;model (array of Model, optional - a key-value-list of template parameters)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;attachments (array of Attachment, optional - a key-value-list of template parameters)<br />
 }<br />
 Address {<br />
 &nbsp;&nbsp;&nbsp;&nbsp;name (string, optional - recipient's name)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;address (string, required - recipient's address (email, number, ...))<br />
+}<br />
+Model {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;key (string, optional - template parameter name)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;value (string, required - template parameter value)<br />
+}<br />
+Attachment {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;filename (string, required - filename)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;contentType (string, optional - file's mime type')<br />
+&nbsp;&nbsp;&nbsp;&nbsp;payload (string, required - Base64 encoded file content)<br />
 }
                     </code>
                 </div>
