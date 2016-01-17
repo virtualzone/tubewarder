@@ -5,11 +5,13 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public abstract class AbstractServiceTest {
     @ArquillianResource
@@ -17,6 +19,11 @@ public abstract class AbstractServiceTest {
 
     @Inject
     private DbTestAssist dbTestAssist;
+
+    @BeforeClass
+    public static final void beforeClass() {
+        java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+    }
 
     @Before
     public final void initialize() {
