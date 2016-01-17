@@ -100,10 +100,10 @@ define(['angular-route-resolver'], function(moment) {
             .when('/users', route.resolve('users', 'UsersController'))
             .when('/users/edit', route.resolve('users-edit', 'UsersEditController'))
             .when('/users/edit/:id', route.resolve('users-edit', 'UsersEditController'))
-            .when('/api', route.resolve('api', 'ApiController'))
-            .otherwise({
-                redirectTo: '/home'
-            });
+            .when('/api/doc', route.resolve('api-doc', 'ApiDocController'))
+            .when('/api/test', route.resolve('api-test', 'ApiTestController'))
+            .when('/api', {redirectTo: '/api/doc'})
+            .otherwise({redirectTo: '/home'});
             
         $httpProvider.interceptors.push(['$q', '$injector', '$location', 'appServices', function($q, $injector, $location, appServices) {
             return {

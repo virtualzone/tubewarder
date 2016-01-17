@@ -1,0 +1,92 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>API</h1>
+            <ul class="nav nav-tabs">
+                <li role="presentation"><a href="#/api/doc">API Documentation</a></li>
+                <li role="presentation" class="active"><a href="#/api/test">Send-API Tester</a></li>
+            </ul>
+            
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.token.$dirty && form.token.$invalid}">
+                    <label for="token">App Token</label>
+                    <select class="form-control" id="token" name="token" data-ng-model="model.token" data-ng-change="generateSendPayload()" data-ng-options="token.id as token.name for token in tokens" required="required" autofocus="autofocus">
+                        <option value="">-- select token --</option>
+                    </select>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.template.$dirty && form.template.$invalid}">
+                    <label for="template">Template</label>
+                    <select class="form-control" id="template" name="template" data-ng-model="model.templateId" data-ng-change="onTemplateSelect()" data-ng-options="template.id as template.name for template in templates" required="required">
+                        <option value="">-- select template --</option>
+                    </select>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.channel.$dirty && form.channel.$invalid}">
+                    <label for="template">Channel</label>
+                    <select class="form-control" id="channel" name="channel" data-ng-model="model.channelId" data-ng-change="generateSendPayload()" data-ng-options="channel.id as channel.name for channel in channels" required="required">
+                        <option value="">-- select channel --</option>
+                    </select>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.recipientAddress.$dirty && form.recipientAddress.$invalid}">
+                    <label for="recipientAddress">Recipient Address</label>
+                    <input type="text" class="form-control" id="recipientAddress" name="recipientAddress" placeholder="Recipient Address" data-ng-model="model.recipient.address" required="required" data-ng-change="generateSendPayload()" />
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.recipientName.$dirty && form.recipientName.$invalid}">
+                    <label for="recipientName">Recipient Name (optional)</label>
+                    <input type="text" class="form-control" id="recipientName" name="recipientName" placeholder="Recipient Name" data-ng-model="model.recipient.name" data-ng-change="generateSendPayload()" />
+                </div>
+                <div class="form-group">
+                    <label>Data Model / Template Parameters</label>
+                    <div class="input-group" data-ng-repeat="param in model.model" style="margin-bottom:5px">
+                        <div class="input-group-addon">Key:</div>
+                        <input type="text" class="form-control" data-ng-model="param.key" data-ng-change="generateSendPayload()" required="required" />
+                        <div class="input-group-addon">Value:</div>
+                        <input type="text" class="form-control" data-ng-model="param.value" data-ng-change="generateSendPayload()" />
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" data-ng-click="addModelParameter()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <div class="input-group" data-ng-repeat="attachment in model.attachments" style="margin-bottom:5px">
+                        <input type="file" class="form-control" data-ng-model="attachment" onchange="angular.element(this).scope().fileChanged(this)" />
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" data-ng-click="addAttachment()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+                    </div>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.keyword.$dirty && form.keyword.$invalid}">
+                    <label for="keyword">Keyword (for reporting purposes, optional)</label>
+                    <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Keyword" data-ng-model="model.keyword" data-ng-change="generateSendPayload()" />
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.details.$dirty && form.details.$invalid}">
+                    <label for="details">Details (for reporting purposes, optional)</label>
+                    <input type="text" class="form-control" id="details" name="details" placeholder="Details" data-ng-model="model.details" data-ng-change="generateSendPayload()" />
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="echo" name="echo" data-ng-model="model.echo" data-ng-change="generateSendPayload()" />
+                        Echo rendered template in service response
+                    </label>
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">{{submitButtonText}}</button>
+            </form>
+            
+            <div class="panel panel-default" style="margin-top:50px">
+                <div class="panel-heading">Request payload (JSON)</div>
+                <div class="panel-body">
+                    <p>HTTP POST Body for request to: /rs/send</p>
+                    <pre>{{payload | json:4}}</pre>
+                </div>
+            </div>
+            
+            <div class="panel panel-default" style="margin-top:50px">
+                <div class="panel-heading">Response (JSON)</div>
+                <div class="panel-body">
+                    <p data-ng-show="!response">No request made with current parameters.</p>
+                    <pre data-ng-show="response">{{response | json:4}}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
