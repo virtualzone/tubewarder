@@ -10,4 +10,5 @@
             <property name="ajpPort">-1</property>
         </configuration>
     </container>
+    <defaultProtocol type="Servlet 3.0"/>
 </arquillian>

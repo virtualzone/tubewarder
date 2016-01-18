@@ -1,9 +1,6 @@
 package net.weweave.tubewarder.test;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -23,21 +20,12 @@ public abstract class AbstractServiceTest {
     @BeforeClass
     public static final void beforeClass() {
         java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+        java.util.logging.Logger.getLogger("org.apache.openejb.arquillian.common").setLevel(Level.SEVERE);
     }
 
     @Before
     public final void initialize() {
         getDbTestAssist().cleanDb();
-    }
-
-    @Deployment
-    public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
-                .addPackages(true, "net.weweave.tubewarder")
-                .addAsResource("META-INF/persistence.xml")
-                .addAsWebInfResource("resources.xml")
-                .addAsWebInfResource("openejb-jar.xml");
-        return war;
     }
 
     public String getUri(String serviceName) {
