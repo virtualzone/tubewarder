@@ -10,15 +10,21 @@ Tubewarder makes sending messages to your users easier than ever:
 * Configurable outbound connectors
 * Central place for controlling and archiving your outbound communication
 
-Note: Tubewarder is still under active development. The current release is 1.0-Alpha2, but features the core functionality. Use it on your own risk.
+Note: Tubewarder is still under active development. The current release is 1.0-Alpha3, but features the core functionality. Use it on your own risk.
 
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications.
 
 ## Getting started
-Make sure you have Maven and Java 1.8 installed.
+Make sure you have Java 1.8 installed.
 
-Use the following commands to get the latest source and run the server:
+You can download a pre-built JAR file from the [Releases Page](/weweave/tubewarder/releases). After downloading tubewarder-swarm.jar, run it with this command:
+
+```
+java -jar tubewarder-swarm.jar
+```
+
+If you want to build from the most recent source cude instead, use the following commands:
 
 ```
 git clone git://github.com/weweave/tubewarder.git
@@ -73,6 +79,7 @@ For non-commercial projects, you may use Tubewarder under the terms of the GPLv3
 * There is an easy-to-use web frontend for all administrative tasks (e.g. managing app tokens, managing channels, and templates)
 * Authentication is implemented on the sending API, but it's not featuring authorization. This means: An application requires an App Token to access the sending API, but any valid App Token can access any template.
 * The management web frontend features authentication/authorization as of 1.0-Alpha2.
+* You can test the sending API and build your custom JSON request using the Send-API Tester in the web frontend (available as of 1.0-Alpha3).
 
 ## Next steps
 * Add authorization to the sending API (restrict App Tokens to specific templates/channels)
