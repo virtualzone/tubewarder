@@ -24,7 +24,7 @@ You can download a pre-built JAR file from the [Releases Page](https://github.co
 java -jar tubewarder-swarm.jar
 ```
 
-If you want to build from the most recent source cude instead, use the following commands:
+If you want to build from the most recent source code instead, use the following commands:
 
 ```
 git clone git://github.com/weweave/tubewarder.git
