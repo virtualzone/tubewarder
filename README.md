@@ -18,7 +18,7 @@ Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular
 ## Getting started
 Make sure you have Java 1.8 installed.
 
-You can download a pre-built JAR file from the [Releases Page](https://github.com/weweave/tubewarder). After downloading tubewarder-swarm.jar, run it with this command:
+You can download a pre-built JAR file from the [Releases Page](https://github.com/weweave/tubewarder/releases). After downloading tubewarder-swarm.jar, run it with this command:
 
 ```
 java -jar tubewarder-swarm.jar
