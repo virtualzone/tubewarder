@@ -71,6 +71,16 @@ To connect to a MySQL Server:
 java -jar target/tubewarder-swarm.jar -db mysql -mysql localhost:3306/tubewarder -dbUser tubewarder -dbPass tubewarder
 ```
 
+## Docker container
+There is a pre-built [Docker image](https://hub.docker.com/r/weweave/tubewarder/) for Tubewarder. We update out the regularly so that you can be sure you're always running the latest version.
+
+Pull it from weweave/tubewarder like this:
+
+```
+docker pull weweave/tubewarder
+docker run weweave/tubewarder
+```
+
 ## License
 For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
 
