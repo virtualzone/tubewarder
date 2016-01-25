@@ -8,6 +8,7 @@ import net.weweave.tubewarder.domain.Channel;
 import net.weweave.tubewarder.domain.ChannelTemplate;
 import net.weweave.tubewarder.domain.Log;
 import net.weweave.tubewarder.exception.*;
+import net.weweave.tubewarder.outputhandler.OutputHandlerConfig;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.KeyValueModel;
@@ -15,8 +16,8 @@ import net.weweave.tubewarder.service.model.SendModel;
 import net.weweave.tubewarder.service.response.SendServiceResponse;
 import net.weweave.tubewarder.util.Address;
 import net.weweave.tubewarder.util.TemplateRenderer;
-import net.weweave.tubewarder.util.output.AbstractOutputHandler;
-import net.weweave.tubewarder.util.output.OutputHandlerFactory;
+import net.weweave.tubewarder.outputhandler.OutputHandler;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.RequestScoped;
@@ -87,11 +88,12 @@ public class SendServiceCommon {
             response.content = content;
         }
 
-        AbstractOutputHandler outputHandler = OutputHandlerFactory.getOutputHandler(channel.getOutputHandler());
+        Map<String, Object> config = OutputHandlerConfig.configJsonStringToMap(channel.getConfigJson());
+        OutputHandler outputHandler = OutputHandlerFactory.getOutputHandler(config);
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
         Address recipient = new Address((GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name), sendModel.recipient.address);
         List<AttachmentModel> attachments = (sendModel.attachments == null ? new ArrayList<>() : sendModel.attachments);
-        outputHandler.process(channel.getConfig(), sender, recipient, subject, content, attachments);
+        outputHandler.process(sender, recipient, subject, content, attachments);
         log(sendModel, channelTemplate, recipient, subject, content);
     }
 

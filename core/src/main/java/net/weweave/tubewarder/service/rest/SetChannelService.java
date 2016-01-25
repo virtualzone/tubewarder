@@ -1,12 +1,13 @@
 package net.weweave.tubewarder.service.rest;
 
-import net.weweave.tubewarder.dao.AbstractOutputHandlerConfigurationDao;
 import net.weweave.tubewarder.dao.ChannelDao;
 import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
+import net.weweave.tubewarder.outputhandler.OutputHandlerConfig;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.SetChannelRequest;
@@ -26,9 +27,6 @@ import javax.ws.rs.core.MediaType;
 public class SetChannelService extends AbstractSetObjectService<ChannelModel, Channel> {
     @Inject
     private ChannelDao channelDao;
-
-    @Inject
-    private AbstractOutputHandlerConfigurationDao abstractOutputHandlerConfigurationDao;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -64,7 +62,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     protected void validateInputParameters(ChannelModel model) throws InvalidInputParametersException {
         if (GenericValidator.isBlankOrNull(model.name) ||
                 model.config == null ||
-                GenericValidator.isBlankOrNull(model.config.id)) {
+                !OutputHandlerFactory.isValidId(model.config)) {
             throw new InvalidInputParametersException();
         }
 
@@ -101,24 +99,15 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
 
     @Override
     protected void updateObject(Channel object, ChannelModel model) throws ObjectNotFoundException {
-        AbstractOutputHandlerConfiguration config = getAbstractOutputHandlerConfigurationDao().get(model.config.id);
+        String configJson = OutputHandlerConfig.configMapToJsonString(model.config);
 
         object.setName(model.name);
-        object.setOutputHandler(OutputHandler.valueOf(model.outputHandler));
-        object.setConfig(config);
+        object.setConfigJson(configJson);
         getObjectDao().update(object);
     }
 
     @Override
     protected ChannelDao getObjectDao() {
         return channelDao;
-    }
-
-    public AbstractOutputHandlerConfigurationDao getAbstractOutputHandlerConfigurationDao() {
-        return abstractOutputHandlerConfigurationDao;
-    }
-
-    public void setAbstractOutputHandlerConfigurationDao(AbstractOutputHandlerConfigurationDao abstractOutputHandlerConfigurationDao) {
-        this.abstractOutputHandlerConfigurationDao = abstractOutputHandlerConfigurationDao;
     }
 }

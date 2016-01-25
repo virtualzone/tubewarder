@@ -23,11 +23,7 @@ public class DateTimeFormat {
 
     public static boolean isDateTime(String s) {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
-        if (parse(s) == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return parse(s) != null;
     }
 
     public static Date now() {

@@ -18,7 +18,6 @@ public class DbTestAssist {
             UserTransaction tx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
             tx.begin();
             em.createNativeQuery("SET DATABASE REFERENTIAL INTEGRITY FALSE").executeUpdate();
-            em.createNativeQuery("DELETE FROM AbstractOutputHandlerConfiguration").executeUpdate();
             em.createNativeQuery("DELETE FROM AppToken").executeUpdate();
             em.createNativeQuery("DELETE FROM Channel").executeUpdate();
             em.createNativeQuery("DELETE FROM ChannelTemplate").executeUpdate();

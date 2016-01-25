@@ -6,10 +6,8 @@ import javax.persistence.*;
 public class Channel extends AbstractPersistentObject {
     @Column(unique = true)
     private String name;
-    @Enumerated(EnumType.STRING)
-    private OutputHandler outputHandler;
-    @ManyToOne
-    private AbstractOutputHandlerConfiguration config;
+    @Column(length = 100000)
+    private String configJson;
 
     public String getName() {
         return name;
@@ -19,19 +17,11 @@ public class Channel extends AbstractPersistentObject {
         this.name = name;
     }
 
-    public OutputHandler getOutputHandler() {
-        return outputHandler;
+    public String getConfigJson() {
+        return configJson;
     }
 
-    public void setOutputHandler(OutputHandler outputHandler) {
-        this.outputHandler = outputHandler;
-    }
-
-    public AbstractOutputHandlerConfiguration getConfig() {
-        return config;
-    }
-
-    public void setConfig(AbstractOutputHandlerConfiguration config) {
-        this.config = config;
+    public void setConfigJson(String configJson) {
+        this.configJson = configJson;
     }
 }

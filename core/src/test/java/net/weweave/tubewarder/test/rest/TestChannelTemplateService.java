@@ -311,16 +311,9 @@ public class TestChannelTemplateService extends AbstractRestTest {
     }
 
     private String createChannelGetId(String token, String name) {
-        String configId = createSysoutConfig(token);
-
-        JSONObject config = new JSONObject();
-        config.put("id", configId);
-        config.put("type", "SYSOUT");
-
         JSONObject object = new JSONObject();
         object.put("name", name);
-        object.put("outputHandler", "SYSOUT");
-        object.put("config", config);
+        object.put("config", getSysoutConfig());
         JSONObject payload = super.getSetRequestPayload(token, object);
         ResponseSpecification response = getResponseSpecificationPost(payload);
         JSONObject json = getPostResponse(response, "channel/set");
@@ -336,18 +329,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
         return json.getString("id");
     }
 
-    private String createSysoutConfig(String token) {
+    private JSONObject getSysoutConfig() {
         JSONObject object = new JSONObject();
-        object.put("type", "SYSOUT");
+        object.put("id", "SYSOUT");
         object.put("prefix", "[");
         object.put("suffix", "]");
-        JSONObject payload = super.getSetRequestPayload(token, object);
-        ResponseSpecification response = getResponseSpecificationPost(payload);
-        setExpectedBodies(response,
-                "error", equalTo(ErrorCode.OK),
-                "id", not(isEmptyOrNullString()));
-        JSONObject result = getPostResponse(response, "sysoutoutputhandlerconfiguration/set");
-        return result.getString("id");
+        return object;
     }
 
     private JSONObject getJsonObjectForChannelTemplate(String id, String templateId, String channelId) {

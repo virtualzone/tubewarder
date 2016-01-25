@@ -79,6 +79,11 @@
             <version>0.3m</version>
         </dependency>
         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20151123</version>
+        </dependency>
+        <dependency>
             <groupId>tubewarder</groupId>
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>

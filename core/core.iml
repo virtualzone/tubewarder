@@ -13,7 +13,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
-    <orderEntry type="library" name="Maven: org.wildfly.swarm:bootstrap:1.0.0.Alpha6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:bootstrap:1.0.0.Alpha6" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.sql:jboss-javax-sql-api_7.0_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: javax.mail:javax.mail-api:1.5.5" level="project" />
     <orderEntry type="library" name="Maven: org.freemarker:freemarker-gae:2.3.23" level="project" />
@@ -26,6 +26,7 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.6.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.6.4" level="project" />
     <orderEntry type="library" name="Maven: org.mindrot:jbcrypt:0.3m" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20151123" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.junit:arquillian-junit-container:1.1.10.Final" level="project" />
@@ -243,7 +244,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.7.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: javax.el:el-api:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.glassfish.web:el-impl:2.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.json:json:20151123" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.eu.ingwar.tools:arquillian-suite-extension:1.1.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:2.0.0" level="project" />

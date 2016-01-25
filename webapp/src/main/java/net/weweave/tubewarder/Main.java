@@ -151,18 +151,7 @@ public class Main {
 
     private static void deployApp(Container container, String db) throws Exception {
         JAXRSArchive appDeployment = ShrinkWrap.create(JAXRSArchive.class);
-        appDeployment.addPackage("net.weweave.tubewarder.dao");
-        appDeployment.addPackage("net.weweave.tubewarder.domain");
-        appDeployment.addPackage("net.weweave.tubewarder.exception");
-        appDeployment.addPackage("net.weweave.tubewarder.service");
-        appDeployment.addPackage("net.weweave.tubewarder.service.common");
-        appDeployment.addPackage("net.weweave.tubewarder.service.model");
-        appDeployment.addPackage("net.weweave.tubewarder.service.request");
-        appDeployment.addPackage("net.weweave.tubewarder.service.response");
-        appDeployment.addPackage("net.weweave.tubewarder.service.rest");
-        appDeployment.addPackage("net.weweave.tubewarder.service.soap");
-        appDeployment.addPackage("net.weweave.tubewarder.util");
-        appDeployment.addPackage("net.weweave.tubewarder.util.output");
+        appDeployment.addPackages(true, "net.weweave.tubewarder");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence-"+db+".xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
         appDeployment.addAllDependencies();
         appDeployment.staticContent();

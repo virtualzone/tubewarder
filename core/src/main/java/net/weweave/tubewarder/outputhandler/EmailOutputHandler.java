@@ -1,10 +1,10 @@
-package net.weweave.tubewarder.util.output;
+package net.weweave.tubewarder.outputhandler;
 
+import net.weweave.tubewarder.outputhandler.config.*;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.util.Address;
-import net.weweave.tubewarder.domain.EmailOutputHandlerConfiguration;
-import net.weweave.tubewarder.domain.MailSecurity;
 import org.apache.commons.validator.GenericValidator;
+import org.json.JSONObject;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -12,34 +12,70 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandlerConfiguration> {
+public class EmailOutputHandler extends OutputHandler {
+    public static final String ID = "EMAIL";
+
+    public EmailOutputHandler(Map<String, Object> config) {
+        super(config);
+    }
+
     @Override
-    public void process(EmailOutputHandlerConfiguration config, Address sender, Address recipient, String subject, String content, List<AttachmentModel> attachments) {
-        Session session = getSession(config);
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public String getName() {
+        return "Email";
+    }
+
+    @Override
+    public void process(Address sender, Address recipient, String subject, String content, List<AttachmentModel> attachments) {
+        Session session = getSession();
         try {
             MimeMessage message = createMimeMessage(session, sender);
-            MimeMultipart multipart = prepareMessage(config, message, recipient, subject, content);
+            MimeMultipart multipart = prepareMessage(message, recipient, subject, content);
             appendAttachments(multipart, attachments);
             message.setContent(multipart);
-            sendMail(session, config, message);
+            sendMail(session, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Session getSession(EmailOutputHandlerConfiguration config) {
-        Session session = Session.getDefaultInstance(getProperties(config), null);
+    @Override
+    public List<OutputHandlerConfigOption> getConfigOptions() {
+        List<OutputHandlerConfigOption> options = new ArrayList<>();
+        options.add(new StringConfigOption("smtpServer", "SMTP Server", true, ""));
+        options.add(new IntConfigOption("port", "Port", true, 25));
+        options.add(new BoolConfigOption("auth", "Authentication required", false, false));
+        options.add(new StringConfigOption("username", "Username", true, ""));
+        options.add(new StringConfigOption("password", "Password", true, ""));
+        SelectConfigOption security = new SelectConfigOption("security", "Security", true);
+        security.addOption("NONE", "None");
+        security.addOption("SSL", "SSL");
+        security.addOption("TLS", "TLS");
+        options.add(security);
+        options.add(new StringConfigOption("contentType", "Content Type", true, "text/plain"));
+        return options;
+    }
+
+    private Session getSession() {
+        Session session = Session.getDefaultInstance(getProperties(), null);
         return session;
     }
 
-    private Properties getProperties(EmailOutputHandlerConfiguration config) {
+    private Properties getProperties() {
+        Map<String, Object> config = getConfig();
         Properties props = new Properties();
-        if (MailSecurity.TLS.equals(config.getSecurity())) {
+        if ("TLS".equals(config.getOrDefault("security", ""))) {
             props.put("mail.smtp.starttls.enable", "true");
-        } else if (MailSecurity.SSL.equals(config.getSecurity())) {
+        } else if ("SSL".equals(config.getOrDefault("security", ""))) {
             props.put("mail.smtp.ssl.enable", "true");
         }
         return props;
@@ -51,8 +87,9 @@ public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandler
         return message;
     }
 
-    private MimeMultipart prepareMessage(EmailOutputHandlerConfiguration config, MimeMessage message, Address recipient, String subject, String content) throws MessagingException, UnsupportedEncodingException {
-        String contentType = config.getContentType() + "; charset=\"utf-8\"";
+    private MimeMultipart prepareMessage(MimeMessage message, Address recipient, String subject, String content) throws MessagingException, UnsupportedEncodingException {
+        Map<String, Object> config = getConfig();
+        String contentType = config.getOrDefault("contentType", "") + "; charset=\"utf-8\"";
 
         if (GenericValidator.isBlankOrNull(recipient.getName())) {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient.getAddress()));
@@ -89,21 +126,22 @@ public class EmailOutputHandler extends AbstractOutputHandler<EmailOutputHandler
         multipart.addBodyPart(messageBodyPart);
     }
 
-    private void sendMail(Session session, EmailOutputHandlerConfiguration config, MimeMessage message) throws MessagingException {
+    private void sendMail(Session session, MimeMessage message) throws MessagingException {
         Transport tr = session.getTransport("smtp");
-        if (!config.getAuth()) {
+        Map<String, Object> config = getConfig();
+        if (!(Boolean)config.getOrDefault("auth", false)) {
             tr.connect(
-                    config.getSmtpServer(),
-                    config.getPort(),
+                    (String)config.getOrDefault("smtpServer", ""),
+                    (Integer)config.getOrDefault("port", 25),
                     null,
                     null
             );
         } else {
             tr.connect(
-                    config.getSmtpServer(),
-                    config.getPort(),
-                    config.getUsername(),
-                    config.getPassword()
+                    (String)config.getOrDefault("smtpServer", ""),
+                    (Integer)config.getOrDefault("port", 25),
+                    (String)config.getOrDefault("username", ""),
+                    (String)config.getOrDefault("password", "")
             );
         }
         message.saveChanges();

@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;

@@ -33,8 +33,8 @@ public interface SendService {
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "send", targetNamespace = "http://soap.service.tubewarder.weweave.net/", className = "net.weweave.tubewarder.test.soap.client.Send")
     @ResponseWrapper(localName = "sendResponse", targetNamespace = "http://soap.service.tubewarder.weweave.net/", className = "net.weweave.tubewarder.test.soap.client.SendResponse")
-    public SendServiceResponse send(
-        @WebParam(name = "message", targetNamespace = "")
-        SendModel message);
+    SendServiceResponse send(
+            @WebParam(name = "message", targetNamespace = "")
+            SendModel message);
 
 }

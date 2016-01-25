@@ -17,8 +17,7 @@ public class TestChannelService extends AbstractRestTest {
     public void testCreateChannelSuccess() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -29,11 +28,10 @@ public class TestChannelService extends AbstractRestTest {
     public void testCreateChannelDuplicateName() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        validateSetChannelResponse(token, null, "Channel 1", configId,
+        validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        validateSetChannelResponse(token, null, "Channel 1", configId,
+        validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
                 "id", isEmptyOrNullString());
     }
@@ -42,12 +40,10 @@ public class TestChannelService extends AbstractRestTest {
     public void testCreateChannelDifferentName() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId1 = createSysoutConfig(token);
-        validateSetChannelResponse(token, null, "Channel 1", configId1,
+        validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        String configId2 = createSysoutConfig(token);
-        validateSetChannelResponse(token, null, "Channel 2", configId2,
+        validateSetChannelResponse(token, null, "Channel 2",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
     }
@@ -56,13 +52,12 @@ public class TestChannelService extends AbstractRestTest {
     public void testUpdateChannelSuccess() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
         validateGetSingleChannelResponse(token, id, "Channel 1");
-        validateSetChannelResponse(token, id, "Renamed Channel 1", configId,
+        validateSetChannelResponse(token, id, "Renamed Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         validateGetSingleChannelResponse(token, id, "Renamed Channel 1");
@@ -72,8 +67,7 @@ public class TestChannelService extends AbstractRestTest {
     public void testUpdateNonExistingObject() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        validateSetChannelResponse(token, UUID.randomUUID().toString(), "Channel 1", configId,
+        validateSetChannelResponse(token, UUID.randomUUID().toString(), "Channel 1",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
                 "id", isEmptyOrNullString());
     }
@@ -83,19 +77,17 @@ public class TestChannelService extends AbstractRestTest {
         createAdminUser();
         String token = authAdminGetToken();
 
-        String configId1 = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId1,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
 
-        String configId2 = createSysoutConfig(token);
-        validateSetChannelResponse(token, null, "Channel 2", configId2,
+        validateSetChannelResponse(token, null, "Channel 2",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         validateGetSingleChannelResponse(token, id, "Channel 1");
 
-        validateSetChannelResponse(token, id, "Channel 2", configId1,
+        validateSetChannelResponse(token, id, "Channel 2",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
         validateGetSingleChannelResponse(token, id, "Channel 1");
     }
@@ -104,11 +96,10 @@ public class TestChannelService extends AbstractRestTest {
     public void testCreateInsufficientRights() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
 
         createUserWithNoRights("dummy", "dummy");
         token = authGetToken("dummy", "dummy");
-        validateSetChannelResponse(token, null, "Channel 1", configId,
+        validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.PERMISSION_DENIED),
                 "id", isEmptyOrNullString());
     }
@@ -116,9 +107,7 @@ public class TestChannelService extends AbstractRestTest {
     @Test
     public void testCreateEmptyToken() {
         createAdminUser();
-        String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        validateSetChannelResponse("", null, "Channel 1", configId,
+        validateSetChannelResponse("", null, "Channel 1",
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
@@ -126,9 +115,7 @@ public class TestChannelService extends AbstractRestTest {
     @Test
     public void testCreateInvalidToken() {
         createAdminUser();
-        String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        validateSetChannelResponse(UUID.randomUUID().toString(), null, "Channel 1", configId,
+        validateSetChannelResponse(UUID.randomUUID().toString(), null, "Channel 1",
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
@@ -137,8 +124,7 @@ public class TestChannelService extends AbstractRestTest {
     public void testDeleteSuccess() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -153,8 +139,7 @@ public class TestChannelService extends AbstractRestTest {
     public void testDeleteInsufficientRights() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -169,8 +154,7 @@ public class TestChannelService extends AbstractRestTest {
     public void testDeleteInvalidToken() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -183,11 +167,9 @@ public class TestChannelService extends AbstractRestTest {
     public void testDeleteInvalidId() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        String id = response.getString("id");
 
         validateDeleteChannelResponse(token, UUID.randomUUID().toString(),
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
@@ -197,11 +179,9 @@ public class TestChannelService extends AbstractRestTest {
     public void testDeleteEmptyId() {
         createAdminUser();
         String token = authAdminGetToken();
-        String configId = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId,
+        validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        String id = response.getString("id");
 
         validateDeleteChannelResponse(token, "",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
@@ -239,14 +219,12 @@ public class TestChannelService extends AbstractRestTest {
         createAdminUser();
         String token = authAdminGetToken();
 
-        String configId1 = createSysoutConfig(token);
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", configId1,
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id1 = response.getString("id");
 
-        String configId2 = createSysoutConfig(token);
-        response = validateSetChannelResponse(token, null, "Channel 2", configId2,
+        response = validateSetChannelResponse(token, null, "Channel 2",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id2 = response.getString("id");
@@ -260,22 +238,16 @@ public class TestChannelService extends AbstractRestTest {
                 "channels[1].name", equalTo("Channel 2"));
     }
 
-    private String createSysoutConfig(String token) {
+    private JSONObject getSysoutConfig() {
         JSONObject object = new JSONObject();
-        object.put("type", "SYSOUT");
+        object.put("id", "SYSOUT");
         object.put("prefix", "[");
         object.put("suffix", "]");
-        JSONObject payload = super.getSetRequestPayload(token, object);
-        ResponseSpecification response = getResponseSpecificationPost(payload);
-        setExpectedBodies(response,
-                "error", equalTo(ErrorCode.OK),
-                "id", not(isEmptyOrNullString()));
-        JSONObject result = getPostResponse(response, "sysoutoutputhandlerconfiguration/set");
-        return result.getString("id");
+        return object;
     }
 
-    private JSONObject validateSetChannelResponse(String token, String id, String name, String configId, Object... body) {
-        JSONObject payload = getSetRequestPayload(token, id, name, configId);
+    private JSONObject validateSetChannelResponse(String token, String id, String name, Object... body) {
+        JSONObject payload = getSetRequestPayload(token, id, name);
         ResponseSpecification response = getResponseSpecificationPost(payload);
         setExpectedBodies(response, body);
         return getPostResponse(response, "channel/set");
@@ -294,15 +266,11 @@ public class TestChannelService extends AbstractRestTest {
         return getGetResponse(response, "channel/get");
     }
 
-    private JSONObject getSetRequestPayload(String token, String id, String name, String configId) {
-        JSONObject config = new JSONObject();
-        config.put("id", configId);
-        config.put("type", "SYSOUT");
+    private JSONObject getSetRequestPayload(String token, String id, String name) {
         JSONObject object = new JSONObject();
         object.put("id", id);
         object.put("name", name);
-        object.put("outputHandler", "SYSOUT");
-        object.put("config", config);
+        object.put("config", getSysoutConfig());
         return super.getSetRequestPayload(token, object);
     }
 
@@ -311,6 +279,7 @@ public class TestChannelService extends AbstractRestTest {
                 "error", equalTo(ErrorCode.OK),
                 "channels.size()", is(1),
                 "channels[0].id", equalTo(expectedId),
-                "channels[0].name", equalTo(expectedName));
+                "channels[0].name", equalTo(expectedName),
+                "channels[0].config.id", equalTo("SYSOUT"));
     }
 }

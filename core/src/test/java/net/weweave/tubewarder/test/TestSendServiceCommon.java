@@ -2,6 +2,8 @@ package net.weweave.tubewarder.test;
 
 import net.weweave.tubewarder.dao.*;
 import net.weweave.tubewarder.domain.*;
+import net.weweave.tubewarder.outputhandler.SysoutOutputHandler;
+import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,9 +22,6 @@ public class TestSendServiceCommon {
     @Inject
     private AppTokenDao appTokenDao;
 
-    @Inject
-    private SysoutOutputHandlerConfigurationDao configurationDao;
-
     public AppToken createAppToken() {
         AppToken token = new AppToken();
         token.setName("Default");
@@ -31,15 +30,14 @@ public class TestSendServiceCommon {
     }
 
     public Channel createChannel(String name) {
-        SysoutOutputHandlerConfiguration config = new SysoutOutputHandlerConfiguration();
-        config.setPrefix("Debug: [");
-        config.setSuffix("]");
-        getConfigurationDao().store(config);
+        JSONObject config = new JSONObject();
+        config.put("id", SysoutOutputHandler.ID);
+        config.put("prefix", "Debug: [");
+        config.put("suffix", "]");
 
         Channel channel = new Channel();
         channel.setName(name);
-        channel.setOutputHandler(OutputHandler.SYSOUT);
-        channel.setConfig(config);
+        channel.setConfigJson(config.toString());
         getChannelDao().store(channel);
         return channel;
     }
@@ -97,13 +95,5 @@ public class TestSendServiceCommon {
 
     public void setAppTokenDao(AppTokenDao appTokenDao) {
         this.appTokenDao = appTokenDao;
-    }
-
-    public SysoutOutputHandlerConfigurationDao getConfigurationDao() {
-        return configurationDao;
-    }
-
-    public void setConfigurationDao(SysoutOutputHandlerConfigurationDao configurationDao) {
-        this.configurationDao = configurationDao;
     }
 }

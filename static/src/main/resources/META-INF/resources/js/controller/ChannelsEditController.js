@@ -9,14 +9,12 @@ define(['angular', 'app'], function(angular, app) {
             name: '',
             outputHandler: 'SYSOUT',
             sysout: {
-                id: '',
-                type: 'SYSOUT',
+                id: 'SYSOUT',
                 prefix: '',
                 suffix: ''
             },
             email: {
-                id: '',
-                type: 'EMAIL',
+                id: 'EMAIL',
                 smtpServer: '',
                 port: 25,
                 auth: false,
@@ -27,41 +25,27 @@ define(['angular', 'app'], function(angular, app) {
             }
         };
         
-        var storeConfig = function(cb) {
-            var payload = {
-                token: appServices.getToken(),
-                object: { }
-            };
-            var url = '';
-            if ($scope.model.outputHandler == 'SYSOUT') {
-                url = '/rs/sysoutoutputhandlerconfiguration/set';
-                payload.object = $scope.model.sysout;
-            } else if ($scope.model.outputHandler == 'EMAIL') {
-                url = '/rs/emailoutputhandlerconfiguration/set';
-                payload.object = $scope.model.email;
+        var getConfig = function(id) {
+            if (id == "SYSOUT") {
+                return $scope.model.sysout;
+            } else if (id == "EMAIL") {
+                return $scope.model.email;
+            } else {
+                return {};
             }
-            $http.post(url, payload).success(function(data) {
-                cb(data.id);
-            });
         };
         
         $scope.submit = function(form) {
-            storeConfig(function(configId) {
-                var payload = {
-                    token: appServices.getToken(),
-                    object: {
-                        id: $scope.model.id,
-                        name: $scope.model.name,
-                        outputHandler: $scope.model.outputHandler,
-                        config: {
-                            id: configId,
-                            type: $scope.model.outputHandler
-                        }
-                    }
-                };
-                $http.post('/rs/channel/set', payload).success(function(data) {
-                    $location.path('/channels');
-                });
+            var payload = {
+                token: appServices.getToken(),
+                object: {
+                    id: $scope.model.id,
+                    name: $scope.model.name,
+                    config: getConfig($scope.model.outputHandler)
+                }
+            };
+            $http.post('/rs/channel/set', payload).success(function(data) {
+                $location.path('/channels');
             });
 		};
         
@@ -74,13 +58,11 @@ define(['angular', 'app'], function(angular, app) {
                 var channel = data.channels[0];
                 $scope.model.id = channel.id;
                 $scope.model.name = channel.name;
-                $scope.model.outputHandler = channel.outputHandler;
-                if (channel.outputHandler == 'SYSOUT') {
-                    $scope.model.sysout.id = channel.config.id;
+                $scope.model.outputHandler = channel.config.id;
+                if (channel.config.id == 'SYSOUT') {
                     $scope.model.sysout.prefix = channel.config.prefix;
                     $scope.model.sysout.suffix = channel.config.suffix;
-                } else if (channel.outputHandler == 'EMAIL') {
-                    $scope.model.email.id = channel.config.id;
+                } else if (channel.config.id == 'EMAIL') {
                     $scope.model.email.smtpServer = channel.config.smtpServer;
                     $scope.model.email.port = channel.config.port;
                     $scope.model.email.auth = channel.config.auth;
