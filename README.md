@@ -72,7 +72,7 @@ java -jar target/tubewarder-swarm.jar -db mysql -mysql localhost:3306/tubewarder
 ```
 
 ## Docker container
-There is a pre-built [Docker image](https://hub.docker.com/r/weweave/tubewarder/) for Tubewarder. We update out the regularly so that you can be sure you're always running the latest version.
+There is a pre-built [Docker image](https://hub.docker.com/r/weweave/tubewarder/) for Tubewarder. We update the image regularly so that you can be sure you're always running the latest version.
 
 Pull it from weweave/tubewarder like this:
 
