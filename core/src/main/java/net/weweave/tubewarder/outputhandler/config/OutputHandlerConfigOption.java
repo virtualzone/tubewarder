@@ -1,16 +1,23 @@
 package net.weweave.tubewarder.outputhandler.config;
 
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class OutputHandlerConfigOption {
+    private final String type;
     private String id;
     private String label;
     private boolean required;
 
-    public OutputHandlerConfigOption(String id, String label, boolean required) {
+    public OutputHandlerConfigOption(String type, String id, String label, boolean required) {
+        this.type = type;
         this.id = id;
         this.label = label;
         this.required = required;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public String getId() {
@@ -37,11 +44,7 @@ public abstract class OutputHandlerConfigOption {
         this.required = required;
     }
 
-    public JSONObject getJson() {
-        JSONObject result = new JSONObject();
-        result.put("id", getId());
-        result.put("label", getLabel());
-        result.put("required", isRequired());
-        return result;
+    public Map<String, Object> getAdditionalParameters() {
+        return new HashMap<>();
     }
 }

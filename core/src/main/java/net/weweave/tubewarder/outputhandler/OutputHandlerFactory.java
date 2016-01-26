@@ -4,9 +4,10 @@ import org.apache.commons.validator.GenericValidator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class OutputHandlerFactory {
-    private static Map<String, Class<? extends OutputHandler>> HANDLERS;
+    private static final Map<String, Class<? extends OutputHandler>> HANDLERS;
 
     static {
         HANDLERS = new HashMap<>();
@@ -37,4 +38,7 @@ public class OutputHandlerFactory {
         return false;
     }
 
+    public static Set<String> getOutputHandlerIds() {
+        return HANDLERS.keySet();
+    }
 }

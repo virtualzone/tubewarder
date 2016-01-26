@@ -4,7 +4,6 @@ import net.weweave.tubewarder.outputhandler.config.*;
 import net.weweave.tubewarder.service.model.AttachmentModel;
 import net.weweave.tubewarder.util.Address;
 import org.apache.commons.validator.GenericValidator;
-import org.json.JSONObject;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;

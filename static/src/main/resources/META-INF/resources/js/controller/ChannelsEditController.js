@@ -24,6 +24,7 @@ define(['angular', 'app'], function(angular, app) {
                 contentType: 'text/plain'
             }
         };
+        $scope.handlers = [];
         
         var getConfig = function(id) {
             if (id == "SYSOUT") {
@@ -33,6 +34,15 @@ define(['angular', 'app'], function(angular, app) {
             } else {
                 return {};
             }
+        };
+        
+        var loadOutputHandlers = function() {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/outputhandler/get', {params: payload}).success(function(data) {
+                $scope.handlers = data.outputHandlers;
+            });
         };
         
         $scope.submit = function(form) {
@@ -73,5 +83,7 @@ define(['angular', 'app'], function(angular, app) {
                 } 
             });
         }
+        
+        loadOutputHandlers();
     }]);
 });

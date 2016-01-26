@@ -1,12 +1,14 @@
 package net.weweave.tubewarder.outputhandler.config;
 
-import org.json.JSONObject;
+import java.util.Map;
 
 public class BoolConfigOption extends OutputHandlerConfigOption {
+    public static final String TYPE = "bool";
+
     private boolean defaultValue;
 
     public BoolConfigOption(String id, String label, boolean required, boolean defaultValue) {
-        super(id, label, required);
+        super(TYPE, id, label, required);
         this.defaultValue = defaultValue;
     }
 
@@ -19,8 +21,8 @@ public class BoolConfigOption extends OutputHandlerConfigOption {
     }
 
     @Override
-    public JSONObject getJson() {
-        JSONObject result = super.getJson();
+    public Map<String, Object> getAdditionalParameters() {
+        Map<String, Object> result = super.getAdditionalParameters();
         result.put("defaultValue", getDefaultValue());
         return result;
     }
