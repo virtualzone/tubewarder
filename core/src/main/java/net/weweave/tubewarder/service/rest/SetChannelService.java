@@ -6,7 +6,7 @@ import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
-import net.weweave.tubewarder.outputhandler.OutputHandlerConfig;
+import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
@@ -27,6 +27,9 @@ import javax.ws.rs.core.MediaType;
 public class SetChannelService extends AbstractSetObjectService<ChannelModel, Channel> {
     @Inject
     private ChannelDao channelDao;
+
+    @Inject
+    private OutputHandlerFactory outputHandlerFactory;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -62,7 +65,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     protected void validateInputParameters(ChannelModel model) throws InvalidInputParametersException {
         if (GenericValidator.isBlankOrNull(model.name) ||
                 model.config == null ||
-                !OutputHandlerFactory.isValidId(model.config)) {
+                !getOutputHandlerFactory().isValidId(model.config)) {
             throw new InvalidInputParametersException();
         }
 
@@ -99,7 +102,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
 
     @Override
     protected void updateObject(Channel object, ChannelModel model) throws ObjectNotFoundException {
-        String configJson = OutputHandlerConfig.configMapToJsonString(model.config);
+        String configJson = OutputHandlerConfigUtil.configMapToJsonString(model.config);
 
         object.setName(model.name);
         object.setConfigJson(configJson);
@@ -109,5 +112,13 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     @Override
     protected ChannelDao getObjectDao() {
         return channelDao;
+    }
+
+    public OutputHandlerFactory getOutputHandlerFactory() {
+        return outputHandlerFactory;
+    }
+
+    public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
+        this.outputHandlerFactory = outputHandlerFactory;
     }
 }

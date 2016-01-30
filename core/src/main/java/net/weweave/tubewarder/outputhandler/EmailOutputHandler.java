@@ -1,8 +1,7 @@
 package net.weweave.tubewarder.outputhandler;
 
-import net.weweave.tubewarder.outputhandler.config.*;
-import net.weweave.tubewarder.service.model.AttachmentModel;
-import net.weweave.tubewarder.util.Address;
+import net.weweave.tubewarder.outputhandler.api.*;
+import net.weweave.tubewarder.outputhandler.api.configoption.*;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.mail.Message;
@@ -13,35 +12,19 @@ import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-public class EmailOutputHandler extends OutputHandler {
-    public static final String ID = "EMAIL";
-
-    public EmailOutputHandler(Map<String, Object> config) {
-        super(config);
-    }
-
+@OutputHandler(id="EMAIL", name="Email")
+public class EmailOutputHandler implements IOutputHandler {
     @Override
-    public String getId() {
-        return ID;
-    }
-
-    @Override
-    public String getName() {
-        return "Email";
-    }
-
-    @Override
-    public void process(Address sender, Address recipient, String subject, String content, List<AttachmentModel> attachments) {
-        Session session = getSession();
+    public void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) {
+        Session session = getSession(config);
         try {
             MimeMessage message = createMimeMessage(session, sender);
-            MimeMultipart multipart = prepareMessage(message, recipient, subject, content);
+            MimeMultipart multipart = prepareMessage(config, message, recipient, subject, content);
             appendAttachments(multipart, attachments);
             message.setContent(multipart);
-            sendMail(session, message);
+            sendMail(config, session, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,9 +36,9 @@ public class EmailOutputHandler extends OutputHandler {
         options.add(new StringConfigOption("smtpServer", "SMTP Server", true, ""));
         options.add(new IntConfigOption("port", "Port", true, 25));
         options.add(new BoolConfigOption("auth", "Authentication required", false, false));
-        options.add(new StringConfigOption("username", "Username", true, ""));
-        options.add(new StringConfigOption("password", "Password", true, ""));
-        SelectConfigOption security = new SelectConfigOption("security", "Security", true);
+        options.add(new StringConfigOption("username", "Username", false, ""));
+        options.add(new StringConfigOption("password", "Password", false, ""));
+        SelectConfigOption security = new SelectConfigOption("security", "Security", true, "NONE");
         security.addOption("NONE", "None");
         security.addOption("SSL", "SSL");
         security.addOption("TLS", "TLS");
@@ -64,13 +47,36 @@ public class EmailOutputHandler extends OutputHandler {
         return options;
     }
 
-    private Session getSession() {
-        Session session = Session.getDefaultInstance(getProperties(), null);
+    @Override
+    public void checkConfig(Config config) throws InvalidConfigException {
+        if (GenericValidator.isBlankOrNull(config.getString("smtpServer"))) {
+            throw new InvalidConfigException("SMTP server must not be empty");
+        }
+        if (config.getInt("port") == null || config.getInt("port") <= 0 || config.getInt("port") > 65535) {
+            throw new InvalidConfigException("Port is invalid");
+        }
+        if (config.getBool("auth") && GenericValidator.isBlankOrNull(config.getString("username"))) {
+            throw new InvalidConfigException("Username must not be empty if authentication is enabled");
+        }
+        if (!("NONE".equals(config.getString("security")) || "SSL".equals(config.getString("security")) || "TLS".equals(config.getString("security")))) {
+            throw new InvalidConfigException("Security is invalid");
+        }
+    }
+
+    @Override
+    public void checkRecipientAddress(Address address) throws InvalidAddessException {
+        if (GenericValidator.isBlankOrNull(address.getAddress()) ||
+                !GenericValidator.isEmail(address.getAddress())) {
+            throw new InvalidAddessException("Recipient address must be a valid email address");
+        }
+    }
+
+    private Session getSession(Config config) {
+        Session session = Session.getDefaultInstance(getProperties(config), null);
         return session;
     }
 
-    private Properties getProperties() {
-        Map<String, Object> config = getConfig();
+    private Properties getProperties(Config config) {
         Properties props = new Properties();
         if ("TLS".equals(config.getOrDefault("security", ""))) {
             props.put("mail.smtp.starttls.enable", "true");
@@ -86,8 +92,7 @@ public class EmailOutputHandler extends OutputHandler {
         return message;
     }
 
-    private MimeMultipart prepareMessage(MimeMessage message, Address recipient, String subject, String content) throws MessagingException, UnsupportedEncodingException {
-        Map<String, Object> config = getConfig();
+    private MimeMultipart prepareMessage(Config config, MimeMessage message, Address recipient, String subject, String content) throws MessagingException, UnsupportedEncodingException {
         String contentType = config.getOrDefault("contentType", "") + "; charset=\"utf-8\"";
 
         if (GenericValidator.isBlankOrNull(recipient.getName())) {
@@ -109,25 +114,24 @@ public class EmailOutputHandler extends OutputHandler {
         return multipart;
     }
 
-    private void appendAttachments(MimeMultipart multipart, List<AttachmentModel> attachments) throws MessagingException {
-        for (AttachmentModel attachment : attachments) {
+    private void appendAttachments(MimeMultipart multipart, List<Attachment> attachments) throws MessagingException {
+        for (Attachment attachment : attachments) {
             appendAttachment(multipart, attachment);
         }
     }
 
-    private void appendAttachment(MimeMultipart multipart, AttachmentModel attachment) throws MessagingException {
+    private void appendAttachment(MimeMultipart multipart, Attachment attachment) throws MessagingException {
         MimeBodyPart messageBodyPart = new PreencodedMimeBodyPart("base64");
-        if (!GenericValidator.isBlankOrNull(attachment.contentType)) {
-            messageBodyPart.setHeader("Content-Type", attachment.contentType);
+        if (!GenericValidator.isBlankOrNull(attachment.getContentType())) {
+            messageBodyPart.setHeader("Content-Type", attachment.getContentType());
         }
-        messageBodyPart.setFileName(attachment.filename);
-        messageBodyPart.setText(attachment.payload);
+        messageBodyPart.setFileName(attachment.getFilename());
+        messageBodyPart.setText(attachment.getPayload());
         multipart.addBodyPart(messageBodyPart);
     }
 
-    private void sendMail(Session session, MimeMessage message) throws MessagingException {
+    private void sendMail(Config config, Session session, MimeMessage message) throws MessagingException {
         Transport tr = session.getTransport("smtp");
-        Map<String, Object> config = getConfig();
         if (!(Boolean)config.getOrDefault("auth", false)) {
             tr.connect(
                     (String)config.getOrDefault("smtpServer", ""),

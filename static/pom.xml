@@ -7,13 +7,13 @@
     <parent>
         <groupId>tubewarder</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${version.tubewarder}</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>tubewarder</groupId>
     <artifactId>static</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${version.tubewarder}</version>
     <packaging>jar</packaging>
 
     <build>

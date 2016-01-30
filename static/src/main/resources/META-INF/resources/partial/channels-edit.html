@@ -9,56 +9,27 @@
                 </div>
                 <div class="form-group">
                     <label for="outputHandler">Output Handler</label>
-                    <select class="form-control" id="outputHandler" name="outputHandler" data-ng-model="model.outputHandler">
-                        <option value="SYSOUT">Console</option>
-                        <option value="EMAIL">Email</option>
+                    <select class="form-control" id="outputHandler" name="outputHandler" data-ng-model="model.outputHandler" data-ng-change="renderAvailableConfigOptions()" data-ng-options="handler.id as handler.name for handler in handlers" required="required">
+                        <option value="">-- select handler --</option>
                     </select>
                 </div>
-                <div data-ng-show="model.outputHandler == 'SYSOUT'">
-                    <div class="form-group">
-                        <label for="sysout-prefix">Prefix</label>
-                        <input type="text" class="form-control" id="sysout-prefix" name="sysout-prefix" placeholder="Prefix" data-ng-model="model.sysout.prefix" />
+                <div class="form-group" data-ng-repeat="configOption in configOptions" data-ng-switch="configOption.type">
+                    <div data-ng-switch-when="string" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
+                        <label for="option-{{configOption.id}}">{{configOption.label}}</label>
+                        <input type="text" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" />
                     </div>
-                    <div class="form-group">
-                        <label for="sysout-suffix">Suffix</label>
-                        <input type="text" class="form-control" id="sysout-suffix" name="sysout-suffix" placeholder="Suffix" data-ng-model="model.sysout.suffix" />
+                    <div data-ng-switch-when="int" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
+                        <label for="option-{{configOption.id}}">{{configOption.label}}</label>
+                        <input type="number" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" />
                     </div>
-                </div>
-                <div data-ng-show="model.outputHandler == 'EMAIL'">
-                    <div class="form-group">
-                        <label for="email-smtpServer">SMTP Server</label>
-                        <input type="text" class="form-control" id="email-smtpServer" name="email-smtpServer" placeholder="SMTP Server" data-ng-model="model.email.smtpServer" data-ng-required="model.outputHandler == 'EMAIL'" />
-                    </div>
-                    <div class="form-group">
-                        <label for="email-port">Port</label>
-                        <input type="number" class="form-control" id="email-port" name="email-port" placeholder="Port" data-ng-model="model.email.port" data-ng-required="model.outputHandler == 'EMAIL'" />
-                    </div>
-                    <div class="checkbox">
+                    <div data-ng-switch-when="bool" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label>
-                            <input type="checkbox" data-ng-model="model.email.auth" /> Server requires authentication
+                            <input type="checkbox" data-ng-model="configOption.value" data-ng-required="configOption.required" /> {{configOption.label}}
                         </label>
                     </div>
-                    <div class="form-group">
-                        <label for="email-username">Username</label>
-                        <input type="text" class="form-control" id="email-username" name="email-username" placeholder="Username" data-ng-model="model.email.username" data-ng-disabled="!model.email.auth" />
-                    </div>
-                    <div class="form-group">
-                        <label for="email-password">Password</label>
-                        <input type="text" class="form-control" id="email-password" name="email-password" placeholder="Password" data-ng-model="model.email.password" data-ng-disabled="!model.email.auth" />
-                    </div>
-                    <div class="form-group">
-                        <label for="email-security">Security</label>
-                        <select class="form-control" id="email-security" name="email-security" data-ng-model="model.email.security" data-ng-required="model.outputHandler == 'EMAIL'">
-                            <option value="NONE">None</option>
-                            <option value="TLS">TLS</option>
-                            <option value="SSL">SSL</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="email-contentType">Content Type</label>
-                        <select class="form-control" id="email-contentType" name="email-contentType" data-ng-model="model.email.contentType" data-ng-required="model.outputHandler == 'EMAIL'">
-                            <option value="text/plain">text/plain</option>
-                            <option value="text/html">text/html</option>
+                    <div data-ng-switch-when="select" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
+                        <label for="option-{{configOption.id}}">{{configOption.label}}</label>
+                        <select class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" data-ng-model="configOption.value" data-ng-options="k as v for (k, v) in configOption.options" data-ng-required="configOption.required">
                         </select>
                     </div>
                 </div>

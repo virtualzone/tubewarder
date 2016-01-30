@@ -7,42 +7,55 @@ define(['angular', 'app'], function(angular, app) {
         $scope.model = {
             id: '',
             name: '',
-            outputHandler: 'SYSOUT',
-            sysout: {
-                id: 'SYSOUT',
-                prefix: '',
-                suffix: ''
-            },
-            email: {
-                id: 'EMAIL',
-                smtpServer: '',
-                port: 25,
-                auth: false,
-                username: '',
-                password: '',
-                security: 'NONE',
-                contentType: 'text/plain'
-            }
+            outputHandler: ''
         };
         $scope.handlers = [];
+        $scope.configOptions = [];
         
-        var getConfig = function(id) {
-            if (id == "SYSOUT") {
-                return $scope.model.sysout;
-            } else if (id == "EMAIL") {
-                return $scope.model.email;
-            } else {
-                return {};
+        var getConfig = function() {
+            var config = {};
+            config.id = $scope.model.outputHandler;
+            for (var i=0; i<$scope.configOptions.length; i++) {
+                var option = $scope.configOptions[i];
+                config[option.id] = option.value;
             }
+            return config;
         };
         
-        var loadOutputHandlers = function() {
+        var loadOutputHandlers = function(cb) {
             var payload = {
                 token: appServices.getToken()
             };
             $http.get('/rs/outputhandler/get', {params: payload}).success(function(data) {
                 $scope.handlers = data.outputHandlers;
+                cb();
             });
+        };
+        
+        $scope.renderAvailableConfigOptions = function() {
+            for (var i=0; i<$scope.handlers.length; i++) {
+                var handler = $scope.handlers[i];
+                if (handler.id == $scope.model.outputHandler) {
+                    $scope.configOptions = angular.copy(handler.configOptions);
+                    for (var j=0; j<$scope.configOptions.length; j++) {
+                        var option = $scope.configOptions[j];
+                        if (option.defaultValue) {
+                            option.value = option.defaultValue;
+                        } else {
+                            option.value = '';
+                        }
+                    }
+                }
+            }
+        };
+        
+        var setConfigOptions = function(config) {
+            $scope.model.outputHandler = config.id;
+            $scope.renderAvailableConfigOptions();
+            for (var j=0; j<$scope.configOptions.length; j++) {
+                var option = $scope.configOptions[j];
+                option.value = config[option.id];
+            }
         };
         
         $scope.submit = function(form) {
@@ -51,7 +64,7 @@ define(['angular', 'app'], function(angular, app) {
                 object: {
                     id: $scope.model.id,
                     name: $scope.model.name,
-                    config: getConfig($scope.model.outputHandler)
+                    config: getConfig()
                 }
             };
             $http.post('/rs/channel/set', payload).success(function(data) {
@@ -59,31 +72,21 @@ define(['angular', 'app'], function(angular, app) {
             });
 		};
         
-        if ($routeParams.id) {
-            var payload = {
-                token: appServices.getToken(),
-                id: $routeParams.id
-            };
-            $http.get('/rs/channel/get', {params: payload}).success(function(data) {
-                var channel = data.channels[0];
-                $scope.model.id = channel.id;
-                $scope.model.name = channel.name;
-                $scope.model.outputHandler = channel.config.id;
-                if (channel.config.id == 'SYSOUT') {
-                    $scope.model.sysout.prefix = channel.config.prefix;
-                    $scope.model.sysout.suffix = channel.config.suffix;
-                } else if (channel.config.id == 'EMAIL') {
-                    $scope.model.email.smtpServer = channel.config.smtpServer;
-                    $scope.model.email.port = channel.config.port;
-                    $scope.model.email.auth = channel.config.auth;
-                    $scope.model.email.username = channel.config.username;
-                    $scope.model.email.password = channel.config.password;
-                    $scope.model.email.security = channel.config.security;
-                    $scope.model.email.contentType = channel.config.contentType;
-                } 
-            });
-        }
+        var load = function() {
+            if ($routeParams.id) {
+                var payload = {
+                    token: appServices.getToken(),
+                    id: $routeParams.id
+                };
+                $http.get('/rs/channel/get', {params: payload}).success(function(data) {
+                    var channel = data.channels[0];
+                    $scope.model.id = channel.id;
+                    $scope.model.name = channel.name;
+                    setConfigOptions(channel.config);
+                });
+            }
+        };
         
-        loadOutputHandlers();
+        loadOutputHandlers(load);
     }]);
 });

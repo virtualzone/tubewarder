@@ -1,4 +1,4 @@
-package net.weweave.tubewarder.outputhandler.config;
+package net.weweave.tubewarder.outputhandler.api.configoption;
 
 import java.util.HashMap;
 import java.util.Map;

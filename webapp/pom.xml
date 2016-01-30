@@ -7,13 +7,13 @@
     <parent>
         <groupId>tubewarder</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${version.tubewarder}</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>tubewarder</groupId>
     <artifactId>webapp</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${version.tubewarder}</version>
     <packaging>jar</packaging>
     
     <dependencies>
@@ -84,15 +84,26 @@
             <version>20151123</version>
         </dependency>
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.10</version>
+        </dependency>
+        <dependency>
+            <groupId>tubewarder</groupId>
+            <artifactId>outputhandler-api</artifactId>
+            <version>${version.tubewarder}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>tubewarder</groupId>
             <artifactId>core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${version.tubewarder}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>tubewarder</groupId>
             <artifactId>static</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${version.tubewarder}</version>
         </dependency>
     </dependencies>
 

@@ -1,4 +1,4 @@
-package net.weweave.tubewarder.util;
+package net.weweave.tubewarder.outputhandler.api;
 
 public class Address {
     private String name;

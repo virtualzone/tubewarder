@@ -2,7 +2,6 @@ package net.weweave.tubewarder.test;
 
 import net.weweave.tubewarder.dao.*;
 import net.weweave.tubewarder.domain.*;
-import net.weweave.tubewarder.outputhandler.SysoutOutputHandler;
 import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,7 +30,7 @@ public class TestSendServiceCommon {
 
     public Channel createChannel(String name) {
         JSONObject config = new JSONObject();
-        config.put("id", SysoutOutputHandler.ID);
+        config.put("id", "SYSOUT");
         config.put("prefix", "Debug: [");
         config.put("suffix", "]");
 

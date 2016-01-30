@@ -1,7 +1,7 @@
 package net.weweave.tubewarder.service.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import net.weweave.tubewarder.outputhandler.config.OutputHandlerConfigOption;
+import net.weweave.tubewarder.outputhandler.api.configoption.OutputHandlerConfigOption;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashMap;
