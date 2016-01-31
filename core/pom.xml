@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>tubewarder</groupId>
+        <groupId>net.weweave.tubewarder</groupId>
         <artifactId>parent</artifactId>
         <version>${version.tubewarder}</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <groupId>tubewarder</groupId>
+    <groupId>net.weweave.tubewarder</groupId>
     <artifactId>core</artifactId>
     <version>${version.tubewarder}</version>
     <packaging>jar</packaging>
@@ -69,7 +69,7 @@
             <version>0.9.10</version>
         </dependency>
         <dependency>
-            <groupId>tubewarder</groupId>
+            <groupId>net.weweave.tubewarder</groupId>
             <artifactId>outputhandler-api</artifactId>
             <version>${version.tubewarder}</version>
             <scope>provided</scope>
