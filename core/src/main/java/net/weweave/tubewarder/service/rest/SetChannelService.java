@@ -8,6 +8,9 @@ import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
+import net.weweave.tubewarder.outputhandler.api.Config;
+import net.weweave.tubewarder.outputhandler.api.IOutputHandler;
+import net.weweave.tubewarder.outputhandler.api.InvalidConfigException;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.SetChannelRequest;
@@ -90,6 +93,14 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
             } catch (ObjectNotFoundException e) {
                 // This is okay
             }
+        }
+
+        // Check if config is valid for specified output handler
+        IOutputHandler outputHandler = getOutputHandlerFactory().getOutputHandler(model.config);
+        try {
+            outputHandler.checkConfig(model.config);
+        } catch (InvalidConfigException e) {
+            throw new InvalidInputParametersException(e.getMessage());
         }
     }
 

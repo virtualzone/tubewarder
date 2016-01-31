@@ -10,10 +10,7 @@ import net.weweave.tubewarder.domain.Log;
 import net.weweave.tubewarder.exception.*;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
-import net.weweave.tubewarder.outputhandler.api.Address;
-import net.weweave.tubewarder.outputhandler.api.Attachment;
-import net.weweave.tubewarder.outputhandler.api.Config;
-import net.weweave.tubewarder.outputhandler.api.IOutputHandler;
+import net.weweave.tubewarder.outputhandler.api.*;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.KeyValueModel;
 import net.weweave.tubewarder.service.model.SendModel;
@@ -80,7 +77,7 @@ public class SendServiceCommon {
         }
     }
 
-    private void renderAndSend(SendModel sendModel, SendServiceResponse response) throws ObjectNotFoundException, TemplateCorruptException, TemplateModelException {
+    private void renderAndSend(SendModel sendModel, SendServiceResponse response) throws ObjectNotFoundException, TemplateCorruptException, TemplateModelException, InvalidInputParametersException {
         ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
 
@@ -94,8 +91,15 @@ public class SendServiceCommon {
 
         Config config = OutputHandlerConfigUtil.configJsonStringToMap(channel.getConfigJson());
         IOutputHandler outputHandler = getOutputHandlerFactory().getOutputHandler(config);
+
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
         Address recipient = new Address((GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name), sendModel.recipient.address);
+        try {
+            outputHandler.checkRecipientAddress(recipient);
+        } catch (InvalidAddessException e) {
+            throw new InvalidInputParametersException(e.getMessage());
+        }
+
         List<Attachment> attachments = sendModel.attachmentModelToList();
         outputHandler.process(config, sender, recipient, subject, content, attachments);
         log(sendModel, channelTemplate, recipient, subject, content);
