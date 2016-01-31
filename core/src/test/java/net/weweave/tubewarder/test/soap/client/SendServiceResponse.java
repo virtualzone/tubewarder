@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;extension base="{http://soap.service.tubewarder.weweave.net/}abstractResponse">
  *       &lt;sequence>
+ *         &lt;element name="recipient" type="{http://soap.service.tubewarder.weweave.net/}addressModel" minOccurs="0"/>
  *         &lt;element name="subject" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="content" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "sendServiceResponse", propOrder = {
+    "recipient",
     "subject",
     "content"
 })
@@ -35,8 +37,33 @@ public class SendServiceResponse
     extends AbstractResponse
 {
 
+    protected AddressModel recipient;
     protected String subject;
     protected String content;
+
+    /**
+     * Gets the value of the recipient property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link AddressModel }
+     *     
+     */
+    public AddressModel getRecipient() {
+        return recipient;
+    }
+
+    /**
+     * Sets the value of the recipient property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link AddressModel }
+     *     
+     */
+    public void setRecipient(AddressModel value) {
+        this.recipient = value;
+    }
 
     /**
      * Gets the value of the subject property.

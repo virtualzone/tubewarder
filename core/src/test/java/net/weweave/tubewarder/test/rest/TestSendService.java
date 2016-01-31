@@ -148,6 +148,66 @@ public class TestSendService extends AbstractRestTest {
                 "error", equalTo(ErrorCode.OK));
     }
 
+    @Test
+    public void testRewriteSubject() {
+        AppToken token = getCommon().createAppToken();
+
+        JSONObject config = getCommon().getSysoutChannelConfigJson();
+        Channel channel = new Channel();
+        channel.setName("sms");
+        channel.setRewriteRecipientName("${recipientName}");
+        channel.setRewriteRecipientAddress("${recipientAddress}");
+        channel.setRewriteSubject("This is a message to ${recipientName}");
+        channel.setRewriteContent("${content}");
+        channel.setConfigJson(config.toString());
+        getCommon().getChannelDao().store(channel);
+
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "Welcome to Tubewarder, ${firstname}!",
+                "Hi ${firstname} ${lastname}, here is your activation code: ${code}");
+
+        Map<String, Object> model = createMap(
+                "firstname", "John",
+                "lastname", "Doe",
+                "code", "1234567890");
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
+                "error", equalTo(ErrorCode.OK),
+                "subject", equalTo("This is a message to John"),
+                "content", equalTo("Hi John Doe, here is your activation code: 1234567890"));
+    }
+
+    @Test
+    public void testRewriteMixup() {
+        AppToken token = getCommon().createAppToken();
+
+        JSONObject config = getCommon().getSysoutChannelConfigJson();
+        Channel channel = new Channel();
+        channel.setName("sms");
+        channel.setRewriteRecipientName("${subject}");
+        channel.setRewriteRecipientAddress("smsgateway@some.where");
+        channel.setRewriteSubject("This is a message with content [${content}]");
+        channel.setRewriteContent("Should go to ${recipientName}");
+        channel.setConfigJson(config.toString());
+        getCommon().getChannelDao().store(channel);
+
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "Welcome to Tubewarder, ${firstname}!",
+                "Hi ${firstname} ${lastname}, here is your activation code: ${code}");
+
+        Map<String, Object> model = createMap(
+                "firstname", "John",
+                "lastname", "Doe",
+                "code", "1234567890");
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
+                "error", equalTo(ErrorCode.OK),
+                "recipient.name", equalTo("Welcome to Tubewarder, John!"),
+                "recipient.address", equalTo("smsgateway@some.where"),
+                "subject", equalTo("This is a message with content [Hi John Doe, here is your activation code: 1234567890]"),
+                "content", equalTo("Should go to John"));
+    }
+
     private JSONObject validateSendResponse(String token, String templateName, String channelName, Map<String, Object> model, String recipientName, String recipientAddress, Object... body) {
         JSONObject payload = getSendRequestPayload(token, templateName, channelName, model, recipientName, recipientAddress);
         ResponseSpecification response = getResponseSpecificationPost(payload);

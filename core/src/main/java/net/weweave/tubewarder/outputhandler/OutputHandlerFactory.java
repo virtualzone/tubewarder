@@ -59,7 +59,7 @@ public class OutputHandlerFactory {
         return HANDLERS;
     }
 
-    private void init() {
+    private synchronized void init() {
         LOG.info("Initializing output handlers...");
         HANDLERS = new HashMap<>();
         Reflections reflections = new Reflections(new ConfigurationBuilder()

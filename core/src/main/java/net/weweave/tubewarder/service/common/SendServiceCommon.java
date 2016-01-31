@@ -81,30 +81,58 @@ public class SendServiceCommon {
         ChannelTemplate channelTemplate = getChannelTemplateDao().getChannelTemplateByNames(sendModel.template, sendModel.channel);
         Channel channel = channelTemplate.getChannel();
 
+        // Render subject and content
         Map<String, Object> model = convertDataModelToMap(sendModel.model == null ? new ArrayList<>() : sendModel.model);
         String subject = getTemplateRenderer().render(channelTemplate.getSubject(), model);
         String content = getTemplateRenderer().render(channelTemplate.getContent(), model);
+
+        // Do rewrites
+        Rewrites rewrites = new Rewrites();
+        rewrites.recipientName = (GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name);
+        rewrites.recipientAddress = sendModel.recipient.address;
+        rewrites.subject = subject;
+        rewrites.content = content;
+        rewrite(rewrites, channel);
+
+        // Echo?
         if (sendModel.echo) {
-            response.subject = subject;
-            response.content = content;
+            response.recipient.name = rewrites.recipientName;
+            response.recipient.address = rewrites.recipientAddress;
+            response.subject = rewrites.subject;
+            response.content = rewrites.content;
         }
 
+        // Load output handler
         Config config = OutputHandlerConfigUtil.configJsonStringToMap(channel.getConfigJson());
         IOutputHandler outputHandler = getOutputHandlerFactory().getOutputHandler(config);
 
+        // Build addresses and check recipient
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
-        Address recipient = new Address((GenericValidator.isBlankOrNull(sendModel.recipient.name) ? "" : sendModel.recipient.name), sendModel.recipient.address);
+        Address recipient = new Address(rewrites.recipientName, rewrites.recipientAddress);
         try {
             outputHandler.checkRecipientAddress(recipient);
         } catch (InvalidAddessException e) {
             throw new InvalidInputParametersException(e.getMessage());
         }
 
+        // Send
         List<Attachment> attachments = sendModel.attachmentModelToList();
-        outputHandler.process(config, sender, recipient, subject, content, attachments);
-        log(sendModel, channelTemplate, recipient, subject, content);
+        outputHandler.process(config, sender, recipient, rewrites.subject, rewrites.content, attachments);
+        log(sendModel, channelTemplate, recipient, rewrites.subject, rewrites.content);
     }
 
+    private void rewrite(Rewrites rewrites, Channel channel) throws TemplateCorruptException, TemplateModelException {
+        Map<String, Object> model = new HashMap<>();
+        model.put("recipientName", rewrites.recipientName);
+        model.put("recipientAddress", rewrites.recipientAddress);
+        model.put("subject", rewrites.subject);
+        model.put("content", rewrites.content);
+
+        rewrites.recipientName = getTemplateRenderer().render(channel.getRewriteRecipientName(), model);
+        rewrites.recipientAddress = getTemplateRenderer().render(channel.getRewriteRecipientAddress(), model);
+        rewrites.subject = getTemplateRenderer().render(channel.getRewriteSubject(), model);
+        rewrites.content = getTemplateRenderer().render(channel.getRewriteContent(), model);
+    }
 
     private Map<String, Object> convertDataModelToMap(List<KeyValueModel> dataModel) {
         Map<String, Object> result = new HashMap<>();
@@ -168,5 +196,12 @@ public class SendServiceCommon {
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    private class Rewrites {
+        public String recipientName;
+        public String recipientAddress;
+        public String subject;
+        public String content;
     }
 }

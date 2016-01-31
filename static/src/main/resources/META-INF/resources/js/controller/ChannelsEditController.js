@@ -7,6 +7,10 @@ define(['angular', 'app'], function(angular, app) {
         $scope.model = {
             id: '',
             name: '',
+            rewriteRecipientName: '${recipientName}',
+            rewriteRecipientAddress: '${recipientAddress}',
+            rewriteSubject: '${subject}',
+            rewriteContent: '${content}',
             outputHandler: ''
         };
         $scope.handlers = [];
@@ -30,6 +34,22 @@ define(['angular', 'app'], function(angular, app) {
                 $scope.handlers = data.outputHandlers;
                 cb();
             });
+        };
+        
+        $scope.resetRecipientName = function() {
+            $scope.model.rewriteRecipientName = '${recipientName}';
+        };
+        
+        $scope.resetRecipientAddress = function() {
+            $scope.model.rewriteRecipientAddress = '${recipientAddress}';
+        };
+        
+        $scope.resetSubject = function() {
+            $scope.model.rewriteSubject = '${subject}';
+        };
+        
+        $scope.resetContent = function() {
+            $scope.model.rewriteContent = '${content}';
         };
         
         $scope.renderAvailableConfigOptions = function() {
@@ -64,6 +84,10 @@ define(['angular', 'app'], function(angular, app) {
                 object: {
                     id: $scope.model.id,
                     name: $scope.model.name,
+                    rewriteRecipientName: $scope.model.rewriteRecipientName,
+                    rewriteRecipientAddress: $scope.model.rewriteRecipientAddress,
+                    rewriteSubject: $scope.model.rewriteSubject,
+                    rewriteContent: $scope.model.rewriteContent,
                     config: getConfig()
                 }
             };
@@ -88,5 +112,6 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         loadOutputHandlers(load);
+        $('[data-toggle="popover"]').popover();
     }]);
 });

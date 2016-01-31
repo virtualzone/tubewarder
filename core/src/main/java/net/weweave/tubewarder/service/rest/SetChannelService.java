@@ -116,6 +116,10 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         String configJson = OutputHandlerConfigUtil.configMapToJsonString(model.config);
 
         object.setName(model.name);
+        object.setRewriteRecipientName(model.rewriteRecipientName);
+        object.setRewriteRecipientAddress(model.rewriteRecipientAddress);
+        object.setRewriteSubject(model.rewriteSubject);
+        object.setRewriteContent(model.rewriteContent);
         object.setConfigJson(configJson);
         getObjectDao().update(object);
     }

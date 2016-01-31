@@ -7,6 +7,52 @@
                     <label for="name">Unique Name</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Channel name" data-ng-model="model.name" autofocus="autofocus" required="required" />
                 </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.rewriteRecipientName.$dirty && form.rewriteRecipientName.$invalid}">
+                    <label for="rewriteRecipientName">Rewrite Recipient Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="rewriteRecipientName" name="rewriteRecipientName" placeholder="Recipient Name" data-ng-model="model.rewriteRecipientName" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" data-ng-click="resetRecipientName()">Reset</button>
+                            <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.rewriteRecipientAddress.$dirty && form.rewriteRecipientAddress.$invalid}">
+                    <label for="rewriteRecipientAddress">Rewrite Recipient Address</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="rewriteRecipientAddress" name="rewriteRecipientAddress" placeholder="Recipient Address" data-ng-model="model.rewriteRecipientAddress" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" data-ng-click="resetRecipientAddress()">Reset</button>
+                            <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.rewriteSubject.$dirty && form.rewriteSubject.$invalid}">
+                    <label for="rewriteSubject">Rewrite Subject</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="rewriteSubject" name="rewriteSubject" placeholder="Subject" data-ng-model="model.rewriteSubject" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" data-ng-click="resetSubject()">Reset</button>
+                            <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.rewriteContent.$dirty && form.rewriteContent.$invalid}">
+                    <label for="rewriteContent">Rewrite Content</label>
+                    <div class="input-group">
+                        <textarea class="form-control" id="rewriteContent" name="rewriteContent" placeholder="Content" data-ng-model="model.rewriteContent" rows="3"></textarea>
+                        <span type="button" class="input-group-addon btn btn-default" data-ng-click="resetContent()">Reset</span>
+                        <span type="button" class="input-group-addon btn btn-default" data-container="body" data-toggle="popover" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                        </span>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="outputHandler">Output Handler</label>
                     <select class="form-control" id="outputHandler" name="outputHandler" data-ng-model="model.outputHandler" data-ng-change="renderAvailableConfigOptions()" data-ng-options="handler.id as handler.name for handler in handlers" required="required">

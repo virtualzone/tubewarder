@@ -29,16 +29,25 @@ public class TestSendServiceCommon {
     }
 
     public Channel createChannel(String name) {
+        JSONObject config = getSysoutChannelConfigJson();
+
+        Channel channel = new Channel();
+        channel.setName(name);
+        channel.setRewriteRecipientName("${recipientName}");
+        channel.setRewriteRecipientAddress("${recipientAddress}");
+        channel.setRewriteSubject("${subject}");
+        channel.setRewriteContent("${content}");
+        channel.setConfigJson(config.toString());
+        getChannelDao().store(channel);
+        return channel;
+    }
+
+    public JSONObject getSysoutChannelConfigJson() {
         JSONObject config = new JSONObject();
         config.put("id", "SYSOUT");
         config.put("prefix", "Debug: [");
         config.put("suffix", "]");
-
-        Channel channel = new Channel();
-        channel.setName(name);
-        channel.setConfigJson(config.toString());
-        getChannelDao().store(channel);
-        return channel;
+        return config;
     }
 
     public Channel createChannel() {

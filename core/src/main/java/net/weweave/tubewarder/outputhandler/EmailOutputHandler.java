@@ -13,9 +13,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 @OutputHandler(id="EMAIL", name="Email")
 public class EmailOutputHandler implements IOutputHandler {
+    private static final Logger LOG = Logger.getLogger(EmailOutputHandler.class.getName());
+
     @Override
     public void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) {
         Session session = getSession(config);
@@ -65,6 +68,7 @@ public class EmailOutputHandler implements IOutputHandler {
 
     @Override
     public void checkRecipientAddress(Address address) throws InvalidAddessException {
+        LOG.fine("Checking recipient address: " + address.getAddress());
         if (GenericValidator.isBlankOrNull(address.getAddress()) ||
                 !GenericValidator.isEmail(address.getAddress())) {
             throw new InvalidAddessException("Recipient address must be a valid email address");
@@ -131,6 +135,10 @@ public class EmailOutputHandler implements IOutputHandler {
     }
 
     private void sendMail(Config config, Session session, MimeMessage message) throws MessagingException {
+        if (config.getBool("simulate")) {
+            return;
+        }
+
         Transport tr = session.getTransport("smtp");
         if (!(Boolean)config.getOrDefault("auth", false)) {
             tr.connect(
