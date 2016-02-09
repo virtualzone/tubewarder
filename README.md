@@ -1,5 +1,6 @@
 # Tubewarder
-A centric, template-based solution for outbound messaging (email, sms, etc.). 
+A centric, template-based solution for outbound messaging (email, sms, etc.).
+![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/Tubewarder64.png) 
 
 ## Enjoy a new quality of outbound communication
 Tubewarder makes sending messages to your users easier than ever:
@@ -9,6 +10,8 @@ Tubewarder makes sending messages to your users easier than ever:
 * Get rid of message and templating code in your applications
 * Configurable, extendable outbound connectors (API available)
 * Central place for controlling and archiving your outbound communication
+
+![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
 
 Note: Tubewarder is still under active development. The current release is 1.0-Alpha4, but features the core functionality. Use it on your own risk.
 
