@@ -1,5 +1,12 @@
 package net.weweave.tubewarder.outputhandler.api;
 
+/**
+ * A representation of an address. An address has:
+ * <ul>
+ *     <li>The name of the addressee</li>
+ *     <li>The actual address</li>
+ * </ul>
+ */
 public class Address {
     private String name;
     private String address;

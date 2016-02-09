@@ -2,6 +2,9 @@ package net.weweave.tubewarder.outputhandler.api.configoption;
 
 import java.util.Map;
 
+/**
+ * A config option for a string.
+ */
 public class StringConfigOption extends OutputHandlerConfigOption {
     public static final String TYPE = "string";
 

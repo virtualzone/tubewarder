@@ -2,6 +2,9 @@ package net.weweave.tubewarder.outputhandler.api.configoption;
 
 import java.util.Map;
 
+/**
+ * A config option for a boolean (true/false).
+ */
 public class BoolConfigOption extends OutputHandlerConfigOption {
     public static final String TYPE = "bool";
 

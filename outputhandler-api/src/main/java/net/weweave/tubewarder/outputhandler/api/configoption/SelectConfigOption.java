@@ -3,6 +3,9 @@ package net.weweave.tubewarder.outputhandler.api.configoption;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * A select-one config option (represented on UI by a select box).
+ */
 public class SelectConfigOption extends OutputHandlerConfigOption {
     public static final String TYPE = "select";
 

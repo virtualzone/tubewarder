@@ -1,5 +1,13 @@
 package net.weweave.tubewarder.outputhandler.api;
 
+/**
+ * An (email) attachment. An attachment has:
+ * <ul>
+ *     <li>A filename (without path)</li>
+ *     <li>A content type (MIME)</li>
+ *     <li>The actual payload, encoded in Base64</li>
+ * </ul>
+ */
 public class Attachment {
     private String filename;
     private String contentType;

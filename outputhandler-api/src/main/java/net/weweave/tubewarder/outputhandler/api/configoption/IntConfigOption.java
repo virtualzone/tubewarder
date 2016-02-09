@@ -2,6 +2,9 @@ package net.weweave.tubewarder.outputhandler.api.configoption;
 
 import java.util.Map;
 
+/**
+ * A config option for an integer.
+ */
 public class IntConfigOption extends OutputHandlerConfigOption {
     public static final String TYPE = "int";
 

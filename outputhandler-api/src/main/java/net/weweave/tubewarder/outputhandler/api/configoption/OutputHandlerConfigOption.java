@@ -3,6 +3,9 @@ package net.weweave.tubewarder.outputhandler.api.configoption;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Abstract base class for all output handler configuration options.
+ */
 public abstract class OutputHandlerConfigOption {
     private final String type;
     private String id;
@@ -16,10 +19,16 @@ public abstract class OutputHandlerConfigOption {
         this.required = required;
     }
 
+    /**
+     * @return The type of the option (should be set by the child class)
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * @return The unique id of the option
+     */
     public String getId() {
         return id;
     }
@@ -28,6 +37,9 @@ public abstract class OutputHandlerConfigOption {
         this.id = id;
     }
 
+    /**
+     * @return The readable label of the option
+     */
     public String getLabel() {
         return label;
     }
@@ -36,6 +48,9 @@ public abstract class OutputHandlerConfigOption {
         this.label = label;
     }
 
+    /**
+     * @return True if option must have a value
+     */
     public boolean isRequired() {
         return required;
     }
@@ -44,6 +59,9 @@ public abstract class OutputHandlerConfigOption {
         this.required = required;
     }
 
+    /**
+     * @return Additional parameters
+     */
     public Map<String, Object> getAdditionalParameters() {
         return new HashMap<>();
     }
