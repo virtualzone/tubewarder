@@ -7,10 +7,10 @@ Tubewarder makes sending messages to your users easier than ever:
 * Easy-to-use templating system based on [Apache Freemarker](http://freemarker.incubator.apache.org)
 * Connect your applications using SOAP web services or RESTful services
 * Get rid of message and templating code in your applications
-* Configurable outbound connectors
+* Configurable, extendable outbound connectors (API available)
 * Central place for controlling and archiving your outbound communication
 
-Note: Tubewarder is still under active development. The current release is 1.0-Alpha3, but features the core functionality. Use it on your own risk.
+Note: Tubewarder is still under active development. The current release is 1.0-Alpha4, but features the core functionality. Use it on your own risk.
 
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications.
@@ -81,6 +81,20 @@ docker pull weweave/tubewarder
 docker run weweave/tubewarder
 ```
 
+## Output Handler API
+Output Handlers do the actual work, as they perform the outbound processing. There are built-in output handlers for email and console output. You can easily develop additional output handlers by using the Output Handler API.
+
+If you're using Maven, add the following dependency to your pom.xml:
+```
+<dependency>
+	<groupId>net.weweave.tubewarder</groupId>
+	<artifactId>outputhandler-api</artifactId>
+	<version>1.0-Alpha4</version>
+</dependency>
+```
+Check the source code of the [email output handler](https://github.com/weweave/tubewarder/blob/master/core/src/main/java/net/weweave/tubewarder/outputhandler/EmailOutputHandler.java) as a reference.
+
+
 ## License
 For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
 
@@ -90,6 +104,7 @@ For non-commercial projects, you may use Tubewarder under the terms of the GPLv3
 * Authentication is implemented on the sending API, but it's not featuring authorization. This means: An application requires an App Token to access the sending API, but any valid App Token can access any template.
 * The management web frontend features authentication/authorization as of 1.0-Alpha2.
 * You can test the sending API and build your custom JSON request using the Send-API Tester in the web frontend (available as of 1.0-Alpha3).
+* Output handlers are located and loaded dynamically using the Output Handler API introduced with 1.0-Alpha4.
 
 ## Next steps
 * Add authorization to the sending API (restrict App Tokens to specific templates/channels)
