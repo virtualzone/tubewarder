@@ -9,6 +9,7 @@ import net.weweave.tubewarder.domain.ChannelTemplate;
 import net.weweave.tubewarder.domain.Log;
 import net.weweave.tubewarder.exception.*;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
+import net.weweave.tubewarder.outputhandler.OutputHandlerDispatcher;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.outputhandler.api.*;
 import net.weweave.tubewarder.service.model.ErrorCode;
@@ -35,6 +36,9 @@ public class SendServiceCommon {
 
     @Inject
     private LogDao logDao;
+
+    @Inject
+    private OutputHandlerDispatcher outputHandlerDispatcher;
 
     @Inject
     private OutputHandlerFactory outputHandlerFactory;
@@ -117,7 +121,7 @@ public class SendServiceCommon {
 
         // Send
         List<Attachment> attachments = sendModel.attachmentModelToList();
-        outputHandler.process(config, sender, recipient, rewrites.subject, rewrites.content, attachments);
+        getOutputHandlerDispatcher().invoke(outputHandler, config, sender, recipient, rewrites.subject, rewrites.content, attachments);
         log(sendModel, channelTemplate, recipient, rewrites.subject, rewrites.content);
     }
 
@@ -196,6 +200,14 @@ public class SendServiceCommon {
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public OutputHandlerDispatcher getOutputHandlerDispatcher() {
+        return outputHandlerDispatcher;
+    }
+
+    public void setOutputHandlerDispatcher(OutputHandlerDispatcher outputHandlerDispatcher) {
+        this.outputHandlerDispatcher = outputHandlerDispatcher;
     }
 
     private class Rewrites {
