@@ -7,12 +7,16 @@ import java.util.Date;
 @Entity
 public class Log extends AbstractPersistentObject {
     private Date date;
+    private String appToken;
+    private String appTokenName;
     private String keyword;
     private String details;
     private String templateName;
     private String templateId;
     private String channelName;
     private String channelId;
+    private String senderName;
+    private String senderAddress;
     private String recipientName;
     private String recipientAddress;
     private String subject;
@@ -25,6 +29,38 @@ public class Log extends AbstractPersistentObject {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getAppToken() {
+        return appToken;
+    }
+
+    public void setAppToken(String appToken) {
+        this.appToken = appToken;
+    }
+
+    public String getAppTokenName() {
+        return appTokenName;
+    }
+
+    public void setAppTokenName(String appTokenName) {
+        this.appTokenName = appTokenName;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderAddress() {
+        return senderAddress;
+    }
+
+    public void setSenderAddress(String senderAddress) {
+        this.senderAddress = senderAddress;
     }
 
     public String getKeyword() {

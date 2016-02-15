@@ -122,7 +122,7 @@ public class SendServiceCommon {
         // Send
         List<Attachment> attachments = sendModel.attachmentModelToList();
         getOutputHandlerDispatcher().invoke(outputHandler, config, sender, recipient, rewrites.subject, rewrites.content, attachments);
-        log(sendModel, channelTemplate, recipient, rewrites.subject, rewrites.content);
+        log(sendModel, channelTemplate, sender, recipient, rewrites.subject, rewrites.content);
     }
 
     private void rewrite(Rewrites rewrites, Channel channel) throws TemplateCorruptException, TemplateModelException {
@@ -146,15 +146,24 @@ public class SendServiceCommon {
         return result;
     }
 
-    private void log(SendModel model, ChannelTemplate channelTemplate, Address recipient, String subject, String content) {
+    private void log(SendModel model, ChannelTemplate channelTemplate, Address sender, Address recipient, String subject, String content) {
         Log log = new Log();
         log.setDate(new Date());
+        log.setAppToken(model.token);
+        try {
+            AppToken appToken = getAppTokenDao().get(model.token);
+            log.setAppTokenName(appToken.getName());
+        } catch (ObjectNotFoundException e) {
+            log.setAppTokenName("");
+        }
         log.setKeyword(model.keyword);
         log.setDetails(model.details);
         log.setTemplateName(channelTemplate.getTemplate().getName());
         log.setTemplateId(channelTemplate.getTemplate().getExposableId());
         log.setChannelName(channelTemplate.getChannel().getName());
         log.setChannelId(channelTemplate.getChannel().getExposableId());
+        log.setSenderName(sender.getName());
+        log.setSenderAddress(sender.getAddress());
         log.setRecipientName(recipient.getName());
         log.setRecipientAddress(recipient.getAddress());
         log.setSubject(subject);
