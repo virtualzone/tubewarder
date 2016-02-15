@@ -8,6 +8,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import net.weweave.tubewarder.exception.TemplateCorruptException;
 import net.weweave.tubewarder.exception.TemplateModelException;
+import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -21,6 +22,9 @@ public class TemplateRenderer {
     private static Configuration CONFIG = null;
 
     public String render(String content, Map<String, Object> dataModel) throws TemplateCorruptException, TemplateModelException {
+        if (GenericValidator.isBlankOrNull(content)) {
+            return "";
+        }
         try {
             Template freemarkerTemplate = new Template(UUID.randomUUID().toString(), new StringReader(content), getConfiguration());
             Writer out = new StringWriter();
