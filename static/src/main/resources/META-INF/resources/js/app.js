@@ -100,6 +100,7 @@ define(['angular-route-resolver'], function(moment) {
             .when('/users', route.resolve('users', 'UsersController'))
             .when('/users/edit', route.resolve('users-edit', 'UsersEditController'))
             .when('/users/edit/:id', route.resolve('users-edit', 'UsersEditController'))
+            .when('/logs', route.resolve('logs', 'LogsController'))
             .when('/api/doc', route.resolve('api-doc', 'ApiDocController'))
             .when('/api/test', route.resolve('api-test', 'ApiTestController'))
             .when('/api', {redirectTo: '/api/doc'})

@@ -4,7 +4,9 @@ require.config({
         'angular': 'lib/angular-1.4.8.min',
 		'angular-route': 'lib/angular-route-1.4.8.min',
 		'angular-route-resolver': 'lib/angular-route-resolver',
-        'bootstrap': 'lib/bootstrap-3.3.6.min'
+        'bootstrap': 'lib/bootstrap-3.3.6.min',
+        'moment': 'lib/moment-2.11.2.min',
+        'bootstrap-datetimepicker': 'lib/bootstrap-datetimepicker-4.17.37.min'
 	},
 	shim: {
         'bootstrap': {
@@ -20,9 +22,13 @@ require.config({
 		'angular-route-resolver': {
 			deps: ['angular-route']
 		},
+        'bootstrap-datetimepicker': {
+            deps: ['bootstrap', 'moment']
+        },
 		'app': {
 			deps: [
 				'bootstrap',
+                'bootstrap-datetimepicker',
 				'angular-route',
 				'angular-route-resolver'
 			],

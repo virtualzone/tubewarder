@@ -1,0 +1,109 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>Logs</h1>
+            <p>Find out what's being sent to the Send API.</p>
+            <form role="form" data-ng-submit="applyFilter()">
+                <div class="form-group">
+                    <label for="startDate">Earliest Date</label>
+                    <div class="input-group date datetimepicker">
+                        <input type="text" class="form-control" data-ng-model="model.startDate" />
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">Latest Date</label>
+                    <div class="input-group date datetimepicker">
+                        <input type="text" class="form-control" data-ng-model="model.endDate" />
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="keyword">Keyword (optional)</label>
+                    <input type="text" class="form-control" placeholder="Keyword" data-ng-model="model.keyword" />
+                </div>
+                <div class="form-group">
+                    <label for="keyword">Search String (optional)</label>
+                    <input type="text" class="form-control" placeholder="Search String" data-ng-model="model.searchString" />
+                </div>
+                <button class="btn btn-default" type="submit">Apply filter</button>
+            </form>
+            <table class="table table-striped" style="margin-top:50px">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Template</th>
+                        <th>Channel</th>
+                        <th>Recipient</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="log in model.logs">
+                        <td>{{log.date}}</td>
+                        <td>{{log.templateName}}</td>
+                        <td>{{log.channelName}}</td>
+                        <td>{{log.recipientAddress}}</td>
+                        <td><button data-ng-click="showLog(log.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-search"></span></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalLabel">Log Entry</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <p class="form-control-static">{{model.log.date}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>App Token</label>
+                        <p class="form-control-static">{{model.log.appToken}} ({{model.log.appTokenName}})</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Template</label>
+                        <p class="form-control-static">{{model.log.templateName}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Channel</label>
+                        <p class="form-control-static">{{model.log.channelName}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Sender</label>
+                        <p class="form-control-static">{{model.log.senderAddress}} ({{model.log.senderName}})</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Recipient</label>
+                        <p class="form-control-static">{{model.log.recipientAddress}} ({{model.log.recipientName}})</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Keyword</label>
+                        <p class="form-control-static">{{model.log.keyword}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Details</label>
+                        <p class="form-control-static">{{model.log.details}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <p class="form-control-static">{{model.log.subject}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Content</label>
+                        <p class="form-control-static">{{model.log.content}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
