@@ -2,10 +2,12 @@ package net.weweave.tubewarder.test;
 
 import net.weweave.tubewarder.dao.*;
 import net.weweave.tubewarder.domain.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Map;
 
 @ApplicationScoped
 public class TestSendServiceCommon {
@@ -71,6 +73,38 @@ public class TestSendServiceCommon {
         ct.setSenderAddress("noreply@weweave.net");
         getChannelTemplateDao().store(ct);
         return ct;
+    }
+
+    public JSONObject getSendRequestJsonPayload(String token,
+                                                String templateName,
+                                                String channelName,
+                                                Map<String, Object> model,
+                                                String recipientName,
+                                                String recipientAddress,
+                                                String keyword,
+                                                String details) {
+        JSONObject recipient = new JSONObject();
+        recipient.put("name", recipientName);
+        recipient.put("address", recipientAddress);
+
+        JSONArray modelArray = new JSONArray();
+        for (String key : model.keySet()) {
+            JSONObject entry = new JSONObject();
+            entry.put("key", key);
+            entry.put("value", model.get(key));
+            modelArray.put(entry);
+        }
+
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
+        payload.put("echo", true);
+        payload.put("template", templateName);
+        payload.put("channel", channelName);
+        payload.put("recipient", recipient);
+        payload.put("model", modelArray);
+        payload.put("keyword", keyword);
+        payload.put("details", details);
+        return payload;
     }
 
     public ChannelDao getChannelDao() {

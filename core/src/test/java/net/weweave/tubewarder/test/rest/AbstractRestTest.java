@@ -85,6 +85,7 @@ public abstract class AbstractRestTest extends AbstractServiceTest {
         user.setAllowChannels(true);
         user.setAllowTemplates(true);
         user.setAllowUsers(true);
+        user.setAllowLogs(true);
         getUserDao().store(user);
         return user;
     }

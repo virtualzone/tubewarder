@@ -208,34 +208,25 @@ public class TestSendService extends AbstractRestTest {
                 "content", equalTo("Should go to John"));
     }
 
-    private JSONObject validateSendResponse(String token, String templateName, String channelName, Map<String, Object> model, String recipientName, String recipientAddress, Object... body) {
-        JSONObject payload = getSendRequestPayload(token, templateName, channelName, model, recipientName, recipientAddress);
+    private JSONObject validateSendResponse(String token,
+                                            String templateName,
+                                            String channelName,
+                                            Map<String, Object> model,
+                                            String recipientName,
+                                            String recipientAddress,
+                                            Object... body) {
+        JSONObject payload = getCommon().getSendRequestJsonPayload(
+                token,
+                templateName,
+                channelName,
+                model,
+                recipientName,
+                recipientAddress,
+                "",
+                "");
         ResponseSpecification response = getResponseSpecificationPost(payload);
         setExpectedBodies(response, body);
         return getPostResponse(response, "send");
-    }
-
-    private JSONObject getSendRequestPayload(String token, String templateName, String channelName, Map<String, Object> model, String recipientName, String recipientAddress) {
-        JSONObject recipient = new JSONObject();
-        recipient.put("name", recipientName);
-        recipient.put("address", recipientAddress);
-
-        JSONArray modelArray = new JSONArray();
-        for (String key : model.keySet()) {
-            JSONObject entry = new JSONObject();
-            entry.put("key", key);
-            entry.put("value", model.get(key));
-            modelArray.put(entry);
-        }
-
-        JSONObject payload = new JSONObject();
-        payload.put("token", token);
-        payload.put("echo", true);
-        payload.put("template", templateName);
-        payload.put("channel", channelName);
-        payload.put("recipient", recipient);
-        payload.put("model", modelArray);
-        return payload;
     }
 
     public TestSendServiceCommon getCommon() {
