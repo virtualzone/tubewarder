@@ -109,6 +109,7 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
         object.setAllowChannels(model.allowChannels);
         object.setAllowTemplates(model.allowTemplates);
         object.setAllowUsers(model.allowUsers);
+        object.setAllowLogs(model.allowLogs);
         getObjectDao().update(object);
     }
 

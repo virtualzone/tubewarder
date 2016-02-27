@@ -16,6 +16,7 @@ public class UserModel extends AbstractRestModel {
     public Boolean allowChannels;
     public Boolean allowTemplates;
     public Boolean allowUsers;
+    public Boolean allowLogs;
 
     public static UserModel factory(User user) {
         UserModel model = new UserModel();
@@ -28,6 +29,7 @@ public class UserModel extends AbstractRestModel {
         model.allowChannels = user.getAllowChannels();
         model.allowTemplates = user.getAllowTemplates();
         model.allowUsers = user.getAllowUsers();
+        model.allowLogs = user.getAllowLogs();
         return model;
     }
 }

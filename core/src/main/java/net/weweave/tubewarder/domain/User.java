@@ -16,6 +16,7 @@ public class User extends AbstractPersistentObject {
     private Boolean allowChannels = false;
     private Boolean allowTemplates = false;
     private Boolean allowUsers = false;
+    private Boolean allowLogs = false;
 
     public String getDisplayName() {
         return displayName;
@@ -87,5 +88,13 @@ public class User extends AbstractPersistentObject {
 
     public void setAllowUsers(Boolean allowUsers) {
         this.allowUsers = allowUsers;
+    }
+
+    public Boolean getAllowLogs() {
+        return allowLogs;
+    }
+
+    public void setAllowLogs(Boolean allowLogs) {
+        this.allowLogs = allowLogs;
     }
 }

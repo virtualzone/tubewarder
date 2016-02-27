@@ -14,7 +14,8 @@ define(['angular', 'app'], function(angular, app) {
             allowAppTokens: false,
             allowChannels: false,
             allowTemplates: false,
-            allowUsers: false
+            allowUsers: false,
+            allowLogs: false
         };
         
         $scope.isRequirePassword = function() {
@@ -33,7 +34,8 @@ define(['angular', 'app'], function(angular, app) {
                     allowAppTokens: $scope.model.allowAppTokens,
                     allowChannels: $scope.model.allowChannels,
                     allowTemplates: $scope.model.allowTemplates,
-                    allowUsers: $scope.model.allowUsers
+                    allowUsers: $scope.model.allowUsers,
+                    allowLogs: $scope.model.allowLogs
                 }
             };
             $http.post('/rs/user/set', payload).success(function(data) {
@@ -56,6 +58,7 @@ define(['angular', 'app'], function(angular, app) {
                 $scope.model.allowChannels = user.allowChannels;
                 $scope.model.allowTemplates = user.allowTemplates;
                 $scope.model.allowUsers = user.allowUsers;
+                $scope.model.allowLogs = user.allowLogs;
             });
         }
     }]);
