@@ -47,6 +47,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <version.wildfly-swarm>1.0.0.Beta2</version.wildfly-swarm>
-        <version.tubewarder>1.0-Alpha5-SNAPSHOT</version.tubewarder>
+        <version.tubewarder>1.0-Alpha5</version.tubewarder>
     </properties>
 </project>

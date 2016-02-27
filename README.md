@@ -12,7 +12,7 @@ Tubewarder makes sending messages to your users easier than ever:
 
 ![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
 
-Note: Tubewarder is still under active development. The current release is 1.0-Alpha4, but features the core functionality. Use it on your own risk.
+Note: Tubewarder is still under active development. The current release is 1.0-Alpha5, but features the core functionality. Use it on your own risk.
 
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications.
@@ -80,7 +80,10 @@ Pull it from weweave/tubewarder like this:
 
 ```
 docker pull weweave/tubewarder
-docker run weweave/tubewarder
+docker run \
+    -p 8080:8080 \
+    --name tubewarder \
+    weweave/tubewarder
 ```
 
 ## Output Handler API
@@ -91,7 +94,7 @@ If you're using Maven, add the following dependency to your pom.xml:
 <dependency>
 	<groupId>net.weweave.tubewarder</groupId>
 	<artifactId>outputhandler-api</artifactId>
-	<version>1.0-Alpha4</version>
+	<version>1.0-Alpha5</version>
 </dependency>
 ```
 Check the source code of the [email output handler](https://github.com/weweave/tubewarder/blob/master/core/src/main/java/net/weweave/tubewarder/outputhandler/EmailOutputHandler.java) as a reference.
