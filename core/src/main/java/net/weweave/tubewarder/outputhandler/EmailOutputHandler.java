@@ -135,7 +135,7 @@ public class EmailOutputHandler implements IOutputHandler {
     }
 
     private void sendMail(Config config, Session session, MimeMessage message) throws MessagingException {
-        if (config.getBool("simulate")) {
+        if ((Boolean)config.getOrDefault("simulate", false)) {
             return;
         }
 
