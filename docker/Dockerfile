@@ -18,7 +18,10 @@ RUN mkdir -p $TW_HOME
 ADD run.sh $TW_HOME
 RUN chown -R tubewarder:tubewarder $TW_HOME
 
-EXPOSE 8080
+RUN cd /tmp && \
+    curl -v -j -k -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip && \
+    unzip jce_policy-8.zip && \
+    cp UnlimitedJCEPolicyJDK8/*.jar /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/
 
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -26,4 +29,5 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 ADD tubewarder-swarm.jar $TW_HOME
 RUN chown tubewarder:tubewarder $TW_HOME/tubewarder-swarm.jar
 
+EXPOSE 8080
 ENTRYPOINT ["bin/bash", "/opt/tubewarder/run.sh"]

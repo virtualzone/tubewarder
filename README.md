@@ -86,6 +86,8 @@ docker run \
     weweave/tubewarder
 ```
 
+This will expose Tubewarder's web interface on port 8080. Access it at: http://localhost:8080/ (replace localhost with your docker host's hostname or ip address)
+
 ## Output Handler API
 Output Handlers do the actual work, as they perform the outbound processing. There are built-in output handlers for email and console output. You can easily develop additional output handlers by using the Output Handler API.
 
@@ -99,6 +101,10 @@ If you're using Maven, add the following dependency to your pom.xml:
 ```
 Check the source code of the [email output handler](https://github.com/weweave/tubewarder/blob/master/core/src/main/java/net/weweave/tubewarder/outputhandler/EmailOutputHandler.java) as a reference.
 
+## Logging
+You can find the log files in these locations:
+* Output log: /var/log/tubewarder.log
+* Stderr log: /var/log/tubewarder.err
 
 ## License
 For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
@@ -112,6 +118,4 @@ For non-commercial projects, you may use Tubewarder under the terms of the GPLv3
 * Output handlers are located and loaded dynamically using the Output Handler API introduced with 1.0-Alpha4.
 
 ## Next steps
-* Add authorization to the sending API (restrict App Tokens to specific templates/channels)
-* Improve error handling in web fronted 
-* Enable additional databases
+Take a look at the [milestones](https://github.com/weweave/tubewarder/milestones) to find out what is planned for upcoming releases.
