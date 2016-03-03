@@ -31,6 +31,7 @@
     
     <modules>
         <module>outputhandler-api</module>
+        <module>outputhandlers/outputhandler-null</module>
         <module>core</module>
         <module>static</module>
         <module>webapp</module>

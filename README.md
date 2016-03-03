@@ -101,6 +101,8 @@ If you're using Maven, add the following dependency to your pom.xml:
 ```
 Check the source code of the [email output handler](https://github.com/weweave/tubewarder/blob/master/core/src/main/java/net/weweave/tubewarder/outputhandler/EmailOutputHandler.java) as a reference.
 
+Additional output handler JARs must be located in the libs/ folder of the current working directory. 
+
 ## Logging
 You can find the log files in these locations:
 * Output log: /var/log/tubewarder.log

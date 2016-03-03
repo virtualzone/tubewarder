@@ -12,6 +12,9 @@ import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.datasources.DatasourceArchive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         CommandLine cmd = parseCommandLineArgs(args);
@@ -150,11 +153,34 @@ public class Main {
     }
 
     private static void deployApp(Container container, String db) throws Exception {
-        JAXRSArchive appDeployment = ShrinkWrap.create(JAXRSArchive.class);
+        JAXRSArchive appDeployment = ShrinkWrap.create(JAXRSArchive.class, "tubewarder.war");
         appDeployment.addPackages(true, "net.weweave.tubewarder");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence-"+db+".xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
         appDeployment.addAllDependencies();
         appDeployment.staticContent();
+
+        File[] libs = getAdditionalJars();
+        for (File lib : libs) {
+            appDeployment.addAsLibrary(lib, lib.getName());
+        }
+
         container.deploy(appDeployment);
+    }
+
+    private static File[] getAdditionalJars() {
+        File folder = new File("./libs");
+        if (!folder.isDirectory()) {
+            return new File[0];
+        }
+        File[] list = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                if (name != null && name.toLowerCase().endsWith(".jar")) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        return list;
     }
 }

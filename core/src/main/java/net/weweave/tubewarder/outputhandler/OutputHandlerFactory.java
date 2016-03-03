@@ -65,6 +65,7 @@ public class OutputHandlerFactory {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .addUrls(ClasspathHelper.forJavaClassPath())
                 .addUrls(ClasspathHelper.forWebInfClasses(getContext()))
+                .addUrls(ClasspathHelper.forWebInfLib(getContext()))
                 .addUrls(ClasspathHelper.forClassLoader())
                 .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner(false)));
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(OutputHandler.class);
