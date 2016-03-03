@@ -97,7 +97,7 @@ public class Main {
         if ("h2".equals(db)) {
             s += h2;
         } else if ("mysql".equals(db)) {
-            s += "//"+mysql+"?autoReconnect=true";
+            s += "//"+mysql+"?useSSL=false&amp;autoReconnect=true";
         }
         return s;
     }
