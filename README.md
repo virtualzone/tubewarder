@@ -20,11 +20,15 @@ Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular
 ## Getting started
 Make sure you have Java 1.8 installed.
 
-You can download a pre-built JAR file from the [Releases Page](https://github.com/weweave/tubewarder/releases). After downloading tubewarder-swarm.jar, run it with this command:
+You can download a pre-built release from the [Releases Page](https://github.com/weweave/tubewarder/releases). After downloading the release, unzip it, change to the extracted directory, and run Tubewarder with this command:
 
 ```
+unzip tubewarder.zip
+cd tubewarder
 java -jar tubewarder-swarm.jar
 ```
+
+Make sure to change to the directory tubewarder-swarm.jar is located in! Otherwise the output handlers residing in libs/ can't be found.
 
 If you want to build from the most recent source code instead, use the following commands:
 
@@ -32,7 +36,8 @@ If you want to build from the most recent source code instead, use the following
 git clone git://github.com/weweave/tubewarder.git
 cd tubewarder
 mvn package
-java -jar target/tubewarder-swarm.jar
+cd target
+java -jar tubewarder-swarm.jar
 ```
 
 The server listens on port 8080 by default.
