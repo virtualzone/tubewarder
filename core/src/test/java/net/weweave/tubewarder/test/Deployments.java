@@ -5,6 +5,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import java.io.File;
+
 @ArquillianSuiteDeployment
 public class Deployments {
     @Deployment
@@ -13,7 +15,8 @@ public class Deployments {
                 .addPackages(true, "net.weweave.tubewarder")
                 .addAsResource("META-INF/persistence.xml")
                 .addAsWebInfResource("resources.xml")
-                .addAsWebInfResource("openejb-jar.xml");
+                .addAsWebInfResource("openejb-jar.xml")
+                .addAsLibrary(new File("../outputhandlers/sysout/target/outputhandler-sysout.jar"), "outputhandler-sysout.jar");
         return war;
     }
 }

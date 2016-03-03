@@ -31,7 +31,9 @@
     
     <modules>
         <module>outputhandler-api</module>
-        <module>outputhandlers/outputhandler-null</module>
+        <module>outputhandlers/email</module>
+        <module>outputhandlers/null</module>
+        <module>outputhandlers/sysout</module>
         <module>core</module>
         <module>static</module>
         <module>webapp</module>
