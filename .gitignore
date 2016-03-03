@@ -10,3 +10,4 @@ target/*
 *.class
 *.war
 *.ear
+docs/_*
