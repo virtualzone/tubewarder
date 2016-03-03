@@ -196,6 +196,11 @@
                                     <directory>${project.build.directory}</directory>
                                     <include>${project.build.finalName}-swarm.jar</include>
                                 </resource>
+                                <resource>
+                                    <targetPath>/libs/</targetPath>
+                                    <directory>${project.build.directory}/libs/</directory>
+                                    <include>*.jar</include>
+                                </resource>
                             </resources>
                         </configuration>
                         <executions>

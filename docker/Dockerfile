@@ -16,7 +16,6 @@ ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN useradd -d $TW_HOME tubewarder
 RUN mkdir -p $TW_HOME
 ADD run.sh $TW_HOME
-RUN chown -R tubewarder:tubewarder $TW_HOME
 
 RUN cd /tmp && \
     curl -v -j -k -L -H "Cookie:oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip && \
@@ -27,7 +26,8 @@ RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ADD tubewarder-swarm.jar $TW_HOME
-RUN chown tubewarder:tubewarder $TW_HOME/tubewarder-swarm.jar
+ADD libs/*.jar $TW_HOME/libs/
+RUN chown -R tubewarder:tubewarder $TW_HOME
 
 EXPOSE 8080
 ENTRYPOINT ["bin/bash", "/opt/tubewarder/run.sh"]
