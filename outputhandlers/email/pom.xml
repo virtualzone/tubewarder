@@ -27,7 +27,8 @@
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>outputhandler-api</artifactId>
             <version>${version.tubewarder}</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../outputhandler-api/target/outputhandler-api.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>

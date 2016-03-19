@@ -11,5 +11,49 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: net.weweave.tubewarder:outputhandler-api:1.0-Beta1-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../webservice/../../outputhandler-api/target/outputhandler-api.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:mail:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:container:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:bootstrap:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.spec.javax.sql:jboss-javax-sql-api_7.0_spec:2.0.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:container-modules:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api:0.3.27" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api-runtime:0.3.27" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:config-api-modules:0.3.27" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap:shrinkwrap-api:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap:shrinkwrap-spi:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap:shrinkwrap-impl-base:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-jboss:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-javaee:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-jboss:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-javaee:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-base:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-spi:2.0.0-alpha-8" level="project" />
+    <orderEntry type="library" name="Maven: org.ow2.asm:asm-all:5.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:mail-modules:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:logging-modules:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:naming-modules:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:logging:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:naming:1.0.0.Beta2" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.mail:javax.mail:1.5.5" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.mail:javax.mail-api:1.5.5" level="project" />
+    <orderEntry type="library" name="Maven: commons-validator:commons-validator:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-digester:commons-digester:1.8.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>
 </module>
