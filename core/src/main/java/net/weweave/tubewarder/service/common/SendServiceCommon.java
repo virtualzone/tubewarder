@@ -12,6 +12,8 @@ import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
 import net.weweave.tubewarder.outputhandler.OutputHandlerDispatcher;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.outputhandler.api.*;
+import net.weweave.tubewarder.outputhandler.api.configoption.OutputHandlerConfigOption;
+import net.weweave.tubewarder.outputhandler.api.configoption.StringConfigOption;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.KeyValueModel;
 import net.weweave.tubewarder.service.model.SendModel;
@@ -21,6 +23,8 @@ import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 @RequestScoped
@@ -111,7 +115,7 @@ public class SendServiceCommon {
         IOutputHandler outputHandler = getOutputHandlerFactory().getOutputHandler(config);
 
         // Apply rewriting to output handler config
-        rewriteConfig(config, model, rewrites);
+        rewriteConfig(outputHandler, config, model, rewrites);
 
         // Build addresses and check recipient
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
@@ -128,23 +132,56 @@ public class SendServiceCommon {
         log(sendModel, channelTemplate, sender, recipient, rewrites.subject, rewrites.content);
     }
 
-    private void rewriteConfig(Config config, Map<String, Object> model, Rewrites rewrites) throws TemplateCorruptException, TemplateModelException {
+    private void rewriteConfig(IOutputHandler outputHandler, Config config, Map<String, Object> model, Rewrites rewrites) throws TemplateCorruptException, TemplateModelException {
         Map<String, Object> newModel = new HashMap<>(model);
         newModel.put("recipientName", rewrites.recipientName);
         newModel.put("recipientAddress", rewrites.recipientAddress);
         newModel.put("subject", rewrites.subject);
         newModel.put("content", rewrites.content);
 
+        Map<String, Object> uriEncodedModel = getUriEncodedModel(newModel);
+
+        List<OutputHandlerConfigOption> configOptions = outputHandler.getConfigOptions();
+
         for (String key : config.keySet()) {
             Object value = config.get(key);
             if (value instanceof String) {
                 String stringValue = (String)value;
                 if (!GenericValidator.isBlankOrNull(stringValue)) {
-                    stringValue = getTemplateRenderer().render(stringValue, newModel);
+                    stringValue = getTemplateRenderer().render(stringValue, requiresUriEncoding(configOptions, key) ? uriEncodedModel : newModel);
                     config.put(key, stringValue);
                 }
             }
         }
+    }
+
+    private Map<String, Object> getUriEncodedModel(Map<String, Object> model) {
+        Map<String, Object> result = new HashMap<>();
+        for (String key : model.keySet()) {
+            Object value = model.get(key);
+            if (value instanceof String) {
+                try {
+                    result.put(key, URLEncoder.encode((String) value, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    result.put(key, "");
+                }
+            } else {
+                result.put(key, value);
+            }
+        }
+        return result;
+    }
+
+    private boolean requiresUriEncoding(List<OutputHandlerConfigOption> configOptions, String id) {
+        for (OutputHandlerConfigOption option : configOptions) {
+            if (id.equals(option.getId())) {
+                if (option instanceof StringConfigOption) {
+                    return ((StringConfigOption)option).isRequiresUriEncoding();
+                }
+                return false;
+            }
+        }
+        return false;
     }
 
     private void rewrite(Rewrites rewrites, Channel channel) throws TemplateCorruptException, TemplateModelException {

@@ -10,6 +10,7 @@ public class StringConfigOption extends OutputHandlerConfigOption {
 
     private String defaultValue;
     private boolean multiLine;
+    private boolean requiresUriEncoding;
 
     public StringConfigOption(String id, String label, boolean required, String defaultValue, boolean multiLine) {
         super(TYPE, id, label, required);
@@ -35,6 +36,14 @@ public class StringConfigOption extends OutputHandlerConfigOption {
 
     public void setMultiLine(boolean multiLine) {
         this.multiLine = multiLine;
+    }
+
+    public boolean isRequiresUriEncoding() {
+        return requiresUriEncoding;
+    }
+
+    public void setRequiresUriEncoding(boolean requiresUriEncoding) {
+        this.requiresUriEncoding = requiresUriEncoding;
     }
 
     @Override
