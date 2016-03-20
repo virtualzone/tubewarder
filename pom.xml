@@ -34,6 +34,7 @@
         <module>outputhandlers/email</module>
         <module>outputhandlers/null</module>
         <module>outputhandlers/sysout</module>
+        <module>outputhandlers/webservice</module>
         <module>core</module>
         <module>static</module>
         <module>webapp</module>

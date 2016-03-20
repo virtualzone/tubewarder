@@ -13,7 +13,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
-    <orderEntry type="library" name="Maven: org.wildfly.swarm:bootstrap:1.0.0.Alpha6" level="project" />
+    <orderEntry type="library" name="Maven: org.wildfly.swarm:bootstrap:1.0.0.Beta2" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.sql:jboss-javax-sql-api_7.0_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: javax.mail:javax.mail-api:1.5.5" level="project" />
     <orderEntry type="library" name="Maven: org.freemarker:freemarker-gae:2.3.23" level="project" />
@@ -31,7 +31,15 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:15.0" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.19.0-GA" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:annotations:2.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: net.weweave.tubewarder:outputhandler-api:1.0-Alpha4" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: net.weweave.tubewarder:outputhandler-api:1.0-Beta1-SNAPSHOT">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../outputhandlers/webservice/../../outputhandler-api/target/outputhandler-api.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.junit:arquillian-junit-container:1.1.10.Final" level="project" />
