@@ -110,6 +110,9 @@ public class SendServiceCommon {
         Config config = OutputHandlerConfigUtil.configJsonStringToMap(channel.getConfigJson());
         IOutputHandler outputHandler = getOutputHandlerFactory().getOutputHandler(config);
 
+        // Apply rewriting to output handler config
+        rewriteConfig(config, model, rewrites);
+
         // Build addresses and check recipient
         Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
         Address recipient = new Address(rewrites.recipientName, rewrites.recipientAddress);
@@ -123,6 +126,25 @@ public class SendServiceCommon {
         List<Attachment> attachments = sendModel.attachmentModelToList();
         getOutputHandlerDispatcher().invoke(outputHandler, config, sender, recipient, rewrites.subject, rewrites.content, attachments);
         log(sendModel, channelTemplate, sender, recipient, rewrites.subject, rewrites.content);
+    }
+
+    private void rewriteConfig(Config config, Map<String, Object> model, Rewrites rewrites) throws TemplateCorruptException, TemplateModelException {
+        Map<String, Object> newModel = new HashMap<>(model);
+        newModel.put("recipientName", rewrites.recipientName);
+        newModel.put("recipientAddress", rewrites.recipientAddress);
+        newModel.put("subject", rewrites.subject);
+        newModel.put("content", rewrites.content);
+
+        for (String key : config.keySet()) {
+            Object value = config.get(key);
+            if (value instanceof String) {
+                String stringValue = (String)value;
+                if (!GenericValidator.isBlankOrNull(stringValue)) {
+                    stringValue = getTemplateRenderer().render(stringValue, newModel);
+                    config.put(key, stringValue);
+                }
+            }
+        }
     }
 
     private void rewrite(Rewrites rewrites, Channel channel) throws TemplateCorruptException, TemplateModelException {
