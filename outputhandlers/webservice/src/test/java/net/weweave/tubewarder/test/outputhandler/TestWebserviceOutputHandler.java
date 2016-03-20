@@ -54,6 +54,24 @@ public class TestWebserviceOutputHandler {
         handler.checkConfig(config);
     }
 
+    @Test(expected = InvalidConfigException.class)
+    public void testCheckConfigInvalidAuth() throws Exception {
+        Config config = getConfig();
+        config.put("authType", "SOMETHING");
+        WebserviceOutputHandler handler = new WebserviceOutputHandler();
+        handler.checkConfig(config);
+    }
+
+    @Test
+    public void testCheckConfigBasicAuth() throws Exception {
+        Config config = getConfig();
+        config.put("authType", "BASIC");
+        config.put("username", "testUser");
+        config.put("password", "testPass");
+        WebserviceOutputHandler handler = new WebserviceOutputHandler();
+        handler.checkConfig(config);
+    }
+
     @Test
     public void testCheckConfigMethodPost() throws Exception {
         Config config = getConfig();
@@ -75,6 +93,7 @@ public class TestWebserviceOutputHandler {
         config.put("id", "WEBSERVICE");
         config.put("url", "http://localhost/some/url.php?recipient=${recipientAddress}&param2=test");
         config.put("method", "POST");
+        config.put("authType", "NONE");
         config.put("contentType", "text/plain");
         config.put("payload", "Line 1\nLine 2");
         return config;
