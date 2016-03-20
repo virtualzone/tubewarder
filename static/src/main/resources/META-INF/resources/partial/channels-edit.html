@@ -54,7 +54,8 @@
                 <div class="form-group" data-ng-repeat="configOption in configOptions" data-ng-switch="configOption.type">
                     <div data-ng-switch-when="string" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label for="option-{{configOption.id}}">{{configOption.label}}</label>
-                        <input type="text" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" />
+                        <input data-ng-if="!configOption.multiLine" type="text" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" />
+                        <textarea data-ng-if="configOption.multiLine" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" rows="20"></textarea>
                     </div>
                     <div data-ng-switch-when="int" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label for="option-{{configOption.id}}">{{configOption.label}}</label>
