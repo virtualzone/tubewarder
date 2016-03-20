@@ -14,11 +14,6 @@ define(['angular', 'app'], function(angular, app) {
             };
             $http.get('/rs/channel/get', {params: payload}).success(function(data) {
                 $scope.model.channels = data.channels;
-                for (var i=0; i<$scope.model.channels.length; i++) {
-                    var channel = $scope.model.channels[i];
-                    if (channel.config.id == 'SYSOUT') channel.outputHandlerReadable = 'Console';
-                    if (channel.config.id == 'EMAIL') channel.outputHandlerReadable = 'Email';
-                }
             });
         };
         

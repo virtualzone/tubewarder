@@ -5,6 +5,8 @@ import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
+import net.weweave.tubewarder.outputhandler.api.OutputHandler;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.response.GetChannelResponse;
@@ -22,6 +24,9 @@ import java.util.List;
 public class GetChannelService extends AbstractService {
     @Inject
     private ChannelDao channelDao;
+
+    @Inject
+    private OutputHandlerFactory outputHandlerFactory;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -55,11 +60,11 @@ public class GetChannelService extends AbstractService {
         if (GenericValidator.isBlankOrNull(id)) {
             List<Channel> channels = getChannelDao().getAll();
             for (Channel channel : channels) {
-                response.channels.add(ChannelModel.factory(channel));
+                response.channels.add(ChannelModel.factory(channel, getOutputHandlerFactory()));
             }
         } else {
             Channel channel = getChannelDao().get(id);
-            response.channels.add(ChannelModel.factory(channel));
+            response.channels.add(ChannelModel.factory(channel, getOutputHandlerFactory()));
         }
     }
 
@@ -69,5 +74,13 @@ public class GetChannelService extends AbstractService {
 
     public void setChannelDao(ChannelDao channelDao) {
         this.channelDao = channelDao;
+    }
+
+    public OutputHandlerFactory getOutputHandlerFactory() {
+        return outputHandlerFactory;
+    }
+
+    public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
+        this.outputHandlerFactory = outputHandlerFactory;
     }
 }

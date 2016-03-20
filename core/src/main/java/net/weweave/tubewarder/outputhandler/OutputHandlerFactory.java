@@ -48,6 +48,12 @@ public class OutputHandlerFactory {
         return false;
     }
 
+    public String getNameForId(String id) {
+        Class<? extends IOutputHandler> clazz = getHandlers().get(id);
+        OutputHandler annotation = clazz.getAnnotation(OutputHandler.class);
+        return annotation.name();
+    }
+
     public Set<String> getOutputHandlerIds() {
         return getHandlers().keySet();
     }

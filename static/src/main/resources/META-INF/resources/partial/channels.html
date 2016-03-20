@@ -15,7 +15,7 @@
                 <tbody>
                     <tr data-ng-repeat="channel in model.channels">
                         <td>{{channel.name}}</td>
-                        <td>{{channel.outputHandlerReadable}}</td>
+                        <td>{{channel.outputHandlerReadableName}}</td>
                         <td><a data-ng-href="#/channels/edit/{{channel.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
                         <td><button data-ng-click="deleteChannel(channel.config.id, channel.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
                     </tr>

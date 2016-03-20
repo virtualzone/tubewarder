@@ -5,6 +5,7 @@ import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.service.response.GetTemplateResponse;
 import org.apache.commons.validator.GenericValidator;
 import net.weweave.tubewarder.dao.TemplateDao;
@@ -22,6 +23,9 @@ import java.util.List;
 public class GetTemplateService extends AbstractService {
     @Inject
     private TemplateDao templateDao;
+
+    @Inject
+    private OutputHandlerFactory outputHandlerFactory;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -55,11 +59,11 @@ public class GetTemplateService extends AbstractService {
         if (GenericValidator.isBlankOrNull(id)) {
             List<Template> templates = getTemplateDao().getAll();
             for (Template template : templates) {
-                response.templates.add(TemplateModel.factory(template));
+                response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
             }
         } else {
             Template template = getTemplateDao().get(id);
-            response.templates.add(TemplateModel.factory(template));
+            response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
         }
     }
 
@@ -69,5 +73,13 @@ public class GetTemplateService extends AbstractService {
 
     public void setTemplateDao(TemplateDao templateDao) {
         this.templateDao = templateDao;
+    }
+
+    public OutputHandlerFactory getOutputHandlerFactory() {
+        return outputHandlerFactory;
+    }
+
+    public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
+        this.outputHandlerFactory = outputHandlerFactory;
     }
 }

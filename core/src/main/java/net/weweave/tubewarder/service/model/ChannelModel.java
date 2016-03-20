@@ -2,6 +2,7 @@ package net.weweave.tubewarder.service.model;
 
 import net.weweave.tubewarder.domain.Channel;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.outputhandler.api.Config;
 import org.apache.commons.validator.GenericValidator;
 
@@ -15,8 +16,9 @@ public class ChannelModel extends AbstractRestModel {
     public String rewriteSubject;
     public String rewriteContent;
     public Config config;
+    public String outputHandlerReadableName;
 
-    public static ChannelModel factory(Channel channel) {
+    public static ChannelModel factory(Channel channel, OutputHandlerFactory factory) {
         ChannelModel model = new ChannelModel();
         model.id = channel.getExposableId();
         model.name = channel.getName();
@@ -25,6 +27,7 @@ public class ChannelModel extends AbstractRestModel {
         model.rewriteSubject = (GenericValidator.isBlankOrNull(channel.getRewriteSubject()) ? "${subject}" : channel.getRewriteSubject());
         model.rewriteContent = (GenericValidator.isBlankOrNull(channel.getRewriteContent()) ? "${content}" : channel.getRewriteContent());
         model.config = OutputHandlerConfigUtil.configJsonStringToMap(channel.getConfigJson());
+        model.outputHandlerReadableName = factory.getNameForId(model.config.getString("id"));
         return model;
     }
 }

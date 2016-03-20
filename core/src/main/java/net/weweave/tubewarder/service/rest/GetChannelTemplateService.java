@@ -5,6 +5,7 @@ import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.PermissionException;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import org.apache.commons.validator.GenericValidator;
 import net.weweave.tubewarder.dao.ChannelTemplateDao;
 import net.weweave.tubewarder.dao.TemplateDao;
@@ -28,6 +29,9 @@ public class GetChannelTemplateService extends AbstractService {
 
     @Inject
     private TemplateDao templateDao;
+
+    @Inject
+    private OutputHandlerFactory outputHandlerFactory;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -70,12 +74,12 @@ public class GetChannelTemplateService extends AbstractService {
     private void setResponseList(GetChannelTemplateResponse response, String id, String templateId) throws ObjectNotFoundException {
         if (!GenericValidator.isBlankOrNull(id)) {
             ChannelTemplate channelTemplate = getChannelTemplateDao().get(id);
-            response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate));
+            response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, getOutputHandlerFactory()));
         } else if (!GenericValidator.isBlankOrNull(templateId)) {
             Template template = getTemplateDao().get(templateId);
             List<ChannelTemplate> channelTemplates = getChannelTemplateDao().getChannelTemplatesForTemplate(template.getId());
             for (ChannelTemplate channelTemplate : channelTemplates) {
-                response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate));
+                response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, getOutputHandlerFactory()));
             }
         }
     }
@@ -94,5 +98,13 @@ public class GetChannelTemplateService extends AbstractService {
 
     public void setTemplateDao(TemplateDao templateDao) {
         this.templateDao = templateDao;
+    }
+
+    public OutputHandlerFactory getOutputHandlerFactory() {
+        return outputHandlerFactory;
+    }
+
+    public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
+        this.outputHandlerFactory = outputHandlerFactory;
     }
 }
