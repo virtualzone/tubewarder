@@ -3,6 +3,7 @@ package net.weweave.tubewarder.outputhandler.api;
 import net.weweave.tubewarder.outputhandler.api.configoption.OutputHandlerConfigOption;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Output handlers must implement the IOutputHandler interface.
@@ -18,7 +19,14 @@ public interface IOutputHandler {
      * @param content The rendered content to process
      * @param attachments A list of attachments (may not be applicable for the concrete output handler)
      */
-    void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments);
+    void process(Config config,
+                 Address sender,
+                 Address recipient,
+                 String subject,
+                 String content,
+                 List<Attachment> attachments) throws
+            TemporaryProcessingException,
+            PermanentProcessingException;
 
     /**
      * Returns a list of valid configuration options for this output handler.
