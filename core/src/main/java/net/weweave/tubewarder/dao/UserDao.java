@@ -4,11 +4,11 @@ import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@ApplicationScoped
+@Stateless
 public class UserDao extends AbstractDao<User> {
     public User getByUsername(String username) throws ObjectNotFoundException {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +

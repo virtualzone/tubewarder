@@ -3,11 +3,9 @@ package net.weweave.tubewarder.dao;
 import net.weweave.tubewarder.domain.ExposableId;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 
-import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -22,34 +20,11 @@ public abstract class AbstractDao<T extends Serializable> {
 		if (item instanceof ExposableId) {
 			((ExposableId) item).setExposableId(generateExposableId());
 		}
-		try {
-			UserTransaction tx = getBeginTransaction();
-			getEntityManager().persist(item);
-			tx.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		getEntityManager().persist(item);
 	}
 
 	public void update(T item) {
-		try {
-			UserTransaction tx = getBeginTransaction();
-			getEntityManager().merge(item);
-			tx.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected UserTransaction getBeginTransaction() {
-		try {
-			UserTransaction tx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
-			tx.begin();
-			return tx;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		getEntityManager().merge(item);
 	}
 
 	public T get(Long id) throws ObjectNotFoundException {
@@ -84,14 +59,8 @@ public abstract class AbstractDao<T extends Serializable> {
 	}
 
 	public void delete(T item) {
-		try {
-			UserTransaction tx = getBeginTransaction();
-			item = getEntityManager().merge(item);
-			getEntityManager().remove(item);
-			tx.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		item = getEntityManager().merge(item);
+		getEntityManager().remove(item);
 	}
 
 	protected EntityManager getEntityManager() {

@@ -3,12 +3,12 @@ package net.weweave.tubewarder.dao;
 import net.weweave.tubewarder.domain.Log;
 import org.apache.commons.validator.GenericValidator;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
 
-@ApplicationScoped
+@Stateless
 public class LogDao extends AbstractDao<Log> {
     /**
      * @param startDate minimum date (inclusive)

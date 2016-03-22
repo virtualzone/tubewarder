@@ -4,14 +4,13 @@ import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import org.apache.commons.validator.GenericValidator;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-@ApplicationScoped
+@Stateless
 public class SessionDao extends AbstractDao<Session> {
     public static final Integer TIMEOUT = 30;
 
@@ -32,15 +31,8 @@ public class SessionDao extends AbstractDao<Session> {
         Calendar c = new GregorianCalendar();
         c.add(Calendar.MINUTE, TIMEOUT * (-1));
 
-        try {
-            UserTransaction tx = getBeginTransaction();
-            Query query = getEntityManager().createQuery("DELETE FROM Session s WHERE s.lastActionDate < :date");
-            query.setParameter("date", c.getTime());
-            query.executeUpdate();
-            tx.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        Query query = getEntityManager().createQuery("DELETE FROM Session s WHERE s.lastActionDate < :date");
+        query.setParameter("date", c.getTime());
+        query.executeUpdate();
     }
 }
