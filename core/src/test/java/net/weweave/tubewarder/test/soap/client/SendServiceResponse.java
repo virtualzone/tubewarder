@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="recipient" type="{http://soap.service.tubewarder.weweave.net/}addressModel" minOccurs="0"/>
  *         &lt;element name="subject" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="content" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="queueId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -31,7 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "sendServiceResponse", propOrder = {
     "recipient",
     "subject",
-    "content"
+    "content",
+    "queueId"
 })
 public class SendServiceResponse
     extends AbstractResponse
@@ -40,6 +42,7 @@ public class SendServiceResponse
     protected AddressModel recipient;
     protected String subject;
     protected String content;
+    protected String queueId;
 
     /**
      * Gets the value of the recipient property.
@@ -111,6 +114,30 @@ public class SendServiceResponse
      */
     public void setContent(String value) {
         this.content = value;
+    }
+
+    /**
+     * Gets the value of the queueId property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getQueueId() {
+        return queueId;
+    }
+
+    /**
+     * Sets the value of the queueId property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setQueueId(String value) {
+        this.queueId = value;
     }
 
 }

@@ -9,4 +9,5 @@ public class SendServiceResponse extends AbstractResponse {
     public AddressModel recipient = new AddressModel();
     public String subject = "";
     public String content = "";
+    public String queueId = "";
 }

@@ -1,17 +1,13 @@
 package net.weweave.tubewarder.service.common;
 
-import net.weweave.tubewarder.dao.AppTokenDao;
-import net.weweave.tubewarder.dao.ChannelTemplateDao;
-import net.weweave.tubewarder.dao.LogDao;
-import net.weweave.tubewarder.domain.AppToken;
-import net.weweave.tubewarder.domain.Channel;
-import net.weweave.tubewarder.domain.ChannelTemplate;
-import net.weweave.tubewarder.domain.Log;
+import net.weweave.tubewarder.dao.*;
+import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.exception.*;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
-import net.weweave.tubewarder.outputhandler.OutputHandlerDispatcher;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
+import net.weweave.tubewarder.outputhandler.SendQueueScheduler;
 import net.weweave.tubewarder.outputhandler.api.*;
+import net.weweave.tubewarder.outputhandler.api.Attachment;
 import net.weweave.tubewarder.outputhandler.api.configoption.OutputHandlerConfigOption;
 import net.weweave.tubewarder.outputhandler.api.configoption.StringConfigOption;
 import net.weweave.tubewarder.service.model.ErrorCode;
@@ -21,13 +17,14 @@ import net.weweave.tubewarder.service.response.SendServiceResponse;
 import net.weweave.tubewarder.util.TemplateRenderer;
 import org.apache.commons.validator.GenericValidator;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-@RequestScoped
+@Stateless
 public class SendServiceCommon {
     @Inject
     private ChannelTemplateDao channelTemplateDao;
@@ -42,10 +39,16 @@ public class SendServiceCommon {
     private LogDao logDao;
 
     @Inject
-    private OutputHandlerDispatcher outputHandlerDispatcher;
+    private OutputHandlerFactory outputHandlerFactory;
 
     @Inject
-    private OutputHandlerFactory outputHandlerFactory;
+    private SendQueueItemDao sendQueueItemDao;
+
+    @Inject
+    private AttachmentDao attachmentDao;
+
+    @Inject
+    private SendQueueScheduler sendQueueScheduler;
 
     public SendServiceResponse process(SendModel sendModel) {
         SendServiceResponse response = new SendServiceResponse();
@@ -128,8 +131,53 @@ public class SendServiceCommon {
 
         // Send
         List<Attachment> attachments = sendModel.attachmentModelToList();
+        SendQueueItem sendQueueItem = createSendQueueItem(channelTemplate, recipient, rewrites, config, attachments, sendModel);
+        response.queueId = sendQueueItem.getExposableId();
+        getSendQueueScheduler().addSendQueueItem(sendQueueItem.getId());
+        /*
         getOutputHandlerDispatcher().invoke(outputHandler, config, sender, recipient, rewrites.subject, rewrites.content, attachments);
+        */
+        // TODO include queue ID in log
         log(sendModel, channelTemplate, sender, recipient, rewrites.subject, rewrites.content);
+    }
+
+    private SendQueueItem createSendQueueItem(ChannelTemplate channelTemplate, Address recipient, Rewrites rewrites, Config config, List<Attachment> attachments, SendModel sendModel) {
+        SendQueueItem item = new SendQueueItem();
+
+        // Set payload properties
+        item.setChannelTemplate(channelTemplate);
+        item.setRecipientAddress(recipient.getAddress());
+        item.setRecipientName(recipient.getName());
+        item.setSubject(rewrites.subject);
+        item.setContent(rewrites.content);
+        item.setKeyword(sendModel.keyword);
+        item.setDetails(sendModel.details);
+        item.setConfigJson(OutputHandlerConfigUtil.configMapToJsonString(config));
+
+        // Set controlling properties
+        item.setInProcessing(true);
+        item.setCreateDate(new Date());
+        item.setLastTryDate(null);
+        item.setTryCount(0);
+
+        // Store with active processing flag, so we can add attachments without interruption
+        getSendQueueItemDao().store(item);
+
+        // Add attachments
+        for (Attachment attachment : attachments) {
+            net.weweave.tubewarder.domain.Attachment atm = new net.weweave.tubewarder.domain.Attachment();
+            atm.setContentType(attachment.getContentType());
+            atm.setFilename(attachment.getFilename());
+            atm.setPayload(attachment.getPayload());
+            atm.setSendQueueItem(item);
+            getAttachmentDao().store(atm);
+        }
+
+        // Remove processing flag
+        item.setInProcessing(false);
+        getSendQueueItemDao().update(item);
+
+        return item;
     }
 
     private void rewriteConfig(IOutputHandler outputHandler, Config config, Map<String, Object> model, Rewrites rewrites) throws TemplateCorruptException, TemplateModelException {
@@ -270,12 +318,28 @@ public class SendServiceCommon {
         this.outputHandlerFactory = outputHandlerFactory;
     }
 
-    public OutputHandlerDispatcher getOutputHandlerDispatcher() {
-        return outputHandlerDispatcher;
+    public SendQueueItemDao getSendQueueItemDao() {
+        return sendQueueItemDao;
     }
 
-    public void setOutputHandlerDispatcher(OutputHandlerDispatcher outputHandlerDispatcher) {
-        this.outputHandlerDispatcher = outputHandlerDispatcher;
+    public void setSendQueueItemDao(SendQueueItemDao sendQueueItemDao) {
+        this.sendQueueItemDao = sendQueueItemDao;
+    }
+
+    public AttachmentDao getAttachmentDao() {
+        return attachmentDao;
+    }
+
+    public void setAttachmentDao(AttachmentDao attachmentDao) {
+        this.attachmentDao = attachmentDao;
+    }
+
+    public SendQueueScheduler getSendQueueScheduler() {
+        return sendQueueScheduler;
+    }
+
+    public void setSendQueueScheduler(SendQueueScheduler sendQueueScheduler) {
+        this.sendQueueScheduler = sendQueueScheduler;
     }
 
     private class Rewrites {

@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.util;
 
+import net.weweave.tubewarder.dao.SendQueueItemDao;
 import net.weweave.tubewarder.dao.UserDao;
 import net.weweave.tubewarder.domain.User;
 import org.mindrot.jbcrypt.BCrypt;
