@@ -7,6 +7,7 @@ import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Singleton;
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -77,6 +78,12 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
         } catch (ObjectNotFoundException e) {
             return defaultValue;
         }
+    }
+
+    public List<ConfigItem> getAll() {
+        TypedQuery<ConfigItem> query = getEntityManager().createQuery("SELECT i FROM ConfigItem i " +
+                "ORDER BY i.label ASC", ConfigItem.class);
+        return query.getResultList();
     }
 
     private void setRawItem(String key, ConfigItemType type, String value, String label) {
