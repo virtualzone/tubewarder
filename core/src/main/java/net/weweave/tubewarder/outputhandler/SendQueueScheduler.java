@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.outputhandler;
 
+import net.weweave.tubewarder.dao.ConfigItemDao;
 import net.weweave.tubewarder.dao.SendQueueItemDao;
 import net.weweave.tubewarder.domain.SendQueueItem;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
@@ -17,6 +18,9 @@ import java.util.logging.Logger;
 @Startup
 public class SendQueueScheduler {
     private static final Logger LOG = Logger.getLogger(SendQueueScheduler.class.getName());
+    private static final String CONFIG_MAX_CONCURRENT_THREADS = "QUEUE_MAX_CONCURRENT_THREADS";
+    private static final String CONFIG_MAX_RETRIES = "QUEUE_MAX_RETRIES";
+    private static final String CONFIG_RETRY_WAIT_TIME_SECONDS = "QUEUE_RETRY_WAIT_TIME_SECONDS";
 
     private final Queue<Long> sendQueue;
     private final SendQueueCallback callbackHandler = new SendQueueCallback() {
@@ -63,6 +67,9 @@ public class SendQueueScheduler {
     @Inject
     private OutputHandlerDispatcher dispatcher;
 
+    @Inject
+    private ConfigItemDao configItemDao;
+
 
     public SendQueueScheduler() {
         sendQueue = new ConcurrentLinkedQueue<>();
@@ -72,9 +79,22 @@ public class SendQueueScheduler {
 
     @PostConstruct
     public void init() {
+        checkCreateConfig();
         LOG.info("Recovering unprocessed items...");
         getSendQueueItemDao().recoverUnprocessedItems();
         sendQueue.addAll(getSendQueueItemDao().getUnprocessedItemIds());
+    }
+
+    private void checkCreateConfig() {
+        if (!getConfigItemDao().hasKey(CONFIG_MAX_CONCURRENT_THREADS)) {
+            getConfigItemDao().setValue(CONFIG_MAX_CONCURRENT_THREADS, 10, "Max. concurrent threads");
+        }
+        if (!getConfigItemDao().hasKey(CONFIG_MAX_RETRIES)) {
+            getConfigItemDao().setValue(CONFIG_MAX_RETRIES, 5, "Max. retries");
+        }
+        if (!getConfigItemDao().hasKey(CONFIG_RETRY_WAIT_TIME_SECONDS)) {
+            getConfigItemDao().setValue(CONFIG_RETRY_WAIT_TIME_SECONDS, 5*60, "Retry wait time (seconds)");
+        }
     }
 
     @Schedule(minute = "*", hour = "*", second = "*", persistent = false)
@@ -131,18 +151,15 @@ public class SendQueueScheduler {
     }
 
     private int getMaxConcurrentThreads() {
-        // TODO Make this configurable
-        return 10;
+        return getConfigItemDao().getInt(CONFIG_MAX_CONCURRENT_THREADS, 10);
     }
 
     private int getMaxRetries() {
-        // TODO Make this configurable
-        return 5;
+        return getConfigItemDao().getInt(CONFIG_MAX_RETRIES, 5);
     }
 
     private int getRetryWaitTimeSeconds() {
-        // TODO Make this configurable
-        return 5*60;
+        return getConfigItemDao().getInt(CONFIG_RETRY_WAIT_TIME_SECONDS, 5*60);
     }
 
     private SendQueueItem getNextSendQueueItem() {
@@ -172,5 +189,13 @@ public class SendQueueScheduler {
 
     public void setDispatcher(OutputHandlerDispatcher dispatcher) {
         this.dispatcher = dispatcher;
+    }
+
+    public ConfigItemDao getConfigItemDao() {
+        return configItemDao;
+    }
+
+    public void setConfigItemDao(ConfigItemDao configItemDao) {
+        this.configItemDao = configItemDao;
     }
 }
