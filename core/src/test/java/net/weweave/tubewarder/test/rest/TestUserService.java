@@ -49,7 +49,7 @@ public class TestUserService extends AbstractRestTest {
                 "allowAppTokens", false,
                 "allowChannels", false,
                 "allowTemplates", false,
-                "allowUsers", false);
+                "allowSystemConfig", false);
         response = validateSetUserResponse(token, id, params,
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()),
@@ -253,7 +253,7 @@ public class TestUserService extends AbstractRestTest {
                 "allowAppTokens", true,
                 "allowChannels", true,
                 "allowTemplates", true,
-                "allowUsers", true);
+                "allowSystemConfig", true);
     }
 
     private JSONObject validateSetUserResponse(String token, String id, Map<String, Object> params, Object... body) {
