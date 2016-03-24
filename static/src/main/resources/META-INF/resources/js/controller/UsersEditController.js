@@ -2,7 +2,7 @@ define(['angular', 'app'], function(angular, app) {
 	'use strict';
 
     app.lazy.controller('UsersEditController', ['$scope', '$http', '$location', '$routeParams', 'appServices', function($scope, $http, $location, $routeParams, appServices) {
-        appServices.setActiveNavItem('users');
+        appServices.setActiveNavItem('system');
         
         $scope.model = {
             id: '',

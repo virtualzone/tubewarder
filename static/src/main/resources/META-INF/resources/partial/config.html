@@ -1,7 +1,12 @@
 <div class="container main">
     <div class="row">
         <div class="col col-md-8">
-            <h1>Configuration</h1>
+            <h1>System</h1>
+            <ul class="nav nav-tabs">
+                <li role="presentation"><a href="#/users">Users</a></li>
+                <li role="presentation" class="active"><a href="#/config">Configuration</a></li>
+            </ul>
+            
             <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
                 <div class="alert alert-success ng-cloak" role="alert" data-ng-show="saveSuccess">Settings successfully saved.</div>
                 <div class="form-group" data-ng-repeat="item in model.items" data-ng-switch="item.type">

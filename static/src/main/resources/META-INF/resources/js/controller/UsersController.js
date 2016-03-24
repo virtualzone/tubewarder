@@ -2,7 +2,7 @@ define(['angular', 'app'], function(angular, app) {
 	'use strict';
 
     app.lazy.controller('UsersController', ['$scope', '$http', 'appServices', function($scope, $http, appServices) {
-        appServices.setActiveNavItem('users');
+        appServices.setActiveNavItem('system');
         
         $scope.model = {
             users: []
