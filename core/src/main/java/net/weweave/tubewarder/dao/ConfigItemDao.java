@@ -45,12 +45,31 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
     }
 
     public String getString(String key) throws ObjectNotFoundException {
+        if (cache.containsKey(key)) {
+            return cache.get(key);
+        }
         return getRawItem(key).getValue();
     }
 
     public String getString(String key, String defaultValue) {
         try {
             return getString(key);
+        } catch (ObjectNotFoundException e) {
+            return defaultValue;
+        }
+    }
+
+    public Integer getInt(String key) throws ObjectNotFoundException {
+        if (cache.containsKey(key)) {
+            return Integer.valueOf(cache.get(key));
+        }
+        String value = getRawItem(key).getValue();
+        return Integer.valueOf(value);
+    }
+
+    public Integer getInt(String key, Integer defaultValue) {
+        try {
+            return getInt(key);
         } catch (ObjectNotFoundException e) {
             return defaultValue;
         }
@@ -67,23 +86,14 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
         }
     }
 
-    public Integer getInt(String key) throws ObjectNotFoundException {
-        String value = getRawItem(key).getValue();
-        return Integer.valueOf(value);
-    }
-
-    public Integer getInt(String key, Integer defaultValue) {
-        try {
-            return getInt(key);
-        } catch (ObjectNotFoundException e) {
-            return defaultValue;
-        }
-    }
-
     public List<ConfigItem> getAll() {
         TypedQuery<ConfigItem> query = getEntityManager().createQuery("SELECT i FROM ConfigItem i " +
                 "ORDER BY i.label ASC", ConfigItem.class);
         return query.getResultList();
+    }
+
+    public void clearCache() {
+        cache.clear();
     }
 
     private void setRawItem(String key, ConfigItemType type, String value, String label) {
