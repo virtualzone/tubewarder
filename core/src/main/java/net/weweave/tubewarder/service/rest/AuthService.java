@@ -52,6 +52,7 @@ public class AuthService extends AbstractService {
         User user = getUserDao().getByUsername(request.username);
         checkPassword(user, request.password);
         Session session = createSession(user);
+        updateUserLastLoginDate(user);
         response.token = session.getExposableId();
         response.user = UserModel.factory(user);
     }
@@ -69,6 +70,11 @@ public class AuthService extends AbstractService {
         session.setLastActionDate(new Date());
         getSessionDao().store(session);
         return session;
+    }
+
+    private void updateUserLastLoginDate(User user) {
+        user.setLastLogin(new Date());
+        getUserDao().update(user);
     }
 
     public UserDao getUserDao() {
