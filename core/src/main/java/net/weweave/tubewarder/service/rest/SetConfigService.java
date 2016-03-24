@@ -54,7 +54,7 @@ public class SetConfigService extends AbstractService {
 
     private void checkPermissions(User user) throws PermissionException {
         if (user == null ||
-                !user.getAllowUsers()) {
+                !user.getAllowSystemConfig()) {
             throw new PermissionException();
         }
     }

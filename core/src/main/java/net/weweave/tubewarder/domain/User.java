@@ -15,7 +15,7 @@ public class User extends AbstractPersistentObject {
     private Boolean allowAppTokens = false;
     private Boolean allowChannels = false;
     private Boolean allowTemplates = false;
-    private Boolean allowUsers = false;
+    private Boolean allowSystemConfig = false;
     private Boolean allowLogs = false;
 
     public String getDisplayName() {
@@ -82,12 +82,12 @@ public class User extends AbstractPersistentObject {
         this.allowTemplates = allowTemplates;
     }
 
-    public Boolean getAllowUsers() {
-        return allowUsers;
+    public Boolean getAllowSystemConfig() {
+        return allowSystemConfig;
     }
 
-    public void setAllowUsers(Boolean allowUsers) {
-        this.allowUsers = allowUsers;
+    public void setAllowSystemConfig(Boolean allowSystemConfig) {
+        this.allowSystemConfig = allowSystemConfig;
     }
 
     public Boolean getAllowLogs() {

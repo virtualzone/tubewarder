@@ -14,7 +14,7 @@ define(['angular', 'app'], function(angular, app) {
             allowAppTokens: false,
             allowChannels: false,
             allowTemplates: false,
-            allowUsers: false,
+            allowSystemConfig: false,
             allowLogs: false
         };
         
@@ -34,7 +34,7 @@ define(['angular', 'app'], function(angular, app) {
                     allowAppTokens: $scope.model.allowAppTokens,
                     allowChannels: $scope.model.allowChannels,
                     allowTemplates: $scope.model.allowTemplates,
-                    allowUsers: $scope.model.allowUsers,
+                    allowSystemConfig: $scope.model.allowSystemConfig,
                     allowLogs: $scope.model.allowLogs
                 }
             };
@@ -57,7 +57,7 @@ define(['angular', 'app'], function(angular, app) {
                 $scope.model.allowAppTokens = user.allowAppTokens;
                 $scope.model.allowChannels = user.allowChannels;
                 $scope.model.allowTemplates = user.allowTemplates;
-                $scope.model.allowUsers = user.allowUsers;
+                $scope.model.allowSystemConfig = user.allowSystemConfig;
                 $scope.model.allowLogs = user.allowLogs;
             });
         }

@@ -25,7 +25,7 @@ public class UserDao extends AbstractDao<User> {
 
     public Boolean existsAnyAdminUser() {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
-                "WHERE u.allowUsers = 1 AND u.enabled = 1", User.class);
+                "WHERE u.allowSystemConfig = 1 AND u.enabled = 1", User.class);
         query.setMaxResults(1);
         try {
             DbValueRetriever.getObjectOrException(query);

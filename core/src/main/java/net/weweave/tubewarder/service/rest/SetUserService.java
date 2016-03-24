@@ -53,7 +53,7 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
 
     private void checkPermissions(User user) throws PermissionException {
         if (user == null ||
-                !user.getAllowUsers()) {
+                !user.getAllowSystemConfig()) {
             throw new PermissionException();
         }
     }
@@ -108,7 +108,7 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
         object.setAllowAppTokens(model.allowAppTokens);
         object.setAllowChannels(model.allowChannels);
         object.setAllowTemplates(model.allowTemplates);
-        object.setAllowUsers(model.allowUsers);
+        object.setAllowSystemConfig(model.allowSystemConfig);
         object.setAllowLogs(model.allowLogs);
         getObjectDao().update(object);
     }

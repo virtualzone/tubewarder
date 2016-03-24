@@ -15,7 +15,7 @@ public class UserModel extends AbstractRestModel {
     public Boolean allowAppTokens;
     public Boolean allowChannels;
     public Boolean allowTemplates;
-    public Boolean allowUsers;
+    public Boolean allowSystemConfig;
     public Boolean allowLogs;
 
     public static UserModel factory(User user) {
@@ -28,7 +28,7 @@ public class UserModel extends AbstractRestModel {
         model.allowAppTokens = user.getAllowAppTokens();
         model.allowChannels = user.getAllowChannels();
         model.allowTemplates = user.getAllowTemplates();
-        model.allowUsers = user.getAllowUsers();
+        model.allowSystemConfig = user.getAllowSystemConfig();
         model.allowLogs = user.getAllowLogs();
         return model;
     }
