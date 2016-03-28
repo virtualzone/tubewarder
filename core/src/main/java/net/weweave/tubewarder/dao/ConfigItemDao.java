@@ -6,13 +6,16 @@ import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
-@Singleton
+@Stateless
 public class ConfigItemDao extends AbstractDao<ConfigItem> {
+    private static final Logger LOG = Logger.getLogger(ConfigItemDao.class.getName());
     private final Map<String, String> cache = new ConcurrentHashMap<>();
 
     public boolean hasKey(String key) {
@@ -97,6 +100,7 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
     }
 
     private void setRawItem(String key, ConfigItemType type, String value, String label) {
+        LOG.info("Setting config entry: " + key + " = " + value);
         ConfigItem item;
         try {
             item = getRawItem(key);
@@ -124,6 +128,7 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
         query.setMaxResults(1);
         ConfigItem item = (ConfigItem) DbValueRetriever.getObjectOrException(query);
         cache.put(key, item.getValue());
+        getEntityManager().detach(item);
         return item;
     }
 }

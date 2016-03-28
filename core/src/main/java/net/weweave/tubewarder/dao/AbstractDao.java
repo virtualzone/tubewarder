@@ -1,6 +1,7 @@
 package net.weweave.tubewarder.dao;
 
 import net.weweave.tubewarder.domain.ExposableId;
+import net.weweave.tubewarder.domain.IdObject;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 
 import javax.persistence.EntityManager;
@@ -12,7 +13,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class AbstractDao<T extends Serializable> {
+public abstract class AbstractDao<T extends IdObject> {
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -21,11 +22,13 @@ public abstract class AbstractDao<T extends Serializable> {
 			((ExposableId) item).setExposableId(generateExposableId());
 		}
 		getEntityManager().persist(item);
+		getEntityManager().flush();
 		getEntityManager().detach(item);
 	}
 
 	public void update(T item) {
-		getEntityManager().merge(item);
+		item = getEntityManager().merge(item);
+		getEntityManager().flush();
 		getEntityManager().detach(item);
 	}
 
