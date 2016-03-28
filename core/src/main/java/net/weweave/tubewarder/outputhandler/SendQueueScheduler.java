@@ -1,7 +1,10 @@
 package net.weweave.tubewarder.outputhandler;
 
 import net.weweave.tubewarder.dao.ConfigItemDao;
+import net.weweave.tubewarder.dao.LogDao;
 import net.weweave.tubewarder.dao.SendQueueItemDao;
+import net.weweave.tubewarder.domain.Log;
+import net.weweave.tubewarder.domain.QueueItemStatus;
 import net.weweave.tubewarder.domain.SendQueueItem;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 
@@ -27,6 +30,8 @@ public class SendQueueScheduler {
         @Override
         public void success(SendQueueItem item) {
             try {
+                log(item, "Successfully processed, deleting queue item");
+                updateLog(item, QueueItemStatus.SUCCESS);
                 getSendQueueItemDao().delete(item);
             } finally {
                 decrementCurrentThreads();
@@ -37,11 +42,12 @@ public class SendQueueScheduler {
         public void temporaryError(SendQueueItem item) {
             try {
                 if (item.getTryCount() < getMaxRetries()) {
-                    item.setTryCount(item.getTryCount() + 1);
-                    item.setLastTryDate(new Date());
-                    item.setInProcessing(false);
-                    getSendQueueItemDao().update(item);
+                    updateSendQueueItemForRetry(item);
+                    log(item, "Scheduling for retry " + item.getTryCount() + "/" + getMaxRetries());
+                    updateLog(item, QueueItemStatus.RETRY);
                 } else {
+                    log(item, "Too many retries, giving up and deleting queue item");
+                    updateLog(item, QueueItemStatus.FAILED);
                     getSendQueueItemDao().delete(item);
                 }
             } finally {
@@ -52,12 +58,15 @@ public class SendQueueScheduler {
         @Override
         public void permanentError(SendQueueItem item) {
             try {
+                log(item, "Permanent error, giving up and deleting queue item");
+                updateLog(item, QueueItemStatus.FAILED);
                 getSendQueueItemDao().delete(item);
             } finally {
                 decrementCurrentThreads();
             }
         }
     };
+
     private boolean schedulerActive;
     private int currentThreads;
 
@@ -70,6 +79,8 @@ public class SendQueueScheduler {
     @Inject
     private ConfigItemDao configItemDao;
 
+    @Inject
+    private LogDao logDao;
 
     public SendQueueScheduler() {
         sendQueue = new ConcurrentLinkedQueue<>();
@@ -131,8 +142,7 @@ public class SendQueueScheduler {
             item = getNextSendQueueItem();
             if (item != null) {
                 incrementCurrentThreads();
-                item.setInProcessing(true);
-                getSendQueueItemDao().update(item);
+                updateSendQueueItemSetProcessing(item);
                 getDispatcher().processSendQueueItem(item, callbackHandler);
             }
         } while ((item != null) && (getCurrentThreads() < maxConcurrentThreads));
@@ -175,6 +185,29 @@ public class SendQueueScheduler {
         return item;
     }
 
+    private void updateSendQueueItemSetProcessing(SendQueueItem item) {
+        updateLog(item, QueueItemStatus.PROCESSING);
+        item.setInProcessing(true);
+        getSendQueueItemDao().update(item);
+    }
+
+    private void updateSendQueueItemForRetry(SendQueueItem item) {
+        item.setTryCount(item.getTryCount() + 1);
+        item.setLastTryDate(new Date());
+        item.setInProcessing(false);
+        getSendQueueItemDao().update(item);
+    }
+
+    private void updateLog(SendQueueItem sendQueueItem, QueueItemStatus status) {
+        Log log = sendQueueItem.getLog();
+        log.setStatus(status);
+        getLogDao().update(log);
+    }
+
+    private void log(SendQueueItem item, String message) {
+        LOG.info("Queue item ID = " + item.getExposableId() + ": " + message);
+    }
+
     public SendQueueItemDao getSendQueueItemDao() {
         return sendQueueItemDao;
     }
@@ -197,5 +230,13 @@ public class SendQueueScheduler {
 
     public void setConfigItemDao(ConfigItemDao configItemDao) {
         this.configItemDao = configItemDao;
+    }
+
+    public LogDao getLogDao() {
+        return logDao;
+    }
+
+    public void setLogDao(LogDao logDao) {
+        this.logDao = logDao;
     }
 }

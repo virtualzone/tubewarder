@@ -2,6 +2,8 @@ package net.weweave.tubewarder.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Date;
 
 @Entity
@@ -22,6 +24,9 @@ public class Log extends AbstractPersistentObject {
     private String subject;
     @Column(length = 100000)
     private String content;
+    @Enumerated(EnumType.STRING)
+    private QueueItemStatus status;
+    private String queueId;
 
     public Date getDate() {
         return date;
@@ -141,5 +146,21 @@ public class Log extends AbstractPersistentObject {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public QueueItemStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(QueueItemStatus status) {
+        this.status = status;
+    }
+
+    public String getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(String queueId) {
+        this.queueId = queueId;
     }
 }

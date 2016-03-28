@@ -18,14 +18,16 @@ import net.weweave.tubewarder.util.TemplateRenderer;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Stateless
 public class SendServiceCommon {
+    private static final Logger LOG = Logger.getLogger(SendServiceCommon.class.getName());
+
     @Inject
     private ChannelTemplateDao channelTemplateDao;
 
@@ -53,6 +55,7 @@ public class SendServiceCommon {
     public SendServiceResponse process(SendModel sendModel) {
         SendServiceResponse response = new SendServiceResponse();
         try {
+            LOG.info("Send API invoked with app token = " + sendModel.token);
             validateInputParameters(sendModel);
             checkPermission(sendModel);
             renderAndSend(sendModel, response);
@@ -61,6 +64,7 @@ public class SendServiceCommon {
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
+            LOG.info("Permission denied for app token = " + sendModel.token);
             response.error = ErrorCode.PERMISSION_DENIED;
         } catch (TemplateCorruptException e) {
             response.error = ErrorCode.TEMPLATE_CORRUPT;
@@ -129,19 +133,25 @@ public class SendServiceCommon {
             throw new InvalidInputParametersException(e.getMessage());
         }
 
-        // Send
+        // Log
+        Log log = log(sendModel, channelTemplate, sender, recipient, rewrites.subject, rewrites.content);
+
+        // Create queue item
         List<Attachment> attachments = sendModel.attachmentModelToList();
-        SendQueueItem sendQueueItem = createSendQueueItem(channelTemplate, recipient, rewrites, config, attachments, sendModel);
+        SendQueueItem sendQueueItem = createSendQueueItem(channelTemplate, recipient, rewrites, config, attachments, sendModel, log);
+        updateLogWithQueueId(log, sendQueueItem);
+
+        // Enqueue
         response.queueId = sendQueueItem.getExposableId();
         getSendQueueScheduler().addSendQueueItem(sendQueueItem.getId());
-        /*
-        getOutputHandlerDispatcher().invoke(outputHandler, config, sender, recipient, rewrites.subject, rewrites.content, attachments);
-        */
-        // TODO include queue ID in log
-        log(sendModel, channelTemplate, sender, recipient, rewrites.subject, rewrites.content);
     }
 
-    private SendQueueItem createSendQueueItem(ChannelTemplate channelTemplate, Address recipient, Rewrites rewrites, Config config, List<Attachment> attachments, SendModel sendModel) {
+    private void updateLogWithQueueId(Log log, SendQueueItem sendQueueItem) {
+        log.setQueueId(sendQueueItem.getExposableId());
+        getLogDao().update(log);
+    }
+
+    private SendQueueItem createSendQueueItem(ChannelTemplate channelTemplate, Address recipient, Rewrites rewrites, Config config, List<Attachment> attachments, SendModel sendModel, Log log) {
         SendQueueItem item = new SendQueueItem();
 
         // Set payload properties
@@ -153,6 +163,7 @@ public class SendServiceCommon {
         item.setKeyword(sendModel.keyword);
         item.setDetails(sendModel.details);
         item.setConfigJson(OutputHandlerConfigUtil.configMapToJsonString(config));
+        item.setLog(log);
 
         // Set controlling properties
         item.setInProcessing(true);
@@ -253,7 +264,7 @@ public class SendServiceCommon {
         return result;
     }
 
-    private void log(SendModel model, ChannelTemplate channelTemplate, Address sender, Address recipient, String subject, String content) {
+    private Log log(SendModel model, ChannelTemplate channelTemplate, Address sender, Address recipient, String subject, String content) {
         Log log = new Log();
         log.setDate(new Date());
         log.setAppToken(model.token);
@@ -275,7 +286,9 @@ public class SendServiceCommon {
         log.setRecipientAddress(recipient.getAddress());
         log.setSubject(subject);
         log.setContent(content);
+        log.setStatus(QueueItemStatus.WAITING);
         getLogDao().store(log);
+        return log;
     }
 
     public ChannelTemplateDao getChannelTemplateDao() {

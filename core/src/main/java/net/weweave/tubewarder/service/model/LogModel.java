@@ -22,6 +22,8 @@ public class LogModel extends AbstractRestModel {
     public String recipientAddress;
     public String subject;
     public String content;
+    public String queueId;
+    public String status;
 
     public static LogModel factory(Log log, boolean includePayload) {
         LogModel model = new LogModel();
@@ -38,6 +40,8 @@ public class LogModel extends AbstractRestModel {
         model.senderAddress = log.getSenderAddress();
         model.recipientName = log.getRecipientName();
         model.recipientAddress = log.getRecipientAddress();
+        model.queueId = log.getQueueId();
+        model.status = (log.getStatus() != null ? log.getStatus().toString() : "");
         if (includePayload) {
             model.subject = log.getSubject();
             model.content = log.getContent();

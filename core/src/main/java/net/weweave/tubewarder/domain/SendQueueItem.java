@@ -21,6 +21,8 @@ public class SendQueueItem extends AbstractPersistentObject {
     private String details;
     @Column(length = 100000)
     private String configJson;
+    @ManyToOne
+    private Log log;
     private Date createDate = null;
     private Date lastTryDate = null;
     private Integer tryCount = 0;
@@ -128,5 +130,13 @@ public class SendQueueItem extends AbstractPersistentObject {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public Log getLog() {
+        return log;
+    }
+
+    public void setLog(Log log) {
+        this.log = log;
     }
 }

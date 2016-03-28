@@ -20,10 +20,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Date;
+import java.util.logging.Logger;
 
 @RequestScoped
 @Path("/auth")
 public class AuthService extends AbstractService {
+    private static final Logger LOG = Logger.getLogger(AuthService.class.getName());
+
     @Inject
     private UserDao userDao;
 
@@ -33,9 +36,12 @@ public class AuthService extends AbstractService {
     public AuthResponse action(AuthRequest request) {
         AuthResponse response = new AuthResponse();
         try {
+            LOG.info("REST Login attempt for username = " + request.username);
             validateInputParameters(request);
             checkAuthAndCreateSession(request, response);
+            LOG.info("REST Login success for username = " + request.username);
         } catch (Exception e) {
+            LOG.info("REST Login failure for username = " + request.username);
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         }
         return response;
