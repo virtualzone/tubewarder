@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 @Singleton
+@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
+@Lock(LockType.READ)
 public class SendQueueScheduler {
     private static final Logger LOG = Logger.getLogger(SendQueueScheduler.class.getName());
     private static final String CONFIG_MAX_CONCURRENT_THREADS = "QUEUE_MAX_CONCURRENT_THREADS";
@@ -24,6 +26,7 @@ public class SendQueueScheduler {
     private static final String CONFIG_RETRY_WAIT_TIME_SECONDS = "QUEUE_RETRY_WAIT_TIME_SECONDS";
 
     private final Queue<Long> sendQueue;
+    private final Queue<Long> backupQueue;
     private final SendQueueCallback callbackHandler = new SendQueueCallback() {
         @Override
         public void success(SendQueueItem item) {
@@ -82,6 +85,7 @@ public class SendQueueScheduler {
 
     public SendQueueScheduler() {
         sendQueue = new ConcurrentLinkedQueue<>();
+        backupQueue = new ConcurrentLinkedQueue<>();
         schedulerActive = false;
         currentThreads = 0;
     }
@@ -122,6 +126,17 @@ public class SendQueueScheduler {
         }
     }
 
+    @Schedule(minute = "*", hour = "*", second = "*", persistent = false)
+    private void scheduledProcessBackupQueue() {
+        Long id;
+        do {
+            id = backupQueue.poll();
+            if (id != null) {
+                addSendQueueItem(id);
+            }
+        } while (id != null);
+    }
+
     @Schedule(minute = "*", hour = "*", second = "*/30", persistent = false)
     public void scheduledReQueueItems() {
         List<Long> ids = getSendQueueItemDao().getFailedUnqueuedItemIds(getRetryWaitTimeSeconds());
@@ -157,12 +172,16 @@ public class SendQueueScheduler {
         return sendQueue.size();
     }
 
-    private synchronized void incrementCurrentThreads() {
-        currentThreads++;
+    private void incrementCurrentThreads() {
+        addCurrentThreads(+1);
     }
 
-    private synchronized void decrementCurrentThreads() {
-        currentThreads--;
+    private void decrementCurrentThreads() {
+        addCurrentThreads(-1);
+    }
+
+    private synchronized void addCurrentThreads(int diff) {
+        currentThreads = currentThreads + diff;
     }
 
     private int getMaxConcurrentThreads() {
@@ -184,7 +203,8 @@ public class SendQueueScheduler {
             try {
                 item = getSendQueueItemDao().get(id);
             } catch (ObjectNotFoundException e) {
-                LOG.warning("Could not read queue item from database (id = "+id+")");
+                LOG.warning("Could not read queue item from database (id = "+id+"), moving to backup queue");
+                backupQueue.add(id);
                 item = null;
             }
         }
