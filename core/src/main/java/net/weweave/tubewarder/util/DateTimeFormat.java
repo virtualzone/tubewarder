@@ -22,7 +22,6 @@ public class DateTimeFormat {
     }
 
     public static boolean isDateTime(String s) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
         return parse(s) != null;
     }
 

@@ -82,7 +82,7 @@ public class TestChannelTemplateService extends AbstractRestTest {
         token = authGetToken("dummy", "dummy");
 
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
-        JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
+        validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.PERMISSION_DENIED),
                 "id", isEmptyOrNullString());
     }
@@ -96,7 +96,7 @@ public class TestChannelTemplateService extends AbstractRestTest {
         String channelId = createChannelGetId(token, "c1");
 
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
-        JSONObject response = validateSetChannelTemplateResponse(UUID.randomUUID().toString(), ctObject,
+        validateSetChannelTemplateResponse(UUID.randomUUID().toString(), ctObject,
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
@@ -118,7 +118,7 @@ public class TestChannelTemplateService extends AbstractRestTest {
         String templateId2 = createTemplateGetId(token, "t2");
         String channelId2 = createChannelGetId(token, "c2");
         ctObject = getJsonObjectForChannelTemplate(id, templateId2, channelId2);
-        response = validateSetChannelTemplateResponse(token, ctObject,
+        validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 

@@ -52,7 +52,7 @@ public class TestConfigService extends AbstractRestTest {
     }
 
     private JSONObject validateGetConfigResponse(String token, Object... body) {
-        JSONObject payload = getGetConfigRequestPayload(token);
+        getGetConfigRequestPayload(token);
         ResponseSpecification response = getResponseSpecificationGet("token", token);
         setExpectedBodies(response, body);
         return getGetResponse(response, "config/get");

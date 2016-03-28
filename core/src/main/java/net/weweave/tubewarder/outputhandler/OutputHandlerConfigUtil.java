@@ -5,6 +5,8 @@ import org.apache.commons.validator.GenericValidator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class OutputHandlerConfigUtil {
     public static Config configJsonStringToMap(String jsonString) {
         JSONObject json = new JSONObject(jsonString);
@@ -21,8 +23,8 @@ public class OutputHandlerConfigUtil {
 
     public static JSONObject configMapToJson(Config config) {
         JSONObject json = new JSONObject();
-        for (String key : config.keySet()) {
-            json.put(key, config.get(key));
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
+            json.put(entry.getKey(), entry.getValue());
         }
         return json;
     }

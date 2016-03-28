@@ -50,7 +50,7 @@ public class TestUserService extends AbstractRestTest {
                 "allowChannels", false,
                 "allowTemplates", false,
                 "allowSystemConfig", false);
-        response = validateSetUserResponse(token, id, params,
+        validateSetUserResponse(token, id, params,
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()),
                 "id", equalTo(id));
@@ -63,15 +63,14 @@ public class TestUserService extends AbstractRestTest {
         String token = authAdminGetToken();
 
         Map<String, Object> params;
-        JSONObject response;
 
         params = getParamsForDefaultUser();
-        response = validateSetUserResponse(token, null, params,
+        validateSetUserResponse(token, null, params,
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 
         params.put("displayName", "User 2");
-        response = validateSetUserResponse(token, null, params,
+        validateSetUserResponse(token, null, params,
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
                 "id", isEmptyOrNullString());
     }
@@ -94,14 +93,14 @@ public class TestUserService extends AbstractRestTest {
         // Create user2
         params.put("username", "user2");
         params.put("displayName", "User 2");
-        response = validateSetUserResponse(token, null, params,
+        validateSetUserResponse(token, null, params,
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 
         // Try to rename user1 to user2
         params.put("username", "user2");
         params.put("displayName", "User 1");
-        response = validateSetUserResponse(token, id, params,
+        validateSetUserResponse(token, id, params,
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
                 "id", isEmptyOrNullString());
     }
@@ -109,8 +108,8 @@ public class TestUserService extends AbstractRestTest {
     @Test
     public void testCreateInvalidToken() {
         createAdminUser();
-        String token = authAdminGetToken();
-        JSONObject response = validateSetUserResponse(UUID.randomUUID().toString(), null, getParamsForDefaultUser(),
+        authAdminGetToken();
+        validateSetUserResponse(UUID.randomUUID().toString(), null, getParamsForDefaultUser(),
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
@@ -119,7 +118,7 @@ public class TestUserService extends AbstractRestTest {
     public void testCreateInsufficientRights() {
         createUserWithNoRights("dummy", "dummy");
         String token = authGetToken("dummy", "dummy");
-        JSONObject response = validateSetUserResponse(token, null, getParamsForDefaultUser(),
+        validateSetUserResponse(token, null, getParamsForDefaultUser(),
                 "error", equalTo(ErrorCode.PERMISSION_DENIED),
                 "id", isEmptyOrNullString());
     }
@@ -128,7 +127,7 @@ public class TestUserService extends AbstractRestTest {
     public void testUpdateNonExistingObject() {
         createAdminUser();
         String token = authAdminGetToken();
-        JSONObject response = validateSetUserResponse(token, UUID.randomUUID().toString(), getParamsForDefaultUser(),
+        validateSetUserResponse(token, UUID.randomUUID().toString(), getParamsForDefaultUser(),
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
                 "id", isEmptyOrNullString());
     }

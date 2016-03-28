@@ -64,7 +64,7 @@ public class TestTemplateService extends AbstractRestTest {
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
 
-        response = validateSetTemplateResponse(token, id, "Template 1.1",
+        validateSetTemplateResponse(token, id, "Template 1.1",
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()),
                 "id", equalTo(id));
@@ -94,7 +94,7 @@ public class TestTemplateService extends AbstractRestTest {
     public void testUpdateNonExistingObject() {
         createAdminUser();
         String token = authAdminGetToken();
-        JSONObject response = validateSetTemplateResponse(token, UUID.randomUUID().toString(), "Template 1",
+        validateSetTemplateResponse(token, UUID.randomUUID().toString(), "Template 1",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
                 "id", isEmptyOrNullString());
     }
@@ -184,7 +184,7 @@ public class TestTemplateService extends AbstractRestTest {
     @Test
     public void testGetInvalidToken() {
         createAdminUser();
-        String token = authAdminGetToken();
+        authAdminGetToken();
         validateGetTemplateResponse(UUID.randomUUID().toString(), null,
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "templates.size()", is(0));

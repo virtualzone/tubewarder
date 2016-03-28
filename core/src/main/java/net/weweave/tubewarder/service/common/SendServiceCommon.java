@@ -86,7 +86,7 @@ public class SendServiceCommon {
 
     private void checkPermission(SendModel sendModel) throws PermissionException {
         try {
-            AppToken appToken = getAppTokenDao().get(sendModel.token);
+            getAppTokenDao().get(sendModel.token);
         } catch (ObjectNotFoundException e) {
             throw new PermissionException();
         }
@@ -202,8 +202,9 @@ public class SendServiceCommon {
 
         List<OutputHandlerConfigOption> configOptions = outputHandler.getConfigOptions();
 
-        for (String key : config.keySet()) {
-            Object value = config.get(key);
+        for (Map.Entry<String, Object> entry: config.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             if (value instanceof String) {
                 String stringValue = (String)value;
                 if (!GenericValidator.isBlankOrNull(stringValue)) {
@@ -216,8 +217,9 @@ public class SendServiceCommon {
 
     private Map<String, Object> getUriEncodedModel(Map<String, Object> model) {
         Map<String, Object> result = new HashMap<>();
-        for (String key : model.keySet()) {
-            Object value = model.get(key);
+        for (Map.Entry<String, Object> entry : model.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
             if (value instanceof String) {
                 try {
                     result.put(key, URLEncoder.encode((String) value, "UTF-8"));
@@ -355,7 +357,7 @@ public class SendServiceCommon {
         this.sendQueueScheduler = sendQueueScheduler;
     }
 
-    private class Rewrites {
+    private static class Rewrites {
         public String recipientName;
         public String recipientAddress;
         public String subject;

@@ -136,7 +136,7 @@ public class SendQueueScheduler {
     }
 
     private void processQueue() {
-        SendQueueItem item = null;
+        SendQueueItem item;
         int maxConcurrentThreads = getMaxConcurrentThreads();
         do {
             item = getNextSendQueueItem();

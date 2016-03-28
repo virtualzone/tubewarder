@@ -18,7 +18,7 @@ public abstract class AbstractServiceTest {
     private DbTestAssist dbTestAssist;
 
     @BeforeClass
-    public static final void beforeClass() {
+    public static void beforeClass() {
         java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
         java.util.logging.Logger.getLogger("org.apache.openejb.arquillian.common").setLevel(Level.SEVERE);
     }
