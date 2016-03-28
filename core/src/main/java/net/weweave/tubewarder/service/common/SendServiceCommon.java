@@ -143,6 +143,7 @@ public class SendServiceCommon {
 
         // Enqueue
         response.queueId = sendQueueItem.getExposableId();
+        LOG.info("Queueing " + sendQueueItem.getExposableId() + " ("+sendQueueItem.getId()+")");
         getSendQueueScheduler().addSendQueueItem(sendQueueItem.getId());
     }
 
@@ -187,6 +188,8 @@ public class SendServiceCommon {
         // Remove processing flag
         item.setInProcessing(false);
         getSendQueueItemDao().update(item);
+
+        LOG.info("Created queue item " + item.getExposableId());
 
         return item;
     }

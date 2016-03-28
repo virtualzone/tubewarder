@@ -18,6 +18,18 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
     @Inject
     private AttachmentDao attachmentDao;
 
+    @Override
+    public void store(SendQueueItem item) {
+        super.store(item);
+        getEntityManager().flush();
+    }
+
+    @Override
+    public void update(SendQueueItem item) {
+        super.update(item);
+        getEntityManager().flush();
+    }
+
     public void recoverUnprocessedItems() {
         try {
             Query query = getEntityManager().createQuery("UPDATE SendQueueItem i SET i.inProcessing = 0 WHERE i.inProcessing = 1");

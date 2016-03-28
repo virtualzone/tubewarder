@@ -184,6 +184,7 @@ public class SendQueueScheduler {
             try {
                 item = getSendQueueItemDao().get(id);
             } catch (ObjectNotFoundException e) {
+                LOG.warning("Could not read queue item from database (id = "+id+")");
                 item = null;
             }
         }
