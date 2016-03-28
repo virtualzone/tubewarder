@@ -51,7 +51,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <version.swarm>1.0.0.Beta6</version.swarm>
-        <version.tubewarder>1.0-Beta1-SNAPSHOT</version.tubewarder>
+        <version.tubewarder>1.0-Beta1</version.tubewarder>
     </properties>
     
     <dependencyManagement>
