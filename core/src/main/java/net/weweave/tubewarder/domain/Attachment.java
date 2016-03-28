@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -9,6 +10,7 @@ public class Attachment extends AbstractPersistentObject {
     private SendQueueItem sendQueueItem;
     private String filename;
     private String contentType;
+    @Column(length = 100000)
     private String payload;
 
     public SendQueueItem getSendQueueItem() {
