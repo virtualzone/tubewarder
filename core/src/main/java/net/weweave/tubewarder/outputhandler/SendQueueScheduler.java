@@ -148,8 +148,12 @@ public class SendQueueScheduler {
         } while ((item != null) && (getCurrentThreads() < maxConcurrentThreads));
     }
 
-    private int getCurrentThreads() {
+    public int getCurrentThreads() {
         return currentThreads;
+    }
+
+    public int getNumItemsInQueue() {
+        return sendQueue.size();
     }
 
     private synchronized void incrementCurrentThreads() {

@@ -39,7 +39,7 @@ public class AuthService extends AbstractService {
             LOG.info("REST Login attempt for username = " + request.username);
             validateInputParameters(request);
             checkAuthAndCreateSession(request, response);
-            LOG.info("REST Login success for username = " + request.username);
+            LOG.info("REST Login success for username = " + request.username + " - assigned session token = " + response.token);
         } catch (Exception e) {
             LOG.info("REST Login failure for username = " + request.username);
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;

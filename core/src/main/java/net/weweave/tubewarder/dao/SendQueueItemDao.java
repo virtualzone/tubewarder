@@ -2,6 +2,7 @@ package net.weweave.tubewarder.dao;
 
 import net.weweave.tubewarder.domain.Attachment;
 import net.weweave.tubewarder.domain.SendQueueItem;
+import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,6 +39,17 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
                 "ORDER BY i.lastTryDate ASC", Long.class);
         query.setParameter("refDate", cal.getTime());
         return query.getResultList();
+    }
+
+    public Long getTotalCount() {
+        TypedQuery<Long> query = getEntityManager().createQuery("SELECT COUNT(i.id) FROM SendQueueItem i", Long.class);
+        return DbValueRetriever.getLongValueOrZero(query);
+    }
+
+    public Long getRetryCount() {
+        TypedQuery<Long> query = getEntityManager().createQuery("SELECT COUNT(i.id) FROM SendQueueItem i " +
+                "WHERE i.tryCount > 0", Long.class);
+        return DbValueRetriever.getLongValueOrZero(query);
     }
 
     @Override

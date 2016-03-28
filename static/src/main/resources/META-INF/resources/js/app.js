@@ -103,6 +103,7 @@ define(['angular-route-resolver'], function(moment) {
             .when('/config', route.resolve('config', 'ConfigController'))
             .when('/system', {redirectTo: '/users'})
             .when('/logs', route.resolve('logs', 'LogsController'))
+            .when('/queue', route.resolve('queue', 'QueueController'))
             .when('/api/doc', route.resolve('api-doc', 'ApiDocController'))
             .when('/api/test', route.resolve('api-test', 'ApiTestController'))
             .when('/api', {redirectTo: '/api/doc'})

@@ -1,0 +1,41 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>System</h1>
+            <ul class="nav nav-tabs">
+                <li role="presentation"><a href="#/users">Users</a></li>
+                <li role="presentation"><a href="#/config">Configuration</a></li>
+                <li role="presentation" class="active"><a href="#/queue">Queue</a></li>
+            </ul>
+            
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Total (in Database)</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static">{{status.inDatabase}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Total (in in Queue)</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static">{{status.inQueue}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Current Threads</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static">{{status.currentThreads}}</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Retry</label>
+                    <div class="col-sm-2">
+                        <p class="form-control-static">{{status.retry}}</p>
+                    </div>
+                </div>
+            </form>
+            
+            <p style="margin-top:50px">Status gets refreshed automatically every 2 seconds.</p>
+        </div>
+    </div>
+</div>
