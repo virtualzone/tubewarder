@@ -6,14 +6,13 @@ import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Singleton;
-import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-@Stateless
+@Singleton
 public class ConfigItemDao extends AbstractDao<ConfigItem> {
     private static final Logger LOG = Logger.getLogger(ConfigItemDao.class.getName());
     private final Map<String, String> cache = new ConcurrentHashMap<>();
