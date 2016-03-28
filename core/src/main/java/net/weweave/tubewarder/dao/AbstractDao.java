@@ -21,10 +21,12 @@ public abstract class AbstractDao<T extends Serializable> {
 			((ExposableId) item).setExposableId(generateExposableId());
 		}
 		getEntityManager().persist(item);
+		getEntityManager().detach(item);
 	}
 
 	public void update(T item) {
 		getEntityManager().merge(item);
+		getEntityManager().detach(item);
 	}
 
 	public T get(Long id) throws ObjectNotFoundException {

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -52,6 +53,21 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
         return DbValueRetriever.getLongValueOrZero(query);
     }
 
+    public void setItemInProcessing(SendQueueItem item) {
+        getEntityManager()
+                .createQuery("UPDATE SendQueueItem i SET i.inProcessing = 1 WHERE i.id = :id")
+                .setParameter("id", item.getId())
+                .executeUpdate();
+    }
+
+    public void setItemNextTry(SendQueueItem item) {
+        getEntityManager()
+                .createQuery("UPDATE SendQueueItem i SET i.inProcessing = 0, i.lastTryDate = :date, i.tryCount = i.tryCount+1 WHERE i.id = :id")
+                .setParameter("id", item.getId())
+                .setParameter("date", new Date())
+                .executeUpdate();
+    }
+
     @Override
     public void delete(SendQueueItem item) {
         List<Attachment> attachments = item.getAttachments();
@@ -60,7 +76,10 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
                 getAttachmentDao().delete(attachment);
             }
         }
-        super.delete(item);
+        getEntityManager()
+                .createQuery("DELETE FROM SendQueueItem i WHERE i.id = :id")
+                .setParameter("id", item.getId())
+                .executeUpdate();
     }
 
     public AttachmentDao getAttachmentDao() {

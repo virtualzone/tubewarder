@@ -9,21 +9,17 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import javax.ejb.Singleton;
 import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-@ApplicationScoped
+@Singleton
 public class OutputHandlerFactory {
     private static final Logger LOG = Logger.getLogger(OutputHandlerFactory.class.getName());
     private static Map<String, Class<? extends IOutputHandler>> HANDLERS = null;
-
-    @Inject
-    private ServletContext context;
 
     public IOutputHandler getOutputHandler(Map<String, Object> config) {
         String id = (String)config.getOrDefault("id", "");
@@ -59,35 +55,28 @@ public class OutputHandlerFactory {
     }
 
     public Map<String, Class<? extends IOutputHandler>> getHandlers() {
-        if (HANDLERS == null) {
-            init();
-        }
         return HANDLERS;
     }
 
-    private synchronized void init() {
+    public synchronized void init(ServletContext context) {
+        if (HANDLERS != null) {
+            return;
+        }
         LOG.info("Initializing output handlers...");
-        HANDLERS = new HashMap<>();
+        Map<String, Class<? extends IOutputHandler>> handlers = new HashMap<>();
         Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .addUrls(ClasspathHelper.forWebInfLib(getContext()))
+                .addUrls(ClasspathHelper.forWebInfLib(context))
                 .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner(false)));
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(OutputHandler.class);
         for (Class<?> clazz : classes) {
             LOG.info("Found annotated output handler class: " + clazz.getName());
             if (IOutputHandler.class.isAssignableFrom(clazz)) {
                 String id = clazz.getAnnotation(OutputHandler.class).id();
-                HANDLERS.put(id, (Class<? extends IOutputHandler>)clazz);
+                handlers.put(id, (Class<? extends IOutputHandler>)clazz);
                 LOG.info("Added output handler " + id + " in class: " + clazz.getName());
             }
         }
+        HANDLERS = handlers;
         LOG.info("Initialization of output handlers completed.");
-    }
-
-    public ServletContext getContext() {
-        return context;
-    }
-
-    public void setContext(ServletContext context) {
-        this.context = context;
     }
 }

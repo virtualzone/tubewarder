@@ -2,6 +2,8 @@ package net.weweave.tubewarder.util;
 
 import net.weweave.tubewarder.dao.UserDao;
 import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
+import net.weweave.tubewarder.outputhandler.SendQueueScheduler;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
@@ -14,9 +16,17 @@ public class LifecycleListener implements ServletContextListener {
     @Inject
     private UserDao userDao;
 
+    @Inject
+    private OutputHandlerFactory outputHandlerFactory;
+
+    @Inject
+    private SendQueueScheduler sendQueueScheduler;
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         checkCreateAdmin();
+        getOutputHandlerFactory().init(servletContextEvent.getServletContext());
+        getSendQueueScheduler().recover();
     }
 
     @Override
@@ -46,5 +56,21 @@ public class LifecycleListener implements ServletContextListener {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public OutputHandlerFactory getOutputHandlerFactory() {
+        return outputHandlerFactory;
+    }
+
+    public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
+        this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public SendQueueScheduler getSendQueueScheduler() {
+        return sendQueueScheduler;
+    }
+
+    public void setSendQueueScheduler(SendQueueScheduler sendQueueScheduler) {
+        this.sendQueueScheduler = sendQueueScheduler;
     }
 }

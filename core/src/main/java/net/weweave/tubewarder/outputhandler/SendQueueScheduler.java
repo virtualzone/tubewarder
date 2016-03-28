@@ -11,14 +11,12 @@ import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 @Singleton
-@Startup
 public class SendQueueScheduler {
     private static final Logger LOG = Logger.getLogger(SendQueueScheduler.class.getName());
     private static final String CONFIG_MAX_CONCURRENT_THREADS = "QUEUE_MAX_CONCURRENT_THREADS";
@@ -42,8 +40,8 @@ public class SendQueueScheduler {
         public void temporaryError(SendQueueItem item) {
             try {
                 if (item.getTryCount() < getMaxRetries()) {
+                    log(item, "Scheduling for retry " + (item.getTryCount()+1) + "/" + getMaxRetries());
                     updateSendQueueItemForRetry(item);
-                    log(item, "Scheduling for retry " + item.getTryCount() + "/" + getMaxRetries());
                     updateLog(item, QueueItemStatus.RETRY);
                 } else {
                     log(item, "Too many retries, giving up and deleting queue item");
@@ -91,6 +89,9 @@ public class SendQueueScheduler {
     @PostConstruct
     public void init() {
         checkCreateConfig();
+    }
+
+    public void recover() {
         LOG.info("Recovering unprocessed items...");
         getSendQueueItemDao().recoverUnprocessedItems();
         sendQueue.addAll(getSendQueueItemDao().getUnprocessedItemIds());
@@ -190,16 +191,11 @@ public class SendQueueScheduler {
     }
 
     private void updateSendQueueItemSetProcessing(SendQueueItem item) {
-        updateLog(item, QueueItemStatus.PROCESSING);
-        item.setInProcessing(true);
-        getSendQueueItemDao().update(item);
+        getSendQueueItemDao().setItemInProcessing(item);
     }
 
     private void updateSendQueueItemForRetry(SendQueueItem item) {
-        item.setTryCount(item.getTryCount() + 1);
-        item.setLastTryDate(new Date());
-        item.setInProcessing(false);
-        getSendQueueItemDao().update(item);
+        getSendQueueItemDao().setItemNextTry(item);
     }
 
     private void updateLog(SendQueueItem sendQueueItem, QueueItemStatus status) {
