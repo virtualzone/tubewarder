@@ -25,33 +25,27 @@
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>${version.wildfly-swarm}</version>
+            <artifactId>undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jaxrs-weld</artifactId>
-            <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>ejb</artifactId>
-            <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jpa</artifactId>
-            <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>webservices</artifactId>
-            <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>mail</artifactId>
-            <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -102,18 +96,22 @@
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>outputhandler-api</artifactId>
             <version>${version.tubewarder}</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/../outputhandler-api/target/outputhandler-api.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>core</artifactId>
             <version>${version.tubewarder}</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/../core/target/core.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>static</artifactId>
             <version>${version.tubewarder}</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../static/target/static.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -144,6 +142,10 @@
                             <outputDirectory>../target/libs</outputDirectory>
                             <resources>
                                 <resource>
+                                    <directory>../static/target</directory>
+                                    <includes><include>*.jar</include></includes>
+                                </resource>
+                                <resource>
                                     <directory>../outputhandlers/null/target</directory>
                                     <includes><include>*.jar</include></includes>
                                 </resource>
@@ -167,7 +169,7 @@
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>
                 <artifactId>wildfly-swarm-plugin</artifactId>
-                <version>${version.wildfly-swarm}</version>
+                <version>${version.swarm}</version>
                 <configuration>
                     <mainClass>net.weweave.tubewarder.Main</mainClass>
                 </configuration>

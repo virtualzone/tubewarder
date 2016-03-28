@@ -33,7 +33,6 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>mail</artifactId>
-            <version>${version.wildfly-swarm}</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -68,5 +67,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

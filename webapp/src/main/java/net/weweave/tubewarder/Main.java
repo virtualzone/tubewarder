@@ -6,11 +6,10 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.container.Container;
 import org.wildfly.swarm.container.DeploymentException;
-import org.wildfly.swarm.container.JARArchive;
 import org.wildfly.swarm.datasources.DatasourceArchive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -20,12 +19,12 @@ public class Main {
         CommandLine cmd = parseCommandLineArgs(args);
         String db = (cmd.hasOption("db") ? cmd.getOptionValue("db") : "h2");
 
-        Container container = new Container();
-        container.start();
+        Swarm swarm = new Swarm();
+        swarm.start();
 
-        deployDbArtifact(container, db);
-        deployDatasource(container, db, cmd);
-        deployApp(container, db);
+        deployDbArtifact(swarm, db);
+        deployDatasource(swarm, db, cmd);
+        deployApp(swarm, db);
     }
 
     private static CommandLine parseCommandLineArgs(String[] args) throws ParseException {
@@ -85,14 +84,14 @@ public class Main {
         return cmd;
     }
 
-    private static void deployDatasource(Container container, String db, CommandLine cmd) throws Exception {
+    private static void deployDatasource(Swarm swarm, String db, CommandLine cmd) throws Exception {
         String h2 = (cmd.hasOption("h2") ? cmd.getOptionValue("h2") : "mem:tubewarder");
         String mysql = (cmd.hasOption("mysql") ? cmd.getOptionValue("mysql") : "localhost:3306/tubewarder");
         String username = (cmd.hasOption("dbUser") ? cmd.getOptionValue("dbUser") : "tubewarder");
         String password = (cmd.hasOption("dbPass") ? cmd.getOptionValue("dbPass") : "tubewarder");
 
         String jdbcString = getJdbcString(db, h2, mysql);
-        deployDatasourceFraction(container, db, jdbcString, username, password);
+        deployDatasourceFraction(swarm, db, jdbcString, username, password);
     }
 
     private static String getJdbcString(String db, String h2, String mysql) {
@@ -105,24 +104,24 @@ public class Main {
         return s;
     }
 
-    private static void deployDbArtifact(Container container, String db) throws Exception {
+    private static void deployDbArtifact(Swarm swarm, String db) throws Exception {
         if ("h2".equals(db)) {
-            deployH2(container);
+            deployH2(swarm);
         } else if ("mysql".equals(db)) {
-            deployMySql(container);
+            deployMySql(swarm);
         }
     }
 
-    private static void deployH2(Container container) throws Exception {
-        container.deploy(Swarm.artifact("com.h2database:h2", "h2"));
+    private static void deployH2(Swarm swarm) throws Exception {
+        swarm.deploy(Swarm.artifact("com.h2database:h2", "h2"));
     }
 
-    private static void deployMySql(Container container) throws Exception {
+    private static void deployMySql(Swarm swarm) throws Exception {
         JavaArchive jar = Swarm.artifact("mysql:mysql-connector-java", "mysql");
-        container.deploy(jar);
+        swarm.deploy(jar);
     }
 
-    private static void deployDatasourceFraction(Container container, String db, String jdbcString, String username, String password) throws DeploymentException {
+    private static void deployDatasourceFraction(Swarm swarm, String db, String jdbcString, String username, String password) throws DeploymentException {
         JARArchive dsArchive = ShrinkWrap.create(JARArchive.class);
         DataSource ds = new DataSource("TubewarderDS");
         ds.connectionUrl(jdbcString);
@@ -131,7 +130,7 @@ public class Main {
         ds.userName(username);
         ds.password(password);
         dsArchive.as(DatasourceArchive.class).dataSource(ds);
-        container.deploy(dsArchive);
+        swarm.deploy(dsArchive);
     }
 
     private static String getDriverName(String db) {
@@ -152,7 +151,7 @@ public class Main {
         return "";
     }
 
-    private static void deployApp(Container container, String db) throws Exception {
+    private static void deployApp(Swarm swarm, String db) throws Exception {
         JAXRSArchive appDeployment = ShrinkWrap.create(JAXRSArchive.class, "tubewarder.war");
         appDeployment.addPackages(true, "net.weweave.tubewarder");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence-"+db+".xml", Main.class.getClassLoader()), "classes/META-INF/persistence.xml");
@@ -164,7 +163,7 @@ public class Main {
             appDeployment.addAsLibrary(lib, lib.getName());
         }
 
-        container.deploy(appDeployment);
+        swarm.deploy(appDeployment);
     }
 
     private static File[] getAdditionalJars() {
