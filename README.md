@@ -26,6 +26,11 @@ Introducing Tubewarder as the central system for handling your outgoing messages
 
 ![Modern infrastructure wit Tubewarder](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/infrastructure_w_tubewarder.png)
 
+## Documentation
+The documentation is under construction. You can find it at:
+
+http://tubewarder.readthedocs.org/
+
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications. You don't need an application server - running Tubewarder out-of-the box is easy with Java installed on your server.
 
