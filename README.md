@@ -17,6 +17,15 @@ Tubewarder makes sending messages to your users easier than ever:
 
 Note: Tubewarder is still under active development. The current release is 1.0 Beta 1, which is feature-complete and well tested. However, we're still hunting bugs and improving stability. Use it on your own risk.
 
+## Purpose
+Traditional infrastructures usually look similar to the following diagram: All of your applications have an n:m relationship with all of your outbound messaging services. Besides the vast connectivities, you have lots of duplicated code for logging, archiving, templating, error handling, etc. 
+
+![Traditional infrastructure without Tubewarder](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/infrastructure_wo_tubewarder.png)
+
+Introducing Tubewarder as the central system for handling your outgoing messages, all your applications talk to Tubewarder (1:n), while Tubewarder keeps in touch with the outbound service (1:n). All the code for logging, monitoring, error handling, archiving, etc. is in one place. An easy-to-use web interface allows for managing your message templates for the various channels in one central place. 
+
+![Modern infrastructure wit Tubewarder](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/infrastructure_w_tubewarder.png)
+
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications. You don't need an application server - running Tubewarder out-of-the box is easy with Java installed on your server.
 
