@@ -1,9 +1,4 @@
-# Tubewarder
-Documentation for Tubewarder, a centric solution for outbound messaging.
-
----
-
-## Overview
+# Overview
 Traditional infrastructures usually look similar to the following diagram: All of your applications have an n:m relationship with all of your outbound messaging services. Besides the vast connectivities, you have lots of duplicated code for logging, archiving, templating, error handling, etc. 
 
 ![Traditional infrastructure without Tubewarder](img/infrastructure_wo_tubewarder.png)
@@ -15,7 +10,7 @@ Introducing Tubewarder as the central system for handling your outgoing messages
 Tubewarder is easy to deploy, has low overhead, and is a good idea if you have as few as two applications doing outbound messaging.
 
 
-## Features
+# Features
 * Connect applications to Tubewarder using SOAP web services or RESTful services
 * Easy-to-use templating system based on [Apache Freemarker](http://freemarker.incubator.apache.org)
 * Built-in outbound connectors: Email, HTTP(S)
@@ -26,3 +21,7 @@ Tubewarder is easy to deploy, has low overhead, and is a good idea if you have a
 * Archiving of outbound messages for legal purposes
 * Powerful administrative web interface
 * Integrated user and access management for the web interface 
+
+
+# Architecture
+Todo
