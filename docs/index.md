@@ -24,7 +24,6 @@ Tubewarder is easy to deploy, has low overhead, and is a good idea if you have a
 
 
 # Architecture
-## Terms to know
 Tubewarder employs a loose coupling of Output Handlers, Channels and Templates:
 
 **An Output Handler** is a generic technical component that consumes a message to be sent and does something with it. For example, there is a built-in Output Handler for sending a message to an Email Servers, or for sending a message to an HTTP(S) URL.
@@ -41,4 +40,6 @@ Templates are usually defined by application developers or the department staff.
 
 When an application sends a message via Tubewarder, it connects to Tubewarder's **Send API** using SOAP or REST (both HTTP/S). To avoid anyone knowing the URL of your Tubewarder installation's Send API being able to send messages, each applications needs an **App Token**. App Tokens are authorization keys allowing applications to use Tubewarder's Send API. They can be defined using Tubewarder's Web Interface. This is usually done by system administrators or authorization management staff.
 
-## System internals
+The process of processing a message is as follows:
+
+![Processing a message with Tubewarder](img/send-api.png)
