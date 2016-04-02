@@ -92,12 +92,14 @@ ADD my-custom-config.conf /opt/tubewarder/tubewarder.conf
 ```
 
 # Log Files
-You can find the log files in these locations:
+If you're using the Docker image, you can find the log files in these locations:
 
 * Output log: /var/log/tubewarder.log
 * Stderr log: /var/log/tubewarder.err
 
 Please note that these are low-level system log files. You can find archived messages being sent via the Send API in a comfortable way using the web interface.
+
+When running Tubewarder using Java from the command line, the log messages are printed directly to the console.
 
 
 # Securing your installation
