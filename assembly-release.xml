@@ -14,6 +14,13 @@
     </files>
     <fileSets>
         <fileSet>
+            <directory>../target</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*.conf</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>../target/libs</directory>
             <outputDirectory>libs</outputDirectory>
         </fileSet>

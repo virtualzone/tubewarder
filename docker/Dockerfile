@@ -25,6 +25,7 @@ RUN cd /tmp && \
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ADD tubewarder.conf $TW_HOME
 ADD tubewarder-swarm.jar $TW_HOME
 ADD libs/*.jar $TW_HOME/libs/
 RUN chown -R tubewarder:tubewarder $TW_HOME
