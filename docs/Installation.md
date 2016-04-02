@@ -91,6 +91,15 @@ FROM weweave/tubewarder
 ADD my-custom-config.conf /opt/tubewarder/tubewarder.conf
 ```
 
+# Log Files
+You can find the log files in these locations:
+
+* Output log: /var/log/tubewarder.log
+* Stderr log: /var/log/tubewarder.err
+
+Please note that these are low-level system log files. You can find archived messages being sent via the Send API in a comfortable way using the web interface.
+
+
 # Securing your installation
 Tubewarder provides authentication and authorization for both the REST services used by the web interface and the Send API. However, as Tubewarder is dealing with potentially sensitive information, it's strongly reommended to further secure your installation.
 

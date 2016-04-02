@@ -27,7 +27,7 @@ Introducing Tubewarder as the central system for handling your outgoing messages
 ![Modern infrastructure wit Tubewarder](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/infrastructure_w_tubewarder.png)
 
 ## Documentation
-The documentation is under construction. You can find it at:
+You can find the documentation at:
 
 http://tubewarder.readthedocs.org/
 
