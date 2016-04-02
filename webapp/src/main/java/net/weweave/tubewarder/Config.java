@@ -11,6 +11,10 @@ public class Config extends Properties {
         load(new FileInputStream(file));
     }
 
+    public String getHttpPort() {
+        return getProperty("http.port", "8080");
+    }
+
     public String getDb() {
         return getProperty("db", "h2");
     }
@@ -48,6 +52,7 @@ public class Config extends Properties {
 
     public void printConfig() {
         System.out.println("Tubewarder Bootstrap Configuration:");
+        System.out.println("--> http.port = " + getHttpPort());
         System.out.println("--> db = " + getDb());
         if ("mysql".equals(getDb())) {
             System.out.println("--> mysql.path = " + getMySqlPath());

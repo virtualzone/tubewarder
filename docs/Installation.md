@@ -43,7 +43,7 @@ java -jar tubewarder-swarm.jar
 ```
 
 # Bootstrap configuration
-While most of the configuration is handily done using Tubewarder's Web Interface (or the underlying REST APIs), a minimum set of configuration required at the start of Tubewarder is accomplished using a plain configuration file. Essentially, the database configuration is done here. 
+While most of the configuration is handily done using Tubewarder's Web Interface (or the underlying REST APIs), a minimum set of configuration required at the start of Tubewarder is accomplished using a plain configuration file. Essentially, the database and port configuration is done here. 
 
 The bootstrap configuration is located in the file: tubewarder.conf
 
@@ -51,6 +51,9 @@ The file is well documented, so here's a cut & paste of the default configuratio
 
 ```
 # Tubewarder Bootstrap Configuration
+
+# The TCP port for the HTTP server
+http.port = 8080
 
 # Database backend to be used.
 # Valid settings: h2, mysql

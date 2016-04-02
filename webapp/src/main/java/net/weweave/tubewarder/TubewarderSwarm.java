@@ -22,10 +22,15 @@ public class TubewarderSwarm extends Swarm {
     }
 
     public void deployTubewarder() throws Exception {
+        setUndertow();
         start();
         deployDbArtifact();
         deployDatasource();
         deployApp();
+    }
+
+    public void setUndertow() {
+        System.setProperty("swarm.http.port", getConfig().getHttpPort());
     }
 
     private void deployDatasource() throws Exception {
