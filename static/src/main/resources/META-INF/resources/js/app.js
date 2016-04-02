@@ -104,9 +104,8 @@ define(['angular-route-resolver'], function(moment) {
             .when('/system', {redirectTo: '/users'})
             .when('/logs', route.resolve('logs', 'LogsController'))
             .when('/queue', route.resolve('queue', 'QueueController'))
-            .when('/api/doc', route.resolve('api-doc', 'ApiDocController'))
             .when('/api/test', route.resolve('api-test', 'ApiTestController'))
-            .when('/api', {redirectTo: '/api/doc'})
+            .when('/api', {redirectTo: '/api/test'})
             .otherwise({redirectTo: '/home'});
             
         $httpProvider.interceptors.push(['$q', '$injector', '$location', 'appServices', function($q, $injector, $location, appServices) {
