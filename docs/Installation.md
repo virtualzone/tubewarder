@@ -92,4 +92,31 @@ ADD my-custom-config.conf /opt/tubewarder/tubewarder.conf
 ```
 
 # Securing your installation
-Todo
+Tubewarder provides authentication and authorization for both the REST services used by the web interface and the Send API. However, as Tubewarder is dealing with potentially sensitive information, it's strongly reommended to further secure your installation.
+
+Especially, you should consider doing the following things:
+
+* Run Tubewarder behind a front-end HTTP server (such as Apache or Nginx) that enforces SSL and proxies requests to Tubewarder.
+* Use a valid, officially signed SSL certificate for HTTPS with strong encryption. (2048 bit or more).
+* Run Tubewarder in an isolated environment (e.g. inside a Docker container or in a virtual machine) with an exclusively provided database.
+* Immediately change the default password ("admin") of the admin user.
+* Use strong passwords for all of your users.
+* Store and use App Tokens carefully. Optimally, these should be stored encrypted in your applications and never get logged/seen anywhere.
+* Carefully decide if the REST and SOAP services (reachable at /rs/ and /ws/, see below) need to be exposed anywhere. When possible, limit access to the URLs to specific IP addresses using your front-end HTTP server.
+
+Interactive HTTP resources are exposed at these URLs:
+* /ws/send: Send API via SOAP
+* /ws/send?wsdl: Send API's WSDL
+* /rs/send: Send API via REST
+* /rs/auth: RESTful service for authenticating users (required before using any of the REST services below)
+* /rs/*: RESTful services for getting and setting system properties (such as Channels, Templates, etc.)
+
+All other HTTP resources are static files that do not expose information about your infrastructure and should not harm your installation.
+
+# High availibility
+If you need to provide high availibility with your Tubewarder installation, there are two possibilities:
+
+* Install a second instance of Tubewarder as Cold Standy and configure them to use the same database. If your primary instance fails, manully shut it down and start the backup instance.
+* Install multiple instances of Tubewarder behind an HTTP load balancer and configure them to use independent databases. You must manually ensure that the configuration in the database is in sync between all instances (such as App Tokens and Templates). However, the queue tables in the database must not synced.
+
+Please note that it's not possible to run multiple instances of Tubewarder simultaneously if they're configured to use the same database. The queueing concept is not designed to handle such setups yet. Doing so can lead to queue items being processed by multiple instances in parallel, potentially leading to messages being sent more than once. We will work on this issue in the future.
