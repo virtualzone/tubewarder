@@ -105,6 +105,7 @@ Especially, you should consider doing the following things:
 * Carefully decide if the REST and SOAP services (reachable at /rs/ and /ws/, see below) need to be exposed anywhere. When possible, limit access to the URLs to specific IP addresses using your front-end HTTP server.
 
 Interactive HTTP resources are exposed at these URLs:
+
 * /ws/send: Send API via SOAP
 * /ws/send?wsdl: Send API's WSDL
 * /rs/send: Send API via REST
