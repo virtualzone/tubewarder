@@ -42,9 +42,51 @@ cd target
 java -jar tubewarder-swarm.jar
 ```
 
-# Basic configuration
-Todo
+# Bootstrap configuration
+While most of the configuration is handily done using Tubewarder's Web Interface (or the underlying REST APIs), a minimum set of configuration required at the start of Tubewarder is accomplished using a plain configuration file. Essentially, the database configuration is done here. 
 
+The bootstrap configuration is located in the file: tubewarder.conf
+
+The file is well documented, so here's a cut & paste of the default configuration file:
+
+```
+# Tubewarder Bootstrap Configuration
+
+# Database backend to be used.
+# Valid settings: h2, mysql
+db = h2
+
+# Settings for h2 database backend.
+# Requires: db = h2
+# Examples:
+# h2.path = mem
+# h2.path = /path/to/tubewarder-db
+# h2.path = tcp://localhost//data/tubewarder
+h2.path = mem:tubewarder
+
+# Username for h2 if you use it in server mode
+h2.username = tubewarder
+
+# Password for h2 if you use it in server mode
+h2.password = tubewarder
+
+# Settings for MySQL database backend.
+# Requires: db = mysql
+mysql.path = localhost:3306/tubewarder
+
+# Username for MySQL
+mysql.username = tubewarder
+
+# Password for MySQL
+mysql.password = tubewarder
+```
+
+If you're using the Docker image and want to modify the bootstrap configuration, it's recommended to create a child image of weweave/tubewarder and add your customized configuration file. Example:
+
+```
+FROM weweave/tubewarder
+ADD my-custom-config.conf /opt/tubewarder/tubewarder.conf
+```
 
 # Securing your installation
 Todo

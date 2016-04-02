@@ -69,35 +69,9 @@ For sending messages, use one of the following URLs:
 * REST: http://localhost:8080/rs/send
 
 ## Configuration
-Tubewarder can be configured using command line arguments.
+Most of the configuration can be done using the Web Interface exposed at port 8080. Some configuration options required at startup need to be done using a plain text configuration file called tubewarder.conf in the application's root directory. For more information, please refer to:
 
-The following command prints out the available commands:
-
-```
-java -jar target/tubewarder-swarm.jar -help
-```
-
-Probably most important is the configuration of the database. You can choose between the H2 database engine or MySQL for persistence. If nothing else is set, it uses an H2 in-memory database. This means, as soon as you stop the application, all modifications are lost.
-
-To specify a local file where the H2 database is to be stored:
-
-```
-java -jar target/tubewarder-swarm.jar -db h2 -h2 /path/to/tubewarder-db
-```
-
-To use H2 in Server Mode:
-
-```
-java -jar target/tubewarder-swarm.jar -db h2 -h2 tcp://localhost//data/tubewarder -dbUser tubewarder -dbPass tubewarder
-```
-
-Check out the [H2 website](http://www.h2database.com/html/cheatSheet.html) for more information.
-
-To connect to a MySQL Server:
-
-```
-java -jar target/tubewarder-swarm.jar -db mysql -mysql localhost:3306/tubewarder -dbUser tubewarder -dbPass tubewarder
-```
+http://tubewarder.readthedocs.org/en/latest/Installation/#bootstrap-configuration
 
 ## Docker container
 There is a pre-built [Docker image](https://hub.docker.com/r/weweave/tubewarder/) for Tubewarder. We update the image regularly so that you can be sure you're always running the latest version.
