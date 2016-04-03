@@ -88,10 +88,10 @@ mysql.password = tubewarder
 # Requires: db = postgresql
 postgresql.path = localhost:5432/tubewarder
 
-# Username for MySQL
+# Username for PostgreSQL
 postgresql.username = tubewarder
 
-# Password for MySQL
+# Password for PostgreSQL
 postgresql.password = tubewarder
 ```
 
