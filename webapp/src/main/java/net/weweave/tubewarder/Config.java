@@ -43,9 +43,21 @@ public class Config extends Properties {
         return getProperty("mysql.password", "tubewarder");
     }
 
+    public String getPostgreSqlPath() {
+        return getProperty("postgresql.path", "localhost:5432/tubewarder");
+    }
+
+    public String getPostgreSqlUser() {
+        return getProperty("postgresql.username", "tubewarder");
+    }
+
+    public String getPostgreSqlPass() {
+        return getProperty("postgresql.password", "tubewarder");
+    }
+
     public void checkConfig() throws IllegalArgumentException {
         String db = getDb();
-        if (!("h2".equals(db) || "mysql".equals(db))) {
+        if (!("h2".equals(db) || "mysql".equals(db) || "postgresql".equals(db))) {
             throw new IllegalArgumentException("Invalid setting: db = " + db);
         }
     }
@@ -62,6 +74,10 @@ public class Config extends Properties {
             System.out.println("--> h2.path = " + getH2Path());
             System.out.println("--> h2.username = " + getH2User());
             System.out.println("--> h2.password = " + getH2Pass());
+        } else if ("postgresql".equals(getDb())) {
+            System.out.println("--> postgresql.path = " + getPostgreSqlPath());
+            System.out.println("--> postgresql.username = " + getPostgreSqlUser());
+            System.out.println("--> postgresql.password = " + getPostgreSqlPass());
         }
     }
 }

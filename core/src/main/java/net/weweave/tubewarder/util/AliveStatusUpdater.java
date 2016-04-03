@@ -13,7 +13,7 @@ public class AliveStatusUpdater {
 
     @Schedule(minute = "*", hour = "*", second = "*/15", persistent = false)
     private void scheduledUpdateStatus() {
-        getSystemDao().updateAliveStatus();
+        getSystemDao().updateAliveStatus(SystemIdentifier.getIdentifier());
     }
 
     public SystemDao getSystemDao() {

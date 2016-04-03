@@ -29,7 +29,7 @@ public class LifecycleListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         checkCreateAdmin();
-        getSystemDao().updateAliveStatus();
+        getSystemDao().updateAliveStatus(SystemIdentifier.getIdentifier());
         getOutputHandlerFactory().init(servletContextEvent.getServletContext());
         getSendQueueScheduler().recover();
     }

@@ -30,27 +30,34 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
         getEntityManager().flush();
     }
 
-    public void recoverUnprocessedItems() {
+    public void recoverUnprocessedItems(Integer systemId) {
         try {
-            Query query = getEntityManager().createQuery("UPDATE SendQueueItem i SET i.inProcessing = 0 WHERE i.inProcessing = 1");
+            Query query = getEntityManager().createQuery("UPDATE SendQueueItem i " +
+                    "SET i.inProcessing = FALSE " +
+                    "WHERE i.inProcessing = TRUE AND i.systemId = :systemId");
+            query.setParameter("systemId", systemId);
             query.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public List<Long> getUnprocessedItemIds() {
-        TypedQuery<Long> query = getEntityManager().createQuery("SELECT i.id FROM SendQueueItem i ORDER BY i.createDate ASC", Long.class);
+    public List<Long> getUnprocessedItemIds(Integer systemId) {
+        TypedQuery<Long> query = getEntityManager().createQuery("SELECT i.id FROM SendQueueItem i " +
+                "WHERE i.systemId = :systemId " +
+                "ORDER BY i.createDate ASC", Long.class);
+        query.setParameter("systemId", systemId);
         return query.getResultList();
     }
 
-    public List<Long> getFailedUnqueuedItemIds(int minAgeSeconds) {
+    public List<Long> getFailedUnqueuedItemIds(Integer systemId, int minAgeSeconds) {
         Calendar cal = new GregorianCalendar();
         cal.add(Calendar.SECOND, (-1)*minAgeSeconds);
         TypedQuery<Long> query = getEntityManager().createQuery("SELECT i.id FROM SendQueueItem i " +
-                "WHERE i.inProcessing = 0 AND i.tryCount > 0 AND i.lastTryDate <= :refDate " +
+                "WHERE i.inProcessing = FALSE AND i.tryCount > 0 AND i.lastTryDate <= :refDate AND i.systemId = :systemId " +
                 "ORDER BY i.lastTryDate ASC", Long.class);
         query.setParameter("refDate", cal.getTime());
+        query.setParameter("systemId", systemId);
         return query.getResultList();
     }
 
@@ -67,14 +74,14 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
 
     public void setItemInProcessing(SendQueueItem item) {
         getEntityManager()
-                .createQuery("UPDATE SendQueueItem i SET i.inProcessing = 1 WHERE i.id = :id")
+                .createQuery("UPDATE SendQueueItem i SET i.inProcessing = TRUE WHERE i.id = :id")
                 .setParameter("id", item.getId())
                 .executeUpdate();
     }
 
     public void setItemNextTry(SendQueueItem item) {
         getEntityManager()
-                .createQuery("UPDATE SendQueueItem i SET i.inProcessing = 0, i.lastTryDate = :date, i.tryCount = i.tryCount+1 WHERE i.id = :id")
+                .createQuery("UPDATE SendQueueItem i SET i.inProcessing = FALSE, i.lastTryDate = :date, i.tryCount = i.tryCount+1 WHERE i.id = :id")
                 .setParameter("id", item.getId())
                 .setParameter("date", new Date())
                 .executeUpdate();

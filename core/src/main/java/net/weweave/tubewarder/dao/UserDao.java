@@ -12,7 +12,7 @@ import java.util.List;
 public class UserDao extends AbstractDao<User> {
     public User getByUsername(String username) throws ObjectNotFoundException {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
-                "WHERE u.username = :username AND u.enabled = 1", User.class);
+                "WHERE u.username = :username AND u.enabled = TRUE", User.class);
         query.setParameter("username", username);
         return (User) DbValueRetriever.getObjectOrException(query);
     }
@@ -25,7 +25,7 @@ public class UserDao extends AbstractDao<User> {
 
     public Boolean existsAnyAdminUser() {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
-                "WHERE u.allowSystemConfig = 1 AND u.enabled = 1", User.class);
+                "WHERE u.allowSystemConfig = TRUE AND u.enabled = TRUE", User.class);
         query.setMaxResults(1);
         try {
             DbValueRetriever.getObjectOrException(query);

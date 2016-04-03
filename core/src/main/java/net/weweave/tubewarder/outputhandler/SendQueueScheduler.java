@@ -7,6 +7,7 @@ import net.weweave.tubewarder.domain.Log;
 import net.weweave.tubewarder.domain.QueueItemStatus;
 import net.weweave.tubewarder.domain.SendQueueItem;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
+import net.weweave.tubewarder.util.SystemIdentifier;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
@@ -97,8 +98,8 @@ public class SendQueueScheduler {
 
     public void recover() {
         LOG.info("Recovering unprocessed items...");
-        getSendQueueItemDao().recoverUnprocessedItems();
-        sendQueue.addAll(getSendQueueItemDao().getUnprocessedItemIds());
+        getSendQueueItemDao().recoverUnprocessedItems(SystemIdentifier.getIdentifier());
+        sendQueue.addAll(getSendQueueItemDao().getUnprocessedItemIds(SystemIdentifier.getIdentifier()));
     }
 
     private void checkCreateConfig() {
@@ -139,7 +140,7 @@ public class SendQueueScheduler {
 
     @Schedule(minute = "*", hour = "*", second = "*/30", persistent = false)
     public void scheduledReQueueItems() {
-        List<Long> ids = getSendQueueItemDao().getFailedUnqueuedItemIds(getRetryWaitTimeSeconds());
+        List<Long> ids = getSendQueueItemDao().getFailedUnqueuedItemIds(SystemIdentifier.getIdentifier(), getRetryWaitTimeSeconds());
         for (Long id : ids) {
             if (!sendQueue.contains(id)) {
                 sendQueue.add(id);

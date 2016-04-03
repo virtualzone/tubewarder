@@ -4,6 +4,7 @@ Tubewarder is based on WildFly Swarm, a Java Enterprise Edition (JEE) modular co
 * Java 1.8 or later (check with `java -version`)
 * Recommended: Static IP address
 * Optional: MySQL Database
+* Optional: PostgreSQL Database
 * Optional: Maven 3 (if you want to build from source)
 * Optional: Git (if you want to build from source)
 
@@ -56,7 +57,7 @@ The file is well documented, so here's a cut & paste of the default configuratio
 http.port = 8080
 
 # Database backend to be used.
-# Valid settings: h2, mysql
+# Valid settings: h2, mysql, postgresql
 db = h2
 
 # Settings for h2 database backend.
@@ -82,6 +83,16 @@ mysql.username = tubewarder
 
 # Password for MySQL
 mysql.password = tubewarder
+
+# Settings for PostgreSQL database backend.
+# Requires: db = postgresql
+postgresql.path = localhost:5432/tubewarder
+
+# Username for MySQL
+postgresql.username = tubewarder
+
+# Password for MySQL
+postgresql.password = tubewarder
 ```
 
 If you're using the Docker image and want to modify the bootstrap configuration, it's recommended to create a child image of weweave/tubewarder and add your customized configuration file. Example:
