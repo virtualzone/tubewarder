@@ -27,6 +27,7 @@ public class SendQueueItem extends AbstractPersistentObject {
     private Date lastTryDate = null;
     private Integer tryCount = 0;
     private Boolean inProcessing = false;
+    private Integer systemId;
 
     public ChannelTemplate getChannelTemplate() {
         return channelTemplate;
@@ -138,5 +139,13 @@ public class SendQueueItem extends AbstractPersistentObject {
 
     public void setLog(Log log) {
         this.log = log;
+    }
+
+    public Integer getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Integer systemId) {
+        this.systemId = systemId;
     }
 }

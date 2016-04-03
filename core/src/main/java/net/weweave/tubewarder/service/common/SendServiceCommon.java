@@ -14,6 +14,7 @@ import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.KeyValueModel;
 import net.weweave.tubewarder.service.model.SendModel;
 import net.weweave.tubewarder.service.response.SendServiceResponse;
+import net.weweave.tubewarder.util.SystemIdentifier;
 import net.weweave.tubewarder.util.TemplateRenderer;
 import org.apache.commons.validator.GenericValidator;
 
@@ -171,6 +172,7 @@ public class SendServiceCommon {
         item.setCreateDate(new Date());
         item.setLastTryDate(null);
         item.setTryCount(0);
+        item.setSystemId(SystemIdentifier.getIdentifier());
 
         // Store with active processing flag, so we can add attachments without interruption
         getSendQueueItemDao().store(item);

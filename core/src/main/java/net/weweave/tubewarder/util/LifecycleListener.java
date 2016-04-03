@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.util;
 
+import net.weweave.tubewarder.dao.SystemDao;
 import net.weweave.tubewarder.dao.UserDao;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
@@ -22,9 +23,13 @@ public class LifecycleListener implements ServletContextListener {
     @Inject
     private SendQueueScheduler sendQueueScheduler;
 
+    @Inject
+    private SystemDao systemDao;
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         checkCreateAdmin();
+        getSystemDao().updateAliveStatus();
         getOutputHandlerFactory().init(servletContextEvent.getServletContext());
         getSendQueueScheduler().recover();
     }
@@ -72,5 +77,13 @@ public class LifecycleListener implements ServletContextListener {
 
     public void setSendQueueScheduler(SendQueueScheduler sendQueueScheduler) {
         this.sendQueueScheduler = sendQueueScheduler;
+    }
+
+    public SystemDao getSystemDao() {
+        return systemDao;
+    }
+
+    public void setSystemDao(SystemDao systemDao) {
+        this.systemDao = systemDao;
     }
 }
