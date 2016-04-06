@@ -42,6 +42,19 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
         }
     }
 
+    public void moveItems(Integer sourceSystemId, Integer targetSystemId) {
+        try {
+            Query query = getEntityManager().createQuery("UPDATE SendQueueItem i " +
+                    "SET i.inProcessing = FALSE, i.tryCount = 1, i.systemId = :targetSystemId " +
+                    "WHERE i.systemId = :sourceSystemId");
+            query.setParameter("sourceSystemId", sourceSystemId);
+            query.setParameter("targetSystemId", targetSystemId);
+            query.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Long> getUnprocessedItemIds(Integer systemId) {
         TypedQuery<Long> query = getEntityManager().createQuery("SELECT i.id FROM SendQueueItem i " +
                 "WHERE i.systemId = :systemId " +

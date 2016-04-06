@@ -13,21 +13,20 @@ import java.util.List;
 
 @Stateless
 public class SystemDao extends AbstractDao<System> {
-    public System getNextAlive(Integer systemId, int minLastAliveSeconds) {
-        List<System> all = getAllAlive(minLastAliveSeconds);
-        for (System system : all) {
-            if (system.getSystemId() < systemId) {
-                return system;
-            }
+    public boolean isMasterOfAliveSystems(Integer systemId, int minLastAliveSeconds) {
+        List<System> alive = getAllAlive(minLastAliveSeconds);
+        if (alive != null && alive.size() > 0 && alive.get(0).getSystemId().equals(systemId)) {
+            return true;
         }
-        return all.get(0);
+        return false;
     }
 
-    public List<System> getAllDead(int minLastAliveSeconds) {
+    public List<System> getAllDeadWithQueueItems(int minLastAliveSeconds) {
         Calendar cal = new GregorianCalendar();
         cal.add(Calendar.SECOND, (-1)*minLastAliveSeconds);
         TypedQuery<System> query = getEntityManager().createQuery("SELECT s FROM System s " +
-                "WHERE s.lastAlive <= :lastAlive " +
+                "WHERE s.lastAlive <= :lastAlive AND " +
+                    "s.systemId IN (SELECT i.systemId FROM SendQueueItem i GROUP BY i.systemId) " +
                 "ORDER BY s.systemId ASC", System.class);
         query.setParameter("lastAlive", cal.getTime());
         return query.getResultList();

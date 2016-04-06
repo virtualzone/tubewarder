@@ -26,10 +26,17 @@ public class LifecycleListener implements ServletContextListener {
     @Inject
     private SystemDao systemDao;
 
+    @Inject
+    private ConfigManager configManager;
+
+    @Inject
+    private AliveStatusUpdater aliveStatusUpdater;
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        getConfigManager().checkCreateConfig();
         checkCreateAdmin();
-        getSystemDao().updateAliveStatus(SystemIdentifier.getIdentifier());
+        getAliveStatusUpdater().initAliveStatus();
         getOutputHandlerFactory().init(servletContextEvent.getServletContext());
         getSendQueueScheduler().recover();
     }
@@ -53,6 +60,14 @@ public class LifecycleListener implements ServletContextListener {
             user.setAllowLogs(true);
             getUserDao().store(user);
         }
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    public void setConfigManager(ConfigManager configManager) {
+        this.configManager = configManager;
     }
 
     public UserDao getUserDao() {
@@ -85,5 +100,13 @@ public class LifecycleListener implements ServletContextListener {
 
     public void setSystemDao(SystemDao systemDao) {
         this.systemDao = systemDao;
+    }
+
+    public AliveStatusUpdater getAliveStatusUpdater() {
+        return aliveStatusUpdater;
+    }
+
+    public void setAliveStatusUpdater(AliveStatusUpdater aliveStatusUpdater) {
+        this.aliveStatusUpdater = aliveStatusUpdater;
     }
 }
