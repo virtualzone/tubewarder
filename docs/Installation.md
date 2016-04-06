@@ -137,9 +137,6 @@ Interactive HTTP resources are exposed at these URLs:
 All other HTTP resources are static files that do not expose information about your infrastructure and should not harm your installation.
 
 # High availibility
-If you need to provide high availibility with your Tubewarder installation, there are two possibilities:
+You can run multiple instances of Tubewarder behind an HTTP load balancer to establish high availibility. It's critical to use the same database in all of your instances because Tubewarder uses the database to keep track of the status (dead/alive) of all instances running in one cluster. You don't need to explicitly configure the instances in one cluster - as long as all instances connect to the same database, they'll find it each other. If one instance fails, the others will automatically process dangling send queue items.
 
-* Install a second instance of Tubewarder as Cold Standy and configure them to use the same database. If your primary instance fails, manully shut it down and start the backup instance.
-* Install multiple instances of Tubewarder behind an HTTP load balancer and configure them to use independent databases. You must manually ensure that the configuration in the database is in sync between all instances (such as App Tokens and Templates). However, the queue tables in the database must not synced.
-
-Please note that it's not possible to run multiple instances of Tubewarder simultaneously if they're configured to use the same database. The queueing concept is not designed to handle such setups yet. Doing so can lead to queue items being processed by multiple instances in parallel, potentially leading to messages being sent more than once. We will work on this issue in the future.
+Tubewarder identifies an instance by its ip address. Make sure that all instances in one cluster have unique ip addresses.
