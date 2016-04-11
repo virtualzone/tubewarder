@@ -3,7 +3,6 @@ package net.weweave.tubewarder.outputhandler.api;
 import net.weweave.tubewarder.outputhandler.api.configoption.OutputHandlerConfigOption;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Output handlers must implement the IOutputHandler interface.
@@ -13,20 +12,13 @@ public interface IOutputHandler {
      * Does the actual output handling/processing (e.g. send an email, write a file, etc.).
      *
      * @param config The configuration for this output handler
-     * @param sender The sender address
-     * @param recipient The recipient address
-     * @param subject The rendered subject to process (may not be applicable for the concrete output handler)
-     * @param content The rendered content to process
-     * @param attachments A list of attachments (may not be applicable for the concrete output handler)
+     * @param item The item to be sent
+     * @throws TemporaryProcessingException Thrown if a temporary exception occurred. The send queue scheduler should
+     *                                      try to send the item again later.
+     * @throws PermanentProcessingException Thrown if a permanent exception occurred. The send queue scheduler should
+     *                                      give up.
      */
-    void process(Config config,
-                 Address sender,
-                 Address recipient,
-                 String subject,
-                 String content,
-                 List<Attachment> attachments) throws
-            TemporaryProcessingException,
-            PermanentProcessingException;
+    void process(Config config, SendItem item) throws TemporaryProcessingException, PermanentProcessingException;
 
     /**
      * Returns a list of valid configuration options for this output handler.

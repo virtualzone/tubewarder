@@ -2,17 +2,10 @@ package net.weweave.tubewarder.outputhandler;
 
 import net.weweave.tubewarder.domain.ChannelTemplate;
 import net.weweave.tubewarder.domain.SendQueueItem;
-import net.weweave.tubewarder.outputhandler.api.Address;
-import net.weweave.tubewarder.outputhandler.api.Attachment;
-import net.weweave.tubewarder.outputhandler.api.Config;
-import net.weweave.tubewarder.outputhandler.api.IOutputHandler;
-import net.weweave.tubewarder.outputhandler.api.TemporaryProcessingException;
-import net.weweave.tubewarder.outputhandler.api.PermanentProcessingException;
+import net.weweave.tubewarder.outputhandler.api.*;
 
 import javax.ejb.*;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 @Singleton
@@ -27,35 +20,35 @@ public class OutputHandlerDispatcher {
         log(item, "Start processing");
 
         Config config = OutputHandlerConfigUtil.configJsonStringToMap(item.getConfigJson());
+
+        SendItem payload = new SendItem();
         IOutputHandler handler = getOutputHandlerFactory().getOutputHandler(config);
         ChannelTemplate channelTemplate = item.getChannelTemplate();
-        Address sender = new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress());
-        Address recipient = new Address(item.getRecipientName(), item.getRecipientAddress());
-        String subject = item.getSubject();
-        String content = item.getContent();
-        List<Attachment> attachments = createAttachmentList(item);
+        payload.setSender(new Address(channelTemplate.getSenderName(), channelTemplate.getSenderAddress()));
+        payload.setRecipient(new Address(item.getRecipientName(), item.getRecipientAddress()));
+        payload.setSubject(item.getSubject());
+        payload.setContent(item.getContent());
+        createAttachmentList(item, payload);
 
-        invoke(item, callback, handler, config, sender, recipient, subject, content, attachments);
+        invoke(item, callback, handler, config, payload);
 
         log(item, "Finished processing");
     }
 
-    private List<Attachment> createAttachmentList(SendQueueItem item) {
-        List<Attachment> result = new ArrayList<>();
+    private void createAttachmentList(SendQueueItem item, SendItem payload) {
         for (net.weweave.tubewarder.domain.Attachment atm : item.getAttachments()) {
             Attachment attachment = new Attachment();
             attachment.setContentType(atm.getContentType());
             attachment.setFilename(atm.getFilename());
             attachment.setPayload(atm.getPayload());
-            result.add(attachment);
+            payload.getAttachments().add(attachment);
         }
-        return result;
     }
 
-    public void invoke(SendQueueItem item, SendQueueCallback callback, IOutputHandler handler, Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) {
+    public void invoke(SendQueueItem item, SendQueueCallback callback, IOutputHandler handler, Config config, SendItem payload) {
         log(item, "Invoking " + handler.getClass().getName());
         try {
-            handler.process(config, sender, recipient, subject, content, attachments);
+            handler.process(config, payload);
             callback.success(item);
         } catch (TemporaryProcessingException e) {
             log(item, "TemporaryProcessingException while processing in " + handler.getClass().getName() + ": " + e.getMessage());

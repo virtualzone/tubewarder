@@ -20,12 +20,12 @@ public class EmailOutputHandler implements IOutputHandler {
     private static final Logger LOG = Logger.getLogger(EmailOutputHandler.class.getName());
 
     @Override
-    public void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) {
+    public void process(Config config, SendItem item) {
         Session session = getSession(config);
         try {
-            MimeMessage message = createMimeMessage(session, sender);
-            MimeMultipart multipart = prepareMessage(config, message, recipient, subject, content);
-            appendAttachments(multipart, attachments);
+            MimeMessage message = createMimeMessage(session, item.getSender());
+            MimeMultipart multipart = prepareMessage(config, message, item.getRecipient(), item.getSubject(), item.getContent());
+            appendAttachments(multipart, item.getAttachments());
             message.setContent(multipart);
             sendMail(config, session, message);
         } catch (Exception e) {

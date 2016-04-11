@@ -28,7 +28,7 @@ import java.util.ArrayList;
 @OutputHandler(id="WEBSERVICE", name="Webservice")
 public class WebserviceOutputHandler implements IOutputHandler {
     @Override
-    public void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) throws
+    public void process(Config config, SendItem item) throws
             TemporaryProcessingException, PermanentProcessingException {
         CloseableHttpClient httpClient = createHttpClient(config);
         HttpRequestBase request = createRequest(config);

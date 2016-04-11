@@ -9,7 +9,7 @@ import java.util.List;
 @OutputHandler(id="NULL", name="Null (no action)")
 public class NullOutputHandler implements IOutputHandler {
     @Override
-    public void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) {
+    public void process(Config config, SendItem item) {
         // Do nothing
     }
 

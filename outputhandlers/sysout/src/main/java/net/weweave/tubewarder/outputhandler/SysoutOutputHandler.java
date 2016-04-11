@@ -13,10 +13,10 @@ public class SysoutOutputHandler implements IOutputHandler {
     private static final Logger LOG = Logger.getLogger(SysoutOutputHandler.class.getName());
 
     @Override
-    public void process(Config config, Address sender, Address recipient, String subject, String content, List<Attachment> attachments) {
+    public void process(Config config, SendItem item) {
         String prefix = (String)config.getOrDefault("prefix", "");
         String suffix = (String)config.getOrDefault("suffix", "");
-        LOG.info(prefix + subject + " /// " + content + suffix);
+        LOG.info(prefix + item.getSubject() + " /// " + item.getContent() + suffix);
     }
 
     @Override
