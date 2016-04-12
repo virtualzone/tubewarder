@@ -11,6 +11,28 @@ App Tokens are the authentication keys used by applications addressing the Send 
 # Channels
 Channels are routes to send outbound messages by using a specific configuration of an Output Handler. For example, you can have a Channel for sending HTML Mails via your company's SMTP Server reachable at a specific TCP/IP address and port and by establishing a TLS connection, or you can have a Channel for sending text messages (SMS) via some RESTful web service reachable via HTTP POST at a specific URL.
 
+## Generic configuration options
+* Unique name: A unique name for the channel. This will be used by applications using the Send API, so you should keep it expressive and short.
+* Rewrite rules for recipient name, recipient address, subject, and content: There are situations in which you want to change the recipient name, address, subject or content without bothering the template authors or application developers with it. Imagine an email-to-sms gateway where the recipient's mobile phone number and the actual text (content) goes into the subject of the email (something like "SMS:+49123456790[This is the text.]"). However, your template authors should not need to care about such technical details. So you can set the "Rewrite Subject" to "SMS:${recipientAddress}[${content}]", the "Rewrite Content" to an empty string ("") and the "Recipient Address" to your mail-to-sms gateway's email address.
+
+## Email configuration options
+* SMTP Server: Your SMTP server's IP address or hostname.
+* Port: Defaults to 25. Could be 465 or 587 if you use SSL/TLS.
+* Authentication required: Check this if your SMTP server requires you to sign in before being able to send messages.
+* Username: The username for authentication (ignored if "Authentication required" is not checked).
+* Password: The password for authentication (ignored if "Authentication required" is not checked).
+* Security: None, TLS, or SSL
+* Content Type: The MIME Type used when sending messages over this channel.
+
+## Webservice configuration options
+* URL (encoded): The encoded URL (including http:// or https:// at the beginning).
+* Authentication: None or Basic.
+* Username: The username for authentication (ignored if "Authentication" is "None").
+* Password: The password for authentication (ignored if "Authentication" is "None").
+* Method: The HTTP request method (GET or POST).
+* Content Type (POST only): Value of HTTP request header "Content-Type".
+* Payload (POST only): Optional HTTP POST request body payload. 
+
 # Templates
 Templats are concrete messages you want to send. A Template can contain variables and control structures (e.g. placeholders for salutation, name, and personalized URLs). A Template can be bound to one or more Channels, each with different texts as desired. So, you could have a Template called "New User Welcome Message", with different contents for saying Welcome to your new user via Plain Text Email, HTML Email, or SMS.
 
