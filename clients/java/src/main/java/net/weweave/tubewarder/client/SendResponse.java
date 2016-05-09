@@ -2,6 +2,9 @@ package net.weweave.tubewarder.client;
 
 import java.io.Serializable;
 
+/**
+ * A response returned by the send() method of a {@link TubewarderClient}.
+ */
 public class SendResponse implements Serializable {
     private Integer error;
     private Address recipient;

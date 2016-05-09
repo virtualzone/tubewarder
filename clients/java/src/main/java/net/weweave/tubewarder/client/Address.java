@@ -2,6 +2,9 @@ package net.weweave.tubewarder.client;
 
 import java.io.Serializable;
 
+/**
+ * An address. The type if the address depends on the channel used to transport the message.
+ */
 public class Address implements Serializable {
     private String address;
     private String name;

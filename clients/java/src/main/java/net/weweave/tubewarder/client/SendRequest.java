@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A request to be sent to a Tubewarder server.
+ * Please read the docs at tubewarder.readthedocs.io.
+ * @see <a href="http://tubewarder.readthedocs.io/en/latest/">tubewarder.readthedocs.io</a>
+ */
 public class SendRequest implements Serializable {
     private String token;
     private String template;

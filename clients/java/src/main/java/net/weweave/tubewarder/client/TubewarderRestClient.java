@@ -6,6 +6,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * An implementation of {@link TubewarderClient} for sending messages to
+ * a Tubewarder server via the REST API (/rs/send) by using JAX-RS (JEE application server required).
+ */
 public class TubewarderRestClient extends TubewarderClient {
     private final Client client;
     private final WebTarget target;

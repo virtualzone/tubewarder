@@ -2,6 +2,9 @@ package net.weweave.tubewarder.client;
 
 import java.io.Serializable;
 
+/**
+ * A simple key-value-pair.
+ */
 public class KeyValue implements Serializable {
     private String key;
     private Object value;

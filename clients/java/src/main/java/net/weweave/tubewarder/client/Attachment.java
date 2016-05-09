@@ -3,6 +3,10 @@ package net.weweave.tubewarder.client;
 import java.io.Serializable;
 import java.util.Base64;
 
+/**
+ * An attachment for a message to send.
+ * Payload is a Base64 encoded string.
+ */
 public class Attachment implements Serializable {
     private String filename;
     private String contentType;
