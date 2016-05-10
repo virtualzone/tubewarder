@@ -21,7 +21,11 @@ define(['angular', 'app'], function(angular, app) {
             config.id = $scope.model.outputHandler;
             for (var i=0; i<$scope.configOptions.length; i++) {
                 var option = $scope.configOptions[i];
-                config[option.id] = option.value;
+                if (option.type == 'bool' && !option.value) {
+                    config[option.id] = false;
+                } else {
+                    config[option.id] = option.value;
+                }
             }
             return config;
         };
