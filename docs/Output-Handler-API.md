@@ -14,7 +14,7 @@ If you're using Maven, add the following dependency to your pom.xml:
 <dependency>
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>outputhandler-api</artifactId>
-    <version>1.0-Beta1</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 

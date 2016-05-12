@@ -96,7 +96,7 @@ If you're using Maven, add the following dependency to your pom.xml:
 <dependency>
 	<groupId>net.weweave.tubewarder</groupId>
 	<artifactId>outputhandler-api</artifactId>
-	<version>1.0-Beta1</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 Check the source code of the [email output handler](https://github.com/weweave/tubewarder/blob/master/outputhandlers/email/src/main/java/net/weweave/tubewarder/outputhandler/EmailOutputHandler.java) as a reference.
