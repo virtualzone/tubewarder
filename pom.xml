@@ -30,7 +30,6 @@
     </developers>
     
     <modules>
-        <module>outputhandler-api</module>
         <module>outputhandlers/email</module>
         <module>outputhandlers/null</module>
         <module>outputhandlers/sysout</module>

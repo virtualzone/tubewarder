@@ -26,9 +26,7 @@
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>outputhandler-api</artifactId>
-            <version>${version.tubewarder}</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../../outputhandler-api/target/outputhandler-api.jar</systemPath>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
