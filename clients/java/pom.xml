@@ -4,17 +4,36 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.weweave.tubewarder</groupId>
-        <artifactId>parent</artifactId>
-        <version>${version.tubewarder}</version>
-        <relativePath>../../</relativePath>
-    </parent>
-
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>client</artifactId>
-    <version>${version.tubewarder}</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
+    
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java Client for the Tubewarder Message Gateway.</description>
+    <url>https://weweave.net/products/tubewarder/</url>
+    
+    <licenses>
+        <license>
+            <name>GPL license, Version 3.0</name>
+            <url>https://www.gnu.org/licenses/gpl.txt</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>weweave GbR</name>
+            <email>mail@weweave.net</email>
+            <organization>weweave GbR</organization>
+            <organizationUrl>https://weweave.net</organizationUrl>
+        </developer>
+    </developers>
+    
+    <scm>
+        <connection>scm:git:git@github.com:weweave/tubewarder.git/clients/java</connection>
+        <developerConnection>scm:git:git@github.com:weweave/tubewarder.git/clients/java</developerConnection>
+        <url>git@github.com:weweave/tubewarder.git/clients/java</url>
+    </scm>
 
     <dependencies>
         <dependency>

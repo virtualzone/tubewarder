@@ -36,7 +36,6 @@
         <module>outputhandlers/sysout</module>
         <module>outputhandlers/webservice</module>
         <module>core</module>
-        <module>clients/java</module>
         <module>static</module>
         <module>webapp</module>
     </modules>
