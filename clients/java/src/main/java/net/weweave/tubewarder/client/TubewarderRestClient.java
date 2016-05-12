@@ -14,10 +14,14 @@ public class TubewarderRestClient extends TubewarderClient {
     private final Client client;
     private final WebTarget target;
 
-    public TubewarderRestClient(String uri) {
+    public TubewarderRestClient(String uri, Client client) {
         super(uri);
-        client = ClientBuilder.newClient();
-        target = client.target(getUri() + "rs/send");
+        this.client = client;
+        this.target = this.client.target(getUri() + "rs/send");
+    }
+
+    public TubewarderRestClient(String uri) {
+        this(uri, ClientBuilder.newClient());
     }
 
     @Override
