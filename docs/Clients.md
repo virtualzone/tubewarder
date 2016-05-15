@@ -23,7 +23,7 @@ To get started with the Java Client library, the easiest way is to include the f
 Your source code might look like this:
 
 ```
-TubewarderClient client = TubewarderRestClient("http://your-tubewarder-server");
+TubewarderClient client = new TubewarderRestClient("http://your-tubewarder-server");
 SendRequest req = new SendRequest("your-app-token");
 req.setChannel("Email");
 req.setTemplate("Welcome");
