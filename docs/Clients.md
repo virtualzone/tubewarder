@@ -27,6 +27,6 @@ TubewarderClient client = new TubewarderRestClient("http://your-tubewarder-serve
 SendRequest req = new SendRequest("your-app-token");
 req.setChannel("Email");
 req.setTemplate("Welcome");
-req.addModelParam(new KeyValue("firstname", "...");
+req.addModelParam(new KeyValue("firstname", "..."));
 SendResponse resp = client.send(req);
 ```
