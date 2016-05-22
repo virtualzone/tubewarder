@@ -1,0 +1,30 @@
+{
+  "name": "tubewarder-client",
+  "version": "1.0.0",
+  "description": "NodeJS Client for the Tubewarder Central Messaging Gateway",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/weweave/tubewarder.git/clients/nodejs"
+  },
+  "bugs": {
+    "url": "https://github.com/weweave/tubewarder/issues"
+  },
+  "keywords": [
+    "tubewarder",
+    "messaging",
+    "client",
+    "email",
+    "gateway",
+    "messagegateway",
+    "message",
+    "hub"
+  ],
+  "author": "Heiner Peuser <heiner.peuser@weweave.net> (https://weweave.net)",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    
+  }
+}
