@@ -2,6 +2,7 @@
 Instead of directly dealing with the Send API, you can instead use pre-implemented client libraries. These libraries hide the SOAP and REST interfaces from the developer, so you can focus on the actual sending of messages.
 
 The following client libraries are currently available:
+
 * Java
 * NodeJS (NPM)
 
