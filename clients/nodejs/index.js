@@ -9,6 +9,13 @@
             this.address = address;
             this.name = name;
         }
+        
+        getAsObject() {
+            return {
+                address: this.address,
+                name: this.name
+            };
+        }
     };
     
     class Attachment {
@@ -37,9 +44,57 @@
         }
         
         createAttachment(filename) {
-            let a = new Attachment(filename);
+            var a = new Attachment(filename);
             this.attachments.push(a);
             return a;
+        }
+        
+        getKeyValueModel() {
+            var a = [];
+            for (var k in this.model) {
+                a.push({
+                    'key': k,
+                    'value': this.model[k]
+                });
+            }
+            return a;
+        }
+        
+        getAttachmentsAsObjectArray() {
+            var o = [];
+            for (var i=0; i<this.attachments.length; i++) {
+                var a = this.attachments[i];
+                o.push({
+                    filename: a.filename,
+                    contentType: a.contentType,
+                    payload: a.payload
+                });
+            }
+            return o;
+        }
+        
+        getJson() {
+            return {
+                token: this.token,
+                template: this.template,
+                channel: this.channel,
+                recipient: this.recipient.getAsObject(),
+                model: this.getKeyValueModel(),
+                attachments: this.getAttachmentsAsObjectArray(),
+                keyword: this.keyword,
+                details: this.details,
+                echo: this.echo
+            };
+        }
+    };
+    
+    class SendResponse {
+        constructor(error) {
+            this.error = error;
+            this.recipient = new Address('', '');
+            this.subject = '';
+            this.content = '';
+            this.queueId = '';
         }
     };
     
@@ -55,26 +110,36 @@
         /**
          * Sends a message.
          * 
-         * @param {Object} sendRequest
-         * @returns {Object}
+         * @param {SendRequest} sendRequest
+         * @param {Function} cb
+         * @returns {SendResponse}
          */
-        send(sendRequest) {
+        send(sendRequest, cb) {
             var options = {
                 url: this.uri + 'rs/send',
-                form: {
-                    token: sendRequest.token,
-                    template: sendRequest.template,
-                    channel: sendRequest.channel
-                },
-                json: true
+                json: sendRequest.getJson(),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             };
             request.post(options, function(error, response, body) {
-                console.log(response);
+                var res = new SendResponse(body.error);
+                res.recipient = new Address(body.recipient.address, body.recipient.name);
+                res.subject = body.subject;
+                res.content = body.content;
+                res.queueId = body.queueId;
+                cb(res);
             });
         }
         
+        /**
+         * Creates a new instance of SendRequest.
+         * 
+         * @param {String} token
+         * @returns {SendRequest}
+         */
         createSendRequest(token) {
-            let sr = new SendRequest(token);
+            var sr = new SendRequest(token);
             return sr;
         }
     };
