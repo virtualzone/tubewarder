@@ -2,7 +2,6 @@
     'use strict';
     
     var request = require('request');
-    var querystring = require('querystring');
     
     class Address {
         constructor(address, name) {
