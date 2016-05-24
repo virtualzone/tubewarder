@@ -61,6 +61,15 @@ Response {
 }
 ```
 
+## Error Codes
+* 0 = OK (no error)
+* 1 = Invalid input parameters
+* 2 = Object lookup error (i.e. requested object does not exist in the database)
+* 3 = Permission denied
+* 4 = Authorization required
+* 5 = Template corrupted
+* 6 = Missing model parameter(s)
+
 ## Example Request
 ```
 {
