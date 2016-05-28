@@ -1,0 +1,36 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>System</h1>
+            <ul class="nav nav-tabs">
+                <li role="presentation"><a href="#/users">Users</a></li>
+                <li role="presentation" class="active"><a href="#/groups">Groups</a></li>
+                <li role="presentation"><a href="#/config">Configuration</a></li>
+                <li role="presentation"><a href="#/queue">Queue</a></li>
+            </ul>
+            
+            <p>Groups have access to specific templates and channels.</p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Members</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="group in model.groups">
+                        <td>{{group.name}}</td>
+                        <td>{{group.members.length}}</td>
+                        <td><a data-ng-href="#/groups/edit/{{group.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                        <td><button data-ng-click="deleteGroup(group.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                <a href="#/groups/edit" class="btn btn-default">Add new</a>
+            </p>
+        </div>
+    </div>
+</div>

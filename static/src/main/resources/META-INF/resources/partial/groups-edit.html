@@ -1,0 +1,21 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>System</h1>
+            <ul class="nav nav-tabs">
+                <li role="presentation"><a href="#/users">Users</a></li>
+                <li role="presentation" class="active"><a href="#/groups">Groups</a></li>
+                <li role="presentation"><a href="#/config">Configuration</a></li>
+                <li role="presentation"><a href="#/queue">Queue</a></li>
+            </ul>
+            
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" data-ng-model="model.name" autofocus="autofocus" required="required" />
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
