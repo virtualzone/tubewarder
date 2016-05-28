@@ -1,13 +1,13 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
+import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
@@ -218,6 +218,111 @@ public class TestUserGroupService extends AbstractRestTest {
                 "groups[2].name", equalTo("g3"));
     }
 
+    @Test
+    public void testAddUserToGroup() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        JSONObject response;
+        User u1, u2, u3;
+        String g1id, g2id;
+
+        // Create 3 users
+        u1 = createUserWithNoRights("u1", "");
+        u2 = createUserWithNoRights("u2", "");
+        u3 = createUserWithNoRights("u3", "");
+
+        // Create 2 groups
+        response = validateSetUserGroupResponse(token, null, "g1",
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        g1id = response.getString("id");
+        response = validateSetUserGroupResponse(token, null, "g2",
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        g2id = response.getString("id");
+
+        // Add users to groups
+        validateAddUserToGroupResponse(token, u1.getExposableId(), g1id, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u2.getExposableId(), g1id, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u2.getExposableId(), g2id, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u3.getExposableId(), g2id, "error", equalTo(ErrorCode.OK));
+
+        // Check via group
+        validateGetUserGroupResponse(token, g1id, null,
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(g1id),
+                "groups[0].name", equalTo("g1"),
+                "groups[0].members.size()", is(2),
+                "groups[0].members[0].id", equalTo(u1.getExposableId()),
+                "groups[0].members[1].id", equalTo(u2.getExposableId()));
+        validateGetUserGroupResponse(token, g2id, null,
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(g2id),
+                "groups[0].name", equalTo("g2"),
+                "groups[0].members.size()", is(2),
+                "groups[0].members[0].id", equalTo(u2.getExposableId()),
+                "groups[0].members[1].id", equalTo(u3.getExposableId()));
+
+        // Check via user
+        validateGetUserGroupResponse(token, null, u1.getExposableId(),
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(g1id));
+        validateGetUserGroupResponse(token, null, u2.getExposableId(),
+                "groups.size()", is(2),
+                "groups[0].id", equalTo(g1id),
+                "groups[1].id", equalTo(g2id));
+        validateGetUserGroupResponse(token, null, u3.getExposableId(),
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(g2id));
+    }
+
+    @Test
+    public void testRemoveUserFromGroup() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        JSONObject response;
+        User u1, u2, u3;
+        String groupId;
+
+        // Create 3 users
+        u1 = createUserWithNoRights("u1", "");
+        u2 = createUserWithNoRights("u2", "");
+        u3 = createUserWithNoRights("u3", "");
+
+        // Create one group
+        response = validateSetUserGroupResponse(token, null, "g1",
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        groupId = response.getString("id");
+
+        // Add all users to the group
+        validateAddUserToGroupResponse(token, u1.getExposableId(), groupId, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u2.getExposableId(), groupId, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u3.getExposableId(), groupId, "error", equalTo(ErrorCode.OK));
+
+        // Check
+        validateGetUserGroupResponse(token, groupId, null,
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(groupId),
+                "groups[0].name", equalTo("g1"),
+                "groups[0].members.size()", is(3),
+                "groups[0].members[0].id", equalTo(u1.getExposableId()),
+                "groups[0].members[1].id", equalTo(u2.getExposableId()),
+                "groups[0].members[2].id", equalTo(u3.getExposableId()));
+
+        // Remove u2 and check
+        validateRemoveUserFromGroupResponse(token, u2.getExposableId(), groupId, "error", equalTo(ErrorCode.OK));
+        validateGetUserGroupResponse(token, groupId, null,
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(groupId),
+                "groups[0].name", equalTo("g1"),
+                "groups[0].members.size()", is(2),
+                "groups[0].members[0].id", equalTo(u1.getExposableId()),
+                "groups[0].members[1].id", equalTo(u3.getExposableId()));
+    }
+
     private JSONObject validateSetUserGroupResponse(String token, String id, String name, Object... body) {
         JSONObject payload = getSetRequestPayload(token, id, name);
         ResponseSpecification response = getResponseSpecificationPost(payload);
@@ -230,6 +335,26 @@ public class TestUserGroupService extends AbstractRestTest {
         ResponseSpecification response = getResponseSpecificationPost(payload);
         setExpectedBodies(response, body);
         return getPostResponse(response, "group/delete");
+    }
+
+    private JSONObject validateRemoveUserFromGroupResponse(String token, String userId, String groupId, Object... body) {
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
+        payload.put("userId", userId);
+        payload.put("groupId", groupId);
+        ResponseSpecification response = getResponseSpecificationPost(payload);
+        setExpectedBodies(response, body);
+        return getPostResponse(response, "group/removeuser");
+    }
+
+    private JSONObject validateAddUserToGroupResponse(String token, String userId, String groupId, Object... body) {
+        JSONObject payload = new JSONObject();
+        payload.put("token", token);
+        payload.put("userId", userId);
+        payload.put("groupId", groupId);
+        ResponseSpecification response = getResponseSpecificationPost(payload);
+        setExpectedBodies(response, body);
+        return getPostResponse(response, "group/adduser");
     }
 
     private JSONObject validateGetUserGroupResponse(String token, String id, String userId, Object... body) {
