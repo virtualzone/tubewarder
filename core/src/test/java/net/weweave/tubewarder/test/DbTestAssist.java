@@ -28,6 +28,8 @@ public class DbTestAssist {
             em.createNativeQuery("DELETE FROM Session").executeUpdate();
             em.createNativeQuery("DELETE FROM Template").executeUpdate();
             em.createNativeQuery("DELETE FROM User").executeUpdate();
+            em.createNativeQuery("DELETE FROM UserGroup").executeUpdate();
+            em.createNativeQuery("DELETE FROM UserGroup_User").executeUpdate();
             // em.createNativeQuery("UPDATE hibernate_sequences SET sequence_next_hi_value = 1").executeUpdate();
             em.createNativeQuery("SET DATABASE REFERENTIAL INTEGRITY TRUE").executeUpdate();
             tx.commit();
