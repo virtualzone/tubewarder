@@ -1,24 +1,32 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
+import net.weweave.tubewarder.dao.UserGroupDao;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
 public class TestChannelTemplateService extends AbstractRestTest {
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @Test
     public void testCreateSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
         JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
@@ -29,11 +37,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testCreateDuplicateChannel() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
 
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
         validateSetChannelTemplateResponse(token, ctObject,
@@ -48,12 +57,13 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testCreateTwoTemplatesSameChannel() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId1 = createTemplateGetId(token, "t1");
-        String templateId2 = createTemplateGetId(token, "t2");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId1 = createTemplateGetId(token, "t1", group);
+        String templateId2 = createTemplateGetId(token, "t2", group);
+        String channelId = createChannelGetId(token, "c1", group);
 
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId1, channelId);
         JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
@@ -72,11 +82,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testCreateInsufficientRights() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
 
         createUserWithNoRights("dummy", "dummy");
         token = authGetToken("dummy", "dummy");
@@ -89,11 +100,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testCreateInvalidToken() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
 
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
         validateSetChannelTemplateResponse(UUID.randomUUID().toString(), ctObject,
@@ -103,11 +115,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testUpdateSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId1 = createTemplateGetId(token, "t1");
-        String channelId1 = createChannelGetId(token, "c1");
+        String templateId1 = createTemplateGetId(token, "t1", group);
+        String channelId1 = createChannelGetId(token, "c1", group);
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId1, channelId1);
         JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
@@ -115,8 +128,8 @@ public class TestChannelTemplateService extends AbstractRestTest {
         String id = response.getString("id");
 
 
-        String templateId2 = createTemplateGetId(token, "t2");
-        String channelId2 = createChannelGetId(token, "c2");
+        String templateId2 = createTemplateGetId(token, "t2", group);
+        String channelId2 = createChannelGetId(token, "c2", group);
         ctObject = getJsonObjectForChannelTemplate(id, templateId2, channelId2);
         validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
@@ -127,17 +140,18 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testUpdateNonExistingObject() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId1 = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId1 = createChannelGetId(token, "c1", group);
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId1);
         validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 
-        String channelId2 = createChannelGetId(token, "c2");
+        String channelId2 = createChannelGetId(token, "c2", group);
         ctObject = getJsonObjectForChannelTemplate(UUID.randomUUID().toString(), templateId, channelId2);
         validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
@@ -146,12 +160,13 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testUpdateDuplicateChannel() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId1 = createChannelGetId(token, "c1");
-        String channelId2 = createChannelGetId(token, "c2");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId1 = createChannelGetId(token, "c1", group);
+        String channelId2 = createChannelGetId(token, "c2", group);
 
         // Create channel template for channel 1
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId1);
@@ -175,11 +190,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testDeleteSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
         JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
@@ -203,11 +219,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testDeleteInvalidToken() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
         JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
@@ -220,11 +237,12 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testDeleteInsufficientRights() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId = createChannelGetId(token, "c1");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId = createChannelGetId(token, "c1", group);
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId);
         JSONObject response = validateSetChannelTemplateResponse(token, ctObject,
                 "error", equalTo(ErrorCode.OK),
@@ -248,10 +266,11 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testGetEmptyList() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
+        String templateId = createTemplateGetId(token, "t1", group);
 
         validateGetChannelTemplateResponse(token, null, templateId,
                 "error", equalTo(ErrorCode.OK),
@@ -278,12 +297,13 @@ public class TestChannelTemplateService extends AbstractRestTest {
 
     @Test
     public void testGetTwoItems() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        String templateId = createTemplateGetId(token, "t1");
-        String channelId1 = createChannelGetId(token, "c1");
-        String channelId2 = createChannelGetId(token, "c2");
+        String templateId = createTemplateGetId(token, "t1", group);
+        String channelId1 = createChannelGetId(token, "c1", group);
+        String channelId2 = createChannelGetId(token, "c2", group);
 
         // Create channel template for channel 1
         JSONObject ctObject = getJsonObjectForChannelTemplate(null, templateId, channelId1);
@@ -310,19 +330,35 @@ public class TestChannelTemplateService extends AbstractRestTest {
                 "channelTemplates[1].channel.id", equalTo(channelId2));
     }
 
-    private String createChannelGetId(String token, String name) {
+    private UserGroup createUserGroupAndAssignUser(User user) {
+        UserGroup group = new UserGroup();
+        group.setName("g1");
+        group.getMembers().add(user);
+        getUserGroupDao().store(group);
+        return group;
+    }
+
+    private String createChannelGetId(String token, String name, UserGroup group) {
+        JSONObject groupJson = new JSONObject();
+        groupJson.put("id", group.getExposableId());
+
         JSONObject object = new JSONObject();
         object.put("name", name);
         object.put("config", getSysoutConfig());
+        object.put("group", groupJson);
         JSONObject payload = super.getSetRequestPayload(token, object);
         ResponseSpecification response = getResponseSpecificationPost(payload);
         JSONObject json = getPostResponse(response, "channel/set");
         return json.getString("id");
     }
 
-    private String createTemplateGetId(String token, String name) {
+    private String createTemplateGetId(String token, String name, UserGroup group) {
+        JSONObject groupJson = new JSONObject();
+        groupJson.put("id", group.getExposableId());
+
         JSONObject object = new JSONObject();
         object.put("name", name);
+        object.put("group", groupJson);
         JSONObject payload = super.getSetRequestPayload(token, object);
         ResponseSpecification response = getResponseSpecificationPost(payload);
         JSONObject json = getPostResponse(response, "template/set");
@@ -382,5 +418,13 @@ public class TestChannelTemplateService extends AbstractRestTest {
                 "channelTemplates[0].id", equalTo(expectedId),
                 "channelTemplates[0].channel.id", equalTo(expectedChannelId),
                 "channelTemplates[0].template.id", equalTo(expectedTemplateId));
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

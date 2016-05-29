@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -28,6 +29,9 @@ public class GetChannelService extends AbstractService {
     @Inject
     private OutputHandlerFactory outputHandlerFactory;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
     public GetChannelResponse action(@QueryParam("token") @DefaultValue("") String token,
@@ -37,7 +41,7 @@ public class GetChannelService extends AbstractService {
         try {
             Session session = getSession(token);
             checkPermissions(session.getUser());
-            setResponseList(response, id);
+            setResponseList(session.getUser(), response, id);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -56,15 +60,22 @@ public class GetChannelService extends AbstractService {
         }
     }
 
-    private void setResponseList(GetChannelResponse response, String id) throws ObjectNotFoundException {
+    private void setResponseList(User user, GetChannelResponse response, String id) throws ObjectNotFoundException {
+        List<Long> userGroupMembershipIds = getUserGroupDao().getGroupMembershipIds(user);
         if (GenericValidator.isBlankOrNull(id)) {
             List<Channel> channels = getChannelDao().getAll();
             for (Channel channel : channels) {
-                response.channels.add(ChannelModel.factory(channel, getOutputHandlerFactory()));
+                if (getChannelDao().canUserAcccessChannel(channel, userGroupMembershipIds)) {
+                    response.channels.add(ChannelModel.factory(channel, getOutputHandlerFactory()));
+                }
             }
         } else {
             Channel channel = getChannelDao().get(id);
-            response.channels.add(ChannelModel.factory(channel, getOutputHandlerFactory()));
+            if (getChannelDao().canUserAcccessChannel(channel, userGroupMembershipIds)) {
+                response.channels.add(ChannelModel.factory(channel, getOutputHandlerFactory()));
+            } else {
+                throw new ObjectNotFoundException();
+            }
         }
     }
 
@@ -82,5 +93,13 @@ public class GetChannelService extends AbstractService {
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

@@ -7,21 +7,36 @@ define(['angular', 'app'], function(angular, app) {
         $scope.model = {
             id: '',
             name: '',
+            groupId: '',
             channelTemplates: []
         };
+        $scope.groups = [];
 
         $scope.submit = function(form) {
             var payload = {
                 token: appServices.getToken(),
                 object: {
                     id: $scope.model.id,
-                    name: $scope.model.name
+                    name: $scope.model.name,
+                    group: {
+                        id: $scope.model.groupId
+                    }
                 }
             };
             $http.post('/rs/template/set', payload).success(function(data) {
                 $location.path('/templates');
             });
 		};
+        
+        var loadGroups = function(cb) {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/group/get/small', {params: payload}).success(function(data) {
+                $scope.groups = data.groups;
+                cb();
+            });
+        };
         
         var load = function() {
             if ($routeParams.id) {
@@ -33,6 +48,7 @@ define(['angular', 'app'], function(angular, app) {
                     var template = data.templates[0];
                     $scope.model.id = template.id;
                     $scope.model.name = template.name;
+                    $scope.model.groupId = template.group.id;
                     $scope.model.channelTemplates = template.channelTemplates; 
                 });
             }
@@ -49,6 +65,6 @@ define(['angular', 'app'], function(angular, app) {
             });
         };
         
-        load();
+        loadGroups(load);
     }]);
 });

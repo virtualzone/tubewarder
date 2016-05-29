@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.PermissionException;
@@ -21,6 +22,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @RequestScoped
 @Path("/channeltemplate/set")
@@ -34,6 +36,9 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
     @Inject
     private ChannelDao channelDao;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -41,7 +46,7 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
             Session session = getSession(request.token);
-            checkPermissions(session.getUser());
+            checkPermissions(session.getUser(), request.object);
             validateInputParameters(request.object);
             ChannelTemplate object = createUpdateObject(request.object);
             response.id = object.getExposableId();
@@ -57,9 +62,22 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
         return response;
     }
 
-    private void checkPermissions(User user) throws PermissionException {
+    private void checkPermissions(User user, ChannelTemplateModel model) throws PermissionException {
         if (user == null ||
                 !user.getAllowTemplates()) {
+            throw new PermissionException();
+        }
+
+        // Check if user is allowed to assign specified UserGroup
+        try {
+            List<Long> userGroupMembershipIds = getUserGroupDao().getGroupMembershipIds(user);
+            Template template = getTemplateDao().get(model.template.id);
+            Channel channel = getChannelDao().get(model.channel.id);
+            if (!getTemplateDao().canUserAcccessTemplate(template, userGroupMembershipIds) ||
+                    !getChannelDao().canUserAcccessChannel(channel, userGroupMembershipIds)) {
+                throw new PermissionException();
+            }
+        } catch (ObjectNotFoundException e) {
             throw new PermissionException();
         }
     }
@@ -138,5 +156,13 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
 
     public void setChannelDao(ChannelDao channelDao) {
         this.channelDao = channelDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

@@ -9,6 +9,8 @@ public class Template extends AbstractPersistentObject {
     private String name;
     @OneToMany(mappedBy = "template", fetch = FetchType.EAGER)
     private List<ChannelTemplate> channelTemplates;
+    @ManyToOne
+    private UserGroup userGroup;
 
     public String getName() {
         return name;
@@ -24,5 +26,13 @@ public class Template extends AbstractPersistentObject {
 
     public void setChannelTemplates(List<ChannelTemplate> channelTemplates) {
         this.channelTemplates = channelTemplates;
+    }
+
+    public UserGroup getUserGroup() {
+        return userGroup;
+    }
+
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 }

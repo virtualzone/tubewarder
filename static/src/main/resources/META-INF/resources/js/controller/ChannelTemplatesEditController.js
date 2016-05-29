@@ -60,6 +60,7 @@ define(['angular', 'app'], function(angular, app) {
             $http.get('/rs/channel/get', {params: payload}).success(function(data) {
                 $scope.channels = data.channels;
                 limitChannelSelect();
+                loadTemplate();
             });
         };
         
@@ -71,6 +72,7 @@ define(['angular', 'app'], function(angular, app) {
             $http.get('/rs/template/get', {params: payload}).success(function(data) {
                 var template = data.templates[0];
                 $scope.model.templateName = template.name;
+                load();
             });
         };
         
@@ -103,25 +105,25 @@ define(['angular', 'app'], function(angular, app) {
             });
         };
         
-        if ($routeParams.id) {
-            var payload = {
-                token: appServices.getToken(),
-                id: $routeParams.id
-            };
-            $http.get('/rs/channeltemplate/get', {params: payload}).success(function(data) {
-                var ct = data.channelTemplates[0];
-                $scope.model.id = ct.id;
-                $scope.model.templateId = ct.template.id;
-                $scope.model.channelId = ct.channel.id;
-                $scope.model.subject = ct.subject;
-                $scope.model.content = ct.content;
-                $scope.model.senderAddress = ct.senderAddress;
-                $scope.model.senderName = ct.senderName;
-            });
-        }
+        var load = function() {
+            if ($routeParams.id) {
+                var payload = {
+                    token: appServices.getToken(),
+                    id: $routeParams.id
+                };
+                $http.get('/rs/channeltemplate/get', {params: payload}).success(function(data) {
+                    var ct = data.channelTemplates[0];
+                    $scope.model.id = ct.id;
+                    $scope.model.templateId = ct.template.id;
+                    $scope.model.channelId = ct.channel.id;
+                    $scope.model.subject = ct.subject;
+                    $scope.model.content = ct.content;
+                    $scope.model.senderAddress = ct.senderAddress;
+                    $scope.model.senderName = ct.senderName;
+                });
+            }
+        };
         
         loadAllChannelTemplates();
-        loadChannels();
-        loadTemplate();
     }]);
 });

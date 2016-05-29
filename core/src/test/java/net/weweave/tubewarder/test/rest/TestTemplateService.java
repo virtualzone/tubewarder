@@ -1,23 +1,31 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
+import net.weweave.tubewarder.dao.UserGroupDao;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
 public class TestTemplateService extends AbstractRestTest {
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @Test
     public void testCreateSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -26,21 +34,23 @@ public class TestTemplateService extends AbstractRestTest {
 
     @Test
     public void testCreateDuplicateName() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetTemplateResponse(token, null, "Template 1",
+        validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        validateSetTemplateResponse(token, null, "Template 1",
+        validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testCreateInvalidToken() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         authAdminGetToken();
-        validateSetTemplateResponse(UUID.randomUUID().toString(), null, "Template 1",
+        validateSetTemplateResponse(UUID.randomUUID().toString(), null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
@@ -49,22 +59,23 @@ public class TestTemplateService extends AbstractRestTest {
     public void testCreateInsufficientRights() {
         createUserWithNoRights("dummy", "dummy");
         String token = authGetToken("dummy", "dummy");
-        validateSetTemplateResponse(token, null, "Template 1",
+        validateSetTemplateResponse(token, null, "Template 1", "xyz",
                 "error", equalTo(ErrorCode.PERMISSION_DENIED),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testUpdateSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
 
-        validateSetTemplateResponse(token, id, "Template 1.1",
+        validateSetTemplateResponse(token, id, "Template 1.1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()),
                 "id", equalTo(id));
@@ -73,38 +84,41 @@ public class TestTemplateService extends AbstractRestTest {
 
     @Test
     public void testUpdateDuplicateName() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
 
-        validateSetTemplateResponse(token, null, "Template 2",
+        validateSetTemplateResponse(token, null, "Template 2", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 
-        validateSetTemplateResponse(token, id, "Template 2",
+        validateSetTemplateResponse(token, id, "Template 2", group.getExposableId(),
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testUpdateNonExistingObject() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetTemplateResponse(token, UUID.randomUUID().toString(), "Template 1",
+        validateSetTemplateResponse(token, UUID.randomUUID().toString(), "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testDeleteSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -126,10 +140,11 @@ public class TestTemplateService extends AbstractRestTest {
 
     @Test
     public void testDeleteInvalidToken() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -140,10 +155,11 @@ public class TestTemplateService extends AbstractRestTest {
 
     @Test
     public void testDeleteInsufficientRights() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -192,15 +208,16 @@ public class TestTemplateService extends AbstractRestTest {
 
     @Test
     public void testGetTwoItems() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetTemplateResponse(token, null, "Template 1",
+        JSONObject response = validateSetTemplateResponse(token, null, "Template 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id1 = response.getString("id");
 
-        response = validateSetTemplateResponse(token, null, "Template 2",
+        response = validateSetTemplateResponse(token, null, "Template 2", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id2 = response.getString("id");
@@ -214,8 +231,16 @@ public class TestTemplateService extends AbstractRestTest {
                 "templates[1].name", equalTo("Template 2"));
     }
 
-    private JSONObject validateSetTemplateResponse(String token, String id, String name, Object... body) {
-        JSONObject payload = getSetRequestPayload(token, id, name);
+    private UserGroup createUserGroupAndAssignUser(User user) {
+        UserGroup group = new UserGroup();
+        group.setName("g1");
+        group.getMembers().add(user);
+        getUserGroupDao().store(group);
+        return group;
+    }
+
+    private JSONObject validateSetTemplateResponse(String token, String id, String name, String groupId, Object... body) {
+        JSONObject payload = getSetRequestPayload(token, id, name, groupId);
         ResponseSpecification response = getResponseSpecificationPost(payload);
         setExpectedBodies(response, body);
         return getPostResponse(response, "template/set");
@@ -234,10 +259,14 @@ public class TestTemplateService extends AbstractRestTest {
         return getGetResponse(response, "template/get");
     }
 
-    private JSONObject getSetRequestPayload(String token, String id, String name) {
+    private JSONObject getSetRequestPayload(String token, String id, String name, String groupId) {
+        JSONObject groupJson = new JSONObject();
+        groupJson.put("id", groupId);
+
         JSONObject object = new JSONObject();
         object.put("id", id);
         object.put("name", name);
+        object.put("group", groupJson);
         return super.getSetRequestPayload(token, object);
     }
 
@@ -247,5 +276,13 @@ public class TestTemplateService extends AbstractRestTest {
                 "templates.size()", is(1),
                 "templates[0].id", equalTo(expectedId),
                 "templates[0].name", equalTo(expectedName));
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

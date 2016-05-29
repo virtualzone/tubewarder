@@ -21,4 +21,13 @@ public class TemplateDao extends AbstractDao<Template> {
         TypedQuery<Template> query = getEntityManager().createQuery("SELECT t FROM Template t ORDER BY t.name", Template.class);
         return query.getResultList();
     }
+
+    public boolean canUserAcccessTemplate(Template template, List<Long> userGroupMembershipIds) {
+        if (template == null ||
+                template.getUserGroup() == null ||
+                userGroupMembershipIds.contains(template.getUserGroup().getId())) {
+            return true;
+        }
+        return false;
+    }
 }

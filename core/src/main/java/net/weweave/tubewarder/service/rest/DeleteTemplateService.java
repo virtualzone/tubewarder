@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -27,6 +28,9 @@ public class DeleteTemplateService extends AbstractService {
     @Inject
     private TemplateDao templateDao;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -36,7 +40,7 @@ public class DeleteTemplateService extends AbstractService {
             Session session = getSession(request.token);
             checkPermissions(session.getUser());
             validateInputParameters(request);
-            deleteObject(request.id);
+            deleteObject(session.getUser(), request.id);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
@@ -62,8 +66,11 @@ public class DeleteTemplateService extends AbstractService {
         }
     }
 
-    private void deleteObject(String id) throws ObjectNotFoundException {
+    private void deleteObject(User user, String id) throws ObjectNotFoundException, PermissionException {
         Template template = getTemplateDao().get(id);
+        if (!getTemplateDao().canUserAcccessTemplate(template, getUserGroupDao().getGroupMembershipIds(user))) {
+            throw new PermissionException();
+        }
         getTemplateDao().delete(template);
     }
 
@@ -73,5 +80,13 @@ public class DeleteTemplateService extends AbstractService {
 
     public void setTemplateDao(TemplateDao templateDao) {
         this.templateDao = templateDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

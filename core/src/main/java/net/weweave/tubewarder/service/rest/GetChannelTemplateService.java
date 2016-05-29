@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -33,6 +34,9 @@ public class GetChannelTemplateService extends AbstractService {
     @Inject
     private OutputHandlerFactory outputHandlerFactory;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
     public GetChannelTemplateResponse action(@QueryParam("token") @DefaultValue("") String token,
@@ -44,7 +48,7 @@ public class GetChannelTemplateService extends AbstractService {
             Session session = getSession(token);
             checkPermissions(session.getUser());
             validateInputParameters(id, templateId);
-            setResponseList(response, id, templateId);
+            setResponseList(session.getUser(), response, id, templateId);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -71,15 +75,23 @@ public class GetChannelTemplateService extends AbstractService {
         }
     }
 
-    private void setResponseList(GetChannelTemplateResponse response, String id, String templateId) throws ObjectNotFoundException {
+    private void setResponseList(User user, GetChannelTemplateResponse response, String id, String templateId) throws ObjectNotFoundException {
+        List<Long> userGroupMembershipIds = getUserGroupDao().getGroupMembershipIds(user);
+
         if (!GenericValidator.isBlankOrNull(id)) {
             ChannelTemplate channelTemplate = getChannelTemplateDao().get(id);
-            response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, getOutputHandlerFactory()));
+            if (getTemplateDao().canUserAcccessTemplate(channelTemplate.getTemplate(), userGroupMembershipIds)) {
+                response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, getOutputHandlerFactory()));
+            } else {
+                throw new ObjectNotFoundException();
+            }
         } else if (!GenericValidator.isBlankOrNull(templateId)) {
             Template template = getTemplateDao().get(templateId);
             List<ChannelTemplate> channelTemplates = getChannelTemplateDao().getChannelTemplatesForTemplate(template.getId());
             for (ChannelTemplate channelTemplate : channelTemplates) {
-                response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, getOutputHandlerFactory()));
+                if (getTemplateDao().canUserAcccessTemplate(channelTemplate.getTemplate(), userGroupMembershipIds)) {
+                    response.channelTemplates.add(ChannelTemplateModel.factory(channelTemplate, getOutputHandlerFactory()));
+                }
             }
         }
     }
@@ -106,5 +118,13 @@ public class GetChannelTemplateService extends AbstractService {
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

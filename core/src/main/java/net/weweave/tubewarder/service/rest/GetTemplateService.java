@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -27,6 +28,9 @@ public class GetTemplateService extends AbstractService {
     @Inject
     private OutputHandlerFactory outputHandlerFactory;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
     public GetTemplateResponse action(@QueryParam("token") @DefaultValue("") String token,
@@ -36,7 +40,7 @@ public class GetTemplateService extends AbstractService {
         try {
             Session session = getSession(token);
             checkPermissions(session.getUser());
-            setResponseList(response, id);
+            setResponseList(session.getUser(), response, id);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -55,15 +59,22 @@ public class GetTemplateService extends AbstractService {
         }
     }
 
-    private void setResponseList(GetTemplateResponse response, String id) throws ObjectNotFoundException {
+    private void setResponseList(User user, GetTemplateResponse response, String id) throws ObjectNotFoundException {
+        List<Long> userGroupMembershipIds = getUserGroupDao().getGroupMembershipIds(user);
         if (GenericValidator.isBlankOrNull(id)) {
             List<Template> templates = getTemplateDao().getAll();
             for (Template template : templates) {
-                response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
+                if (getTemplateDao().canUserAcccessTemplate(template, userGroupMembershipIds)) {
+                    response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
+                }
             }
         } else {
             Template template = getTemplateDao().get(id);
-            response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
+            if (getTemplateDao().canUserAcccessTemplate(template, userGroupMembershipIds)) {
+                response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
+            } else {
+                throw new ObjectNotFoundException();
+            }
         }
     }
 
@@ -81,5 +92,13 @@ public class GetTemplateService extends AbstractService {
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

@@ -7,12 +7,14 @@ define(['angular', 'app'], function(angular, app) {
         $scope.model = {
             id: '',
             name: '',
+            groupId: '',
             rewriteRecipientName: '${recipientName}',
             rewriteRecipientAddress: '${recipientAddress}',
             rewriteSubject: '${subject}',
             rewriteContent: '${content}',
             outputHandler: ''
         };
+        $scope.groups = [];
         $scope.handlers = [];
         $scope.configOptions = [];
         
@@ -88,6 +90,9 @@ define(['angular', 'app'], function(angular, app) {
                 object: {
                     id: $scope.model.id,
                     name: $scope.model.name,
+                    group: {
+                        id: $scope.model.groupId
+                    },
                     rewriteRecipientName: $scope.model.rewriteRecipientName,
                     rewriteRecipientAddress: $scope.model.rewriteRecipientAddress,
                     rewriteSubject: $scope.model.rewriteSubject,
@@ -110,12 +115,23 @@ define(['angular', 'app'], function(angular, app) {
                     var channel = data.channels[0];
                     $scope.model.id = channel.id;
                     $scope.model.name = channel.name;
+                    $scope.model.groupId = channel.group.id;
                     setConfigOptions(channel.config);
                 });
             }
         };
         
-        loadOutputHandlers(load);
+        var loadGroups = function() {
+            var payload = {
+                token: appServices.getToken()
+            };
+            $http.get('/rs/group/get/small', {params: payload}).success(function(data) {
+                $scope.groups = data.groups;
+                load();
+            });
+        };
+        
+        loadOutputHandlers(loadGroups);
         $('[data-toggle="popover"]').popover();
     }]);
 });

@@ -1,23 +1,31 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
+import net.weweave.tubewarder.dao.UserGroupDao;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
 public class TestChannelService extends AbstractRestTest {
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @Test
     public void testCreateChannelSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -26,38 +34,41 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testCreateChannelDuplicateName() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetChannelResponse(token, null, "Channel 1",
+        validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        validateSetChannelResponse(token, null, "Channel 1",
+        validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testCreateChannelDifferentName() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetChannelResponse(token, null, "Channel 1",
+        validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
-        validateSetChannelResponse(token, null, "Channel 2",
+        validateSetChannelResponse(token, null, "Channel 2", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
     }
 
     @Test
     public void testUpdateChannelSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
         validateGetSingleChannelResponse(token, id, "Channel 1");
-        validateSetChannelResponse(token, id, "Renamed Channel 1",
+        validateSetChannelResponse(token, id, "Renamed Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         validateGetSingleChannelResponse(token, id, "Renamed Channel 1");
@@ -65,41 +76,40 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testUpdateNonExistingObject() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetChannelResponse(token, UUID.randomUUID().toString(), "Channel 1",
+        validateSetChannelResponse(token, UUID.randomUUID().toString(), "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testUpdateRenameDuplicateName() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
 
-        validateSetChannelResponse(token, null, "Channel 2",
+        validateSetChannelResponse(token, null, "Channel 2", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         validateGetSingleChannelResponse(token, id, "Channel 1");
 
-        validateSetChannelResponse(token, id, "Channel 2",
+        validateSetChannelResponse(token, id, "Channel 2", group.getExposableId(),
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
         validateGetSingleChannelResponse(token, id, "Channel 1");
     }
 
     @Test
     public void testCreateInsufficientRights() {
-        createAdminUser();
-        String token = authAdminGetToken();
-
         createUserWithNoRights("dummy", "dummy");
-        token = authGetToken("dummy", "dummy");
-        validateSetChannelResponse(token, null, "Channel 1",
+        String token = authGetToken("dummy", "dummy");
+        validateSetChannelResponse(token, null, "Channel 1", "xyz",
                 "error", equalTo(ErrorCode.PERMISSION_DENIED),
                 "id", isEmptyOrNullString());
     }
@@ -107,7 +117,7 @@ public class TestChannelService extends AbstractRestTest {
     @Test
     public void testCreateEmptyToken() {
         createAdminUser();
-        validateSetChannelResponse("", null, "Channel 1",
+        validateSetChannelResponse("", null, "Channel 1", "xyz",
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
@@ -115,16 +125,18 @@ public class TestChannelService extends AbstractRestTest {
     @Test
     public void testCreateInvalidToken() {
         createAdminUser();
-        validateSetChannelResponse(UUID.randomUUID().toString(), null, "Channel 1",
+        validateSetChannelResponse(UUID.randomUUID().toString(), null, "Channel 1", "xyz",
                 "error", equalTo(ErrorCode.AUTH_REQUIRED),
                 "id", isEmptyOrNullString());
     }
 
     @Test
     public void testDeleteSuccess() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
+
         String token = authAdminGetToken();
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -137,9 +149,10 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testDeleteInsufficientRights() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -152,9 +165,10 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testDeleteInvalidToken() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id = response.getString("id");
@@ -165,9 +179,10 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testDeleteInvalidId() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetChannelResponse(token, null, "Channel 1",
+        validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 
@@ -177,9 +192,10 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testDeleteEmptyId() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
-        validateSetChannelResponse(token, null, "Channel 1",
+        validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
 
@@ -216,15 +232,16 @@ public class TestChannelService extends AbstractRestTest {
 
     @Test
     public void testGetTwoItems() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        JSONObject response = validateSetChannelResponse(token, null, "Channel 1",
+        JSONObject response = validateSetChannelResponse(token, null, "Channel 1", group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id1 = response.getString("id");
 
-        response = validateSetChannelResponse(token, null, "Channel 2",
+        response = validateSetChannelResponse(token, null, "Channel 2",  group.getExposableId(),
                 "error", equalTo(ErrorCode.OK),
                 "id", not(isEmptyOrNullString()));
         String id2 = response.getString("id");
@@ -246,8 +263,16 @@ public class TestChannelService extends AbstractRestTest {
         return object;
     }
 
-    private JSONObject validateSetChannelResponse(String token, String id, String name, Object... body) {
-        JSONObject payload = getSetRequestPayload(token, id, name);
+    private UserGroup createUserGroupAndAssignUser(User user) {
+        UserGroup group = new UserGroup();
+        group.setName("g1");
+        group.getMembers().add(user);
+        getUserGroupDao().store(group);
+        return group;
+    }
+
+    private JSONObject validateSetChannelResponse(String token, String id, String name, String groupId, Object... body) {
+        JSONObject payload = getSetRequestPayload(token, id, name, groupId);
         ResponseSpecification response = getResponseSpecificationPost(payload);
         setExpectedBodies(response, body);
         return getPostResponse(response, "channel/set");
@@ -266,10 +291,14 @@ public class TestChannelService extends AbstractRestTest {
         return getGetResponse(response, "channel/get");
     }
 
-    private JSONObject getSetRequestPayload(String token, String id, String name) {
+    private JSONObject getSetRequestPayload(String token, String id, String name, String groupId) {
+        JSONObject groupJson = new JSONObject();
+        groupJson.put("id", groupId);
+
         JSONObject object = new JSONObject();
         object.put("id", id);
         object.put("name", name);
+        object.put("group", groupJson);
         object.put("config", getSysoutConfig());
         return super.getSetRequestPayload(token, object);
     }
@@ -281,5 +310,13 @@ public class TestChannelService extends AbstractRestTest {
                 "channels[0].id", equalTo(expectedId),
                 "channels[0].name", equalTo(expectedName),
                 "channels[0].config.id", equalTo("SYSOUT"));
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

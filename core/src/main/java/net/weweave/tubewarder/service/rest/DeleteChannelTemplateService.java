@@ -1,5 +1,7 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.TemplateDao;
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -27,6 +29,12 @@ public class DeleteChannelTemplateService extends AbstractService {
     @Inject
     private ChannelTemplateDao channelTemplateDao;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
+    @Inject
+    private TemplateDao templateDao;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -36,7 +44,7 @@ public class DeleteChannelTemplateService extends AbstractService {
             Session session = getSession(request.token);
             checkPermissions(session.getUser());
             validateInputParameters(request);
-            deleteObject(request.id);
+            deleteObject(session.getUser(), request.id);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
@@ -62,8 +70,11 @@ public class DeleteChannelTemplateService extends AbstractService {
         }
     }
 
-    private void deleteObject(String id) throws ObjectNotFoundException {
+    private void deleteObject(User user, String id) throws ObjectNotFoundException, PermissionException {
         ChannelTemplate channelTemplate = getChannelTemplateDao().get(id);
+        if (!getTemplateDao().canUserAcccessTemplate(channelTemplate.getTemplate(), getUserGroupDao().getGroupMembershipIds(user))) {
+            throw new PermissionException();
+        }
         getChannelTemplateDao().delete(channelTemplate);
     }
 
@@ -73,5 +84,21 @@ public class DeleteChannelTemplateService extends AbstractService {
 
     public void setChannelTemplateDao(ChannelTemplateDao channelTemplateDao) {
         this.channelTemplateDao = channelTemplateDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
+    }
+
+    public TemplateDao getTemplateDao() {
+        return templateDao;
+    }
+
+    public void setTemplateDao(TemplateDao templateDao) {
+        this.templateDao = templateDao;
     }
 }

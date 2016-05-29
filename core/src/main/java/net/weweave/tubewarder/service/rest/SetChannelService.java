@@ -1,14 +1,17 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.ChannelDao;
-import net.weweave.tubewarder.domain.*;
+import net.weweave.tubewarder.dao.UserGroupDao;
+import net.weweave.tubewarder.domain.Channel;
+import net.weweave.tubewarder.domain.Session;
+import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
-import net.weweave.tubewarder.outputhandler.api.Config;
 import net.weweave.tubewarder.outputhandler.api.IOutputHandler;
 import net.weweave.tubewarder.outputhandler.api.InvalidConfigException;
 import net.weweave.tubewarder.service.model.ChannelModel;
@@ -34,6 +37,9 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     @Inject
     private OutputHandlerFactory outputHandlerFactory;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -41,7 +47,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
             Session session = getSession(request.token);
-            checkPermissions(session.getUser());
+            checkPermissions(session.getUser(), request.object);
             validateInputParameters(request.object);
             Channel object = createUpdateObject(request.object);
             response.id = object.getExposableId();
@@ -57,9 +63,19 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         return response;
     }
 
-    private void checkPermissions(User user) throws PermissionException {
+    private void checkPermissions(User user, ChannelModel model) throws PermissionException {
         if (user == null ||
                 !user.getAllowChannels()) {
+            throw new PermissionException();
+        }
+
+        // Check if user is allowed to assign specified UserGroup
+        try {
+            UserGroup group = getUserGroupDao().get(model.group.id);
+            if (!getUserGroupDao().isUserMemberOfGroup(user, group)) {
+                throw new PermissionException();
+            }
+        } catch (ObjectNotFoundException e) {
             throw new PermissionException();
         }
     }
@@ -68,6 +84,8 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     protected void validateInputParameters(ChannelModel model) throws InvalidInputParametersException {
         if (GenericValidator.isBlankOrNull(model.name) ||
                 model.config == null ||
+                model.group == null ||
+                GenericValidator.isBlankOrNull(model.group.id) ||
                 !getOutputHandlerFactory().isValidId(model.config)) {
             throw new InvalidInputParametersException();
         }
@@ -114,8 +132,10 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
     @Override
     protected void updateObject(Channel object, ChannelModel model) throws ObjectNotFoundException {
         String configJson = OutputHandlerConfigUtil.configMapToJsonString(model.config);
+        UserGroup group = getUserGroupDao().get(model.group.id);
 
         object.setName(model.name);
+        object.setUserGroup(group);
         object.setRewriteRecipientName(model.rewriteRecipientName);
         object.setRewriteRecipientAddress(model.rewriteRecipientAddress);
         object.setRewriteSubject(model.rewriteSubject);
@@ -135,5 +155,13 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

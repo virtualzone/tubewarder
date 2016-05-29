@@ -1,6 +1,7 @@
 package net.weweave.tubewarder.dao;
 
 import net.weweave.tubewarder.domain.Channel;
+import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 
@@ -20,5 +21,14 @@ public class ChannelDao extends AbstractDao<Channel> {
     public List<Channel> getAll() {
         TypedQuery<Channel> query = getEntityManager().createQuery("SELECT c FROM Channel c ORDER BY c.name", Channel.class);
         return query.getResultList();
+    }
+
+    public boolean canUserAcccessChannel(Channel channel, List<Long> userGroupMembershipIds) {
+        if (channel == null ||
+                channel.getUserGroup() == null ||
+                userGroupMembershipIds.contains(channel.getUserGroup().getId())) {
+            return true;
+        }
+        return false;
     }
 }

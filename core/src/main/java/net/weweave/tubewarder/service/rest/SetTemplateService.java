@@ -1,7 +1,9 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.PermissionException;
 import org.apache.commons.validator.GenericValidator;
@@ -28,6 +30,9 @@ public class SetTemplateService extends AbstractSetObjectService<TemplateModel, 
     @Inject
     private TemplateDao templateDao;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -35,7 +40,7 @@ public class SetTemplateService extends AbstractSetObjectService<TemplateModel, 
         SetObjectRestResponse response = new SetObjectRestResponse();
         try {
             Session session = getSession(request.token);
-            checkPermissions(session.getUser());
+            checkPermissions(session.getUser(), request.object);
             validateInputParameters(request.object);
             Template object = createUpdateObject(request.object);
             response.id = object.getExposableId();
@@ -51,16 +56,28 @@ public class SetTemplateService extends AbstractSetObjectService<TemplateModel, 
         return response;
     }
 
-    private void checkPermissions(User user) throws PermissionException {
+    private void checkPermissions(User user, TemplateModel model) throws PermissionException {
         if (user == null ||
                 !user.getAllowTemplates()) {
+            throw new PermissionException();
+        }
+
+        // Check if user is allowed to assign specified UserGroup
+        try {
+            UserGroup group = getUserGroupDao().get(model.group.id);
+            if (!getUserGroupDao().isUserMemberOfGroup(user, group)) {
+                throw new PermissionException();
+            }
+        } catch (ObjectNotFoundException e) {
             throw new PermissionException();
         }
     }
 
     @Override
     protected void validateInputParameters(TemplateModel model) throws InvalidInputParametersException {
-        if (GenericValidator.isBlankOrNull(model.name)) {
+        if (GenericValidator.isBlankOrNull(model.name) ||
+                model.group == null ||
+                GenericValidator.isBlankOrNull(model.group.id)) {
             throw new InvalidInputParametersException();
         }
 
@@ -97,12 +114,23 @@ public class SetTemplateService extends AbstractSetObjectService<TemplateModel, 
 
     @Override
     protected void updateObject(Template object, TemplateModel model) throws ObjectNotFoundException {
+        UserGroup group = getUserGroupDao().get(model.group.id);
+
         object.setName(model.name);
+        object.setUserGroup(group);
         getObjectDao().update(object);
     }
 
     @Override
     public TemplateDao getObjectDao() {
         return templateDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

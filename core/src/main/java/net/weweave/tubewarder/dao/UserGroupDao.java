@@ -68,4 +68,12 @@ public class UserGroupDao extends AbstractDao<UserGroup> {
         query.setParameter("userId", user.getId());
         return query.getResultList();
     }
+
+    public List<Long> getGroupMembershipIds(User user) {
+        TypedQuery<Long> query = getEntityManager().createQuery("SELECT ug.id FROM UserGroup ug, User u " +
+                "WHERE u MEMBER OF ug.members AND u.id = :userId " +
+                "ORDER BY ug.name ASC", Long.class);
+        query.setParameter("userId", user.getId());
+        return query.getResultList();
+    }
 }

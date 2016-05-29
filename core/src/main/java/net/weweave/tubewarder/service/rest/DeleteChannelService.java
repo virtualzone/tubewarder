@@ -1,5 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -27,6 +28,9 @@ public class DeleteChannelService extends AbstractService {
     @Inject
     private ChannelDao channelDao;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -36,7 +40,7 @@ public class DeleteChannelService extends AbstractService {
             Session session = getSession(request.token);
             checkPermissions(session.getUser());
             validateInputParameters(request);
-            deleteObject(request.id);
+            deleteObject(session.getUser(), request.id);
         } catch (InvalidInputParametersException e) {
             response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
         } catch (ObjectNotFoundException e) {
@@ -62,8 +66,11 @@ public class DeleteChannelService extends AbstractService {
         }
     }
 
-    private void deleteObject(String id) throws ObjectNotFoundException {
+    private void deleteObject(User user, String id) throws ObjectNotFoundException, PermissionException {
         Channel channel = getChannelDao().get(id);
+        if (!getChannelDao().canUserAcccessChannel(channel, getUserGroupDao().getGroupMembershipIds(user))) {
+            throw new PermissionException();
+        }
         getChannelDao().delete(channel);
     }
 
@@ -73,5 +80,13 @@ public class DeleteChannelService extends AbstractService {
 
     public void setChannelDao(ChannelDao channelDao) {
         this.channelDao = channelDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

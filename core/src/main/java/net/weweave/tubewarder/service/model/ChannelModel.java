@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ChannelModel extends AbstractRestModel {
     public String name;
+    public UserGroupModel group;
     public String rewriteRecipientName;
     public String rewriteRecipientAddress;
     public String rewriteSubject;
@@ -22,6 +23,7 @@ public class ChannelModel extends AbstractRestModel {
         ChannelModel model = new ChannelModel();
         model.id = channel.getExposableId();
         model.name = channel.getName();
+        model.group = (channel.getUserGroup() == null) ? null : UserGroupModel.factorySmall(channel.getUserGroup());
         model.rewriteRecipientName = (GenericValidator.isBlankOrNull(channel.getRewriteRecipientName()) ? "${recipientName}" : channel.getRewriteRecipientName());
         model.rewriteRecipientAddress = (GenericValidator.isBlankOrNull(channel.getRewriteRecipientAddress()) ? "${recipientAddress}" : channel.getRewriteRecipientAddress());
         model.rewriteSubject = (GenericValidator.isBlankOrNull(channel.getRewriteSubject()) ? "${subject}" : channel.getRewriteSubject());

@@ -13,6 +13,8 @@ public class Channel extends AbstractPersistentObject {
     private String rewriteContent;
     @Column(length = 100000)
     private String configJson;
+    @ManyToOne
+    private UserGroup userGroup;
 
     public String getName() {
         return name;
@@ -60,5 +62,13 @@ public class Channel extends AbstractPersistentObject {
 
     public void setConfigJson(String configJson) {
         this.configJson = configJson;
+    }
+
+    public UserGroup getUserGroup() {
+        return userGroup;
+    }
+
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 }
