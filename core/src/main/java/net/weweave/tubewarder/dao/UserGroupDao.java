@@ -76,4 +76,15 @@ public class UserGroupDao extends AbstractDao<UserGroup> {
         query.setParameter("userId", user.getId());
         return query.getResultList();
     }
+
+    public Boolean existsAnyGroup() {
+        TypedQuery<UserGroup> query = getEntityManager().createQuery("SELECT ug FROM UserGroup ug", UserGroup.class);
+        query.setMaxResults(1);
+        try {
+            DbValueRetriever.getObjectOrException(query);
+            return true;
+        } catch (ObjectNotFoundException e) {
+            return false;
+        }
+    }
 }

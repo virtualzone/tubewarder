@@ -1,8 +1,10 @@
 package net.weweave.tubewarder.util;
 
-import net.weweave.tubewarder.dao.SystemDao;
-import net.weweave.tubewarder.dao.UserDao;
+import net.weweave.tubewarder.dao.*;
+import net.weweave.tubewarder.domain.Channel;
+import net.weweave.tubewarder.domain.Template;
 import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
 import net.weweave.tubewarder.outputhandler.SendQueueScheduler;
 import org.mindrot.jbcrypt.BCrypt;
@@ -11,6 +13,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.List;
 
 @WebListener
 public class LifecycleListener implements ServletContextListener {
@@ -32,10 +35,20 @@ public class LifecycleListener implements ServletContextListener {
     @Inject
     private AliveStatusUpdater aliveStatusUpdater;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
+    @Inject
+    private TemplateDao templateDao;
+
+    @Inject
+    private ChannelDao channelDao;
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         getConfigManager().checkCreateConfig();
         checkCreateAdmin();
+        checkCreateGroups();
         getAliveStatusUpdater().initAliveStatus();
         getOutputHandlerFactory().init(servletContextEvent.getServletContext());
         getSendQueueScheduler().recover();
@@ -59,6 +72,38 @@ public class LifecycleListener implements ServletContextListener {
             user.setAllowSystemConfig(true);
             user.setAllowLogs(true);
             getUserDao().store(user);
+        }
+    }
+
+    private void checkCreateGroups() {
+        if (!getUserGroupDao().existsAnyGroup()) {
+            UserGroup group = new UserGroup();
+            group.setName("Default");
+            // Add all users
+            List<User> allUsers = getUserDao().getAll();
+            for (User user : allUsers) {
+                group.getMembers().add(user);
+            }
+            getUserGroupDao().store(group);
+            // Update channels and groups
+            assignAllChannelsToGroup(group);
+            assignAllTemplatesToGroup(group);
+        }
+    }
+
+    private void assignAllTemplatesToGroup(UserGroup group) {
+        List<Template> templates = getTemplateDao().getAll();
+        for (Template template : templates) {
+            template.setUserGroup(group);
+            getTemplateDao().update(template);
+        }
+    }
+
+    private void assignAllChannelsToGroup(UserGroup group) {
+        List<Channel> channels = getChannelDao().getAll();
+        for (Channel channel : channels) {
+            channel.setUserGroup(group);
+            getChannelDao().update(channel);
         }
     }
 
@@ -108,5 +153,29 @@ public class LifecycleListener implements ServletContextListener {
 
     public void setAliveStatusUpdater(AliveStatusUpdater aliveStatusUpdater) {
         this.aliveStatusUpdater = aliveStatusUpdater;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
+    }
+
+    public TemplateDao getTemplateDao() {
+        return templateDao;
+    }
+
+    public void setTemplateDao(TemplateDao templateDao) {
+        this.templateDao = templateDao;
+    }
+
+    public ChannelDao getChannelDao() {
+        return channelDao;
+    }
+
+    public void setChannelDao(ChannelDao channelDao) {
+        this.channelDao = channelDao;
     }
 }
