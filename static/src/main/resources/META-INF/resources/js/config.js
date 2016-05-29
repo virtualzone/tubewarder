@@ -7,11 +7,23 @@ require.config({
         'bootstrap': 'lib/bootstrap-3.3.6.min',
         'moment': 'lib/moment-2.11.2.min',
         'bootstrap-datetimepicker': 'lib/bootstrap-datetimepicker-4.17.37.min',
-        'autofill-event': 'lib/autofill-event'
+        'autofill-event': 'lib/autofill-event',
+		'typeahead': 'lib/typeahead-0.11.1.min',
+		'bloodhound': 'lib/bloodhound-0.11.1.min'
 	},
 	shim: {
         'bootstrap': {
+			deps: ['jquery']
+		},
+		'typeahead': {
 			deps: ['jquery'],
+			init: function($) {
+            	return require.s.contexts._.registry['typeahead.js'].factory($);
+        	}
+		},
+		'bloodhound': {
+			deps: ['jquery'],
+			exports: 'Bloodhound'
 		},
 		'angular': {
             deps: ['jquery'],
@@ -35,7 +47,9 @@ require.config({
                 'bootstrap-datetimepicker',
 				'angular-route',
 				'angular-route-resolver',
-                'autofill-event'
+                'autofill-event',
+				'typeahead',
+				'bloodhound'
 			],
 			exports: 'app'
 		},

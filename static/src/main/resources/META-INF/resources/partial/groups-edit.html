@@ -16,6 +16,32 @@
                 </div>
                 <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
             </form>
+        
+            <div data-ng-show="model.id">
+                <h2>Members</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Display Name</th>
+                            <th>Username</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="user in model.members">
+                            <td>{{user.displayName}}</td>
+                            <td>{{user.username}}</td>
+                            <td><button data-ng-click="removeUserFromGroup(user.id, model.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    <div class="form-group">
+                        <label for="username">Add user</label>
+                        <input type="text" class="form-control typeahead" id="username" name="username" placeholder="Begin typing..." />
+                    </div>
+                </p>
+            </div>
         </div>
     </div>
 </div>
