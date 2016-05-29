@@ -90,14 +90,18 @@ public abstract class AbstractRestTest extends AbstractServiceTest {
         return user;
     }
 
-    protected User createUserWithNoRights(String username, String password) {
+    protected User createUserWithNoRights(String username, String displayName, String password) {
         User user = new User();
         user.setUsername(username);
-        user.setDisplayName(UUID.randomUUID().toString());
+        user.setDisplayName(displayName);
         user.setHashedPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         user.setEnabled(true);
         getUserDao().store(user);
         return user;
+    }
+
+    protected User createUserWithNoRights(String username, String password) {
+        return createUserWithNoRights(username, UUID.randomUUID().toString(), password);
     }
 
     protected String authGetToken(String username, String password) {
