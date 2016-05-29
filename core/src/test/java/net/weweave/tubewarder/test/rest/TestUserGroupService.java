@@ -323,6 +323,73 @@ public class TestUserGroupService extends AbstractRestTest {
                 "groups[0].members[1].id", equalTo(u3.getExposableId()));
     }
 
+    @Test
+    public void testGetSmallList() {
+        createAdminUser();
+        String token = authAdminGetToken();
+
+        JSONObject response;
+        User u1, u2, u3;
+        String g1id, g2id;
+
+        // Create 3 users
+        u1 = createUserWithNoRights("u1", "dummy");
+        u2 = createUserWithNoRights("u2", "dummy");
+        u3 = createUserWithNoRights("u3", "dummy");
+
+        // Add rights
+        updateUserAllowTemplates(u1);
+        updateUserAllowTemplates(u2);
+        updateUserAllowTemplates(u3);
+
+        // Create 2 groups
+        response = validateSetUserGroupResponse(token, null, "g1",
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        g1id = response.getString("id");
+        response = validateSetUserGroupResponse(token, null, "g2",
+                "error", equalTo(ErrorCode.OK),
+                "id", not(isEmptyOrNullString()));
+        g2id = response.getString("id");
+
+        // Add users to groups
+        validateAddUserToGroupResponse(token, u1.getExposableId(), g1id, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u2.getExposableId(), g1id, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u2.getExposableId(), g2id, "error", equalTo(ErrorCode.OK));
+        validateAddUserToGroupResponse(token, u3.getExposableId(), g2id, "error", equalTo(ErrorCode.OK));
+
+        // Check u1
+        token = authGetToken("u1", "dummy");
+        validateGetUserGroupSmallResponse(token,
+                "error", equalTo(ErrorCode.OK),
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(g1id),
+                "groups[0].members.size()", is(0));
+
+        // Check u2
+        token = authGetToken("u2", "dummy");
+        validateGetUserGroupSmallResponse(token,
+                "error", equalTo(ErrorCode.OK),
+                "groups.size()", is(2),
+                "groups[0].id", equalTo(g1id),
+                "groups[1].id", equalTo(g2id),
+                "groups[0].members.size()", is(0),
+                "groups[1].members.size()", is(0));
+
+        // Check u3
+        token = authGetToken("u3", "dummy");
+        validateGetUserGroupSmallResponse(token,
+                "error", equalTo(ErrorCode.OK),
+                "groups.size()", is(1),
+                "groups[0].id", equalTo(g2id),
+                "groups[0].members.size()", is(0));
+    }
+
+    private void updateUserAllowTemplates(User user) {
+        user.setAllowTemplates(true);
+        getUserDao().update(user);
+    }
+
     private JSONObject validateSetUserGroupResponse(String token, String id, String name, Object... body) {
         JSONObject payload = getSetRequestPayload(token, id, name);
         ResponseSpecification response = getResponseSpecificationPost(payload);
@@ -361,6 +428,12 @@ public class TestUserGroupService extends AbstractRestTest {
         ResponseSpecification response = getResponseSpecificationGet("token", token, "id", id, "userId", userId);
         setExpectedBodies(response, body);
         return getGetResponse(response, "group/get");
+    }
+
+    private JSONObject validateGetUserGroupSmallResponse(String token, Object... body) {
+        ResponseSpecification response = getResponseSpecificationGet("token", token);
+        setExpectedBodies(response, body);
+        return getGetResponse(response, "group/get/small");
     }
 
     private JSONObject getSetRequestPayload(String token, String id, String name) {
