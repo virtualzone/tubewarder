@@ -24,6 +24,10 @@ define(['angular', 'app'], function(angular, app) {
                 id: id
             };
             $http.post('/rs/group/delete', payload).success(function(data) {
+                if (data.error === appServices.getErrors().INVALID_INPUT_PARAMETERS) {
+                    alert('Cannot delete group! Make sure that no Template or Channel is still assigned to it.');
+                    return;
+                }
                 load();
             });
         };

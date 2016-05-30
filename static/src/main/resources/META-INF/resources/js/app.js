@@ -17,6 +17,9 @@ define(['angular-route-resolver'], function(moment) {
             clone: function(obj) {
                 return $.extend(true, {}, obj);
             },
+            getErrors: function() {
+                return ERROR;
+            },
             setSession: function(session) {
                 $rootScope.session = session;
                 if (session) {

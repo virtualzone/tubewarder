@@ -1,6 +1,7 @@
 package net.weweave.tubewarder.service.rest;
 
-import net.weweave.tubewarder.dao.UserDao;
+import net.weweave.tubewarder.dao.ChannelDao;
+import net.weweave.tubewarder.dao.TemplateDao;
 import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
@@ -21,12 +22,19 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 
 @RequestScoped
 @Path("/group/delete")
 public class DeleteUserGroupService extends AbstractService {
     @Inject
     private UserGroupDao userGroupDao;
+
+    @Inject
+    private TemplateDao templateDao;
+
+    @Inject
+    private ChannelDao channelDao;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -65,7 +73,10 @@ public class DeleteUserGroupService extends AbstractService {
 
     private void deleteObject(String id) throws ObjectNotFoundException, InvalidInputParametersException {
         UserGroup group = getUserGroupDao().get(id);
-        if (group.getMembers().size() > 0) {
+        if (getChannelDao().getChannelIdsWithGroups(Arrays.asList(group.getId())).size() > 0) {
+            throw new InvalidInputParametersException();
+        }
+        if (getTemplateDao().getTemplateIdsWithGroups(Arrays.asList(group.getId())).size() > 0) {
             throw new InvalidInputParametersException();
         }
         getUserGroupDao().delete(group);
@@ -77,5 +88,21 @@ public class DeleteUserGroupService extends AbstractService {
 
     public void setUserGroupDao(UserGroupDao userGroupDao) {
         this.userGroupDao = userGroupDao;
+    }
+
+    public TemplateDao getTemplateDao() {
+        return templateDao;
+    }
+
+    public void setTemplateDao(TemplateDao templateDao) {
+        this.templateDao = templateDao;
+    }
+
+    public ChannelDao getChannelDao() {
+        return channelDao;
+    }
+
+    public void setChannelDao(ChannelDao channelDao) {
+        this.channelDao = channelDao;
     }
 }
