@@ -63,8 +63,11 @@ public class DeleteUserGroupService extends AbstractService {
         }
     }
 
-    private void deleteObject(String id) throws ObjectNotFoundException {
+    private void deleteObject(String id) throws ObjectNotFoundException, InvalidInputParametersException {
         UserGroup group = getUserGroupDao().get(id);
+        if (group.getMembers().size() > 0) {
+            throw new InvalidInputParametersException();
+        }
         getUserGroupDao().delete(group);
     }
 

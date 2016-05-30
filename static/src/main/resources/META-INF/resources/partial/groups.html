@@ -24,7 +24,7 @@
                         <td>{{group.name}}</td>
                         <td>{{group.members.length}}</td>
                         <td><a data-ng-href="#/groups/edit/{{group.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                        <td><button data-ng-click="deleteGroup(group.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
+                        <td><button data-ng-click="deleteGroup(group.id)" data-ng-disabled="group.members.length" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
                     </tr>
                 </tbody>
             </table>
