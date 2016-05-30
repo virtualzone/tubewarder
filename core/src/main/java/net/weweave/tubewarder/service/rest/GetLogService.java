@@ -42,7 +42,7 @@ public class GetLogService extends AbstractService {
             Session session = getSession(token);
             checkPermissions(session.getUser());
             validateInputParameters(id, startDate, endDate, firstResult, maxResults);
-            setResponseList(response, id, DateTimeFormat.parse(startDate), DateTimeFormat.parse(endDate), keyword, searchString, firstResult, maxResults);
+            setResponseList(session.getUser(), response, id, DateTimeFormat.parse(startDate), DateTimeFormat.parse(endDate), keyword, searchString, firstResult, maxResults);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -87,6 +87,7 @@ public class GetLogService extends AbstractService {
     }
 
     private void setResponseList(
+            User user,
             GetLogResponse response,
             String id,
             Date startDate,
@@ -96,7 +97,7 @@ public class GetLogService extends AbstractService {
             Integer firstResult,
             Integer maxResults) throws ObjectNotFoundException {
         if (GenericValidator.isBlankOrNull(id)) {
-            List<Log> logs = getLogDao().getLogs(startDate, endDate, keyword, searchString, firstResult, maxResults);
+            List<Log> logs = getLogDao().getLogs(user, startDate, endDate, keyword, searchString, firstResult, maxResults);
             for (Log log : logs) {
                 response.logs.add(LogModel.factory(log, false));
             }

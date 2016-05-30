@@ -1,15 +1,26 @@
 package net.weweave.tubewarder.dao;
 
 import net.weweave.tubewarder.domain.Log;
+import net.weweave.tubewarder.domain.User;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
 
 @Stateless
 public class LogDao extends AbstractDao<Log> {
+    @Inject
+    private UserGroupDao userGroupDao;
+
+    @Inject
+    private TemplateDao templateDao;
+
+    @Inject
+    private ChannelDao channelDao;
+
     /**
      * @param startDate minimum date (inclusive)
      * @param endDate maximum date (inclusive)
@@ -19,7 +30,11 @@ public class LogDao extends AbstractDao<Log> {
      * @param maxResults maximum number of results to retrieve
      * @return
      */
-    public List<Log> getLogs(Date startDate, Date endDate, String keyword, String searchString, Integer firstResult, Integer maxResults) {
+    public List<Log> getLogs(User user, Date startDate, Date endDate, String keyword, String searchString, Integer firstResult, Integer maxResults) {
+        List<Long> groupMembershipIds = getUserGroupDao().getGroupMembershipIds(user);
+        List<Long> templateIds = getTemplateDao().getTemplateIdsWithGroups(groupMembershipIds);
+        List<Long> channelIds = getChannelDao().getChannelIdsWithGroups(groupMembershipIds);
+
         if (firstResult < 0) {
             firstResult = 0;
         }
@@ -28,11 +43,15 @@ public class LogDao extends AbstractDao<Log> {
         }
         TypedQuery<Log> query = getEntityManager().createQuery("SELECT l FROM Log l " +
                 "WHERE l.date >= :startDate AND l.date <= :endDate " +
+                "AND  l.channelIdInt IN :channelIds " +
+                "AND l.templateIdInt IN :templateIds " +
                 (GenericValidator.isBlankOrNull(keyword) ? "" : "AND l.keyword = :keyword ") +
                 (GenericValidator.isBlankOrNull(searchString) ? "" : "AND (l.subject LIKE :searchString OR l.content LIKE :searchString OR l.recipientName LIKE :searchString OR l.recipientAddress LIKE :searchString OR l.details LIKE :searchString) ") +
                 "ORDER BY l.date DESC", Log.class);
         query.setParameter("startDate", startDate);
         query.setParameter("endDate", endDate);
+        query.setParameter("channelIds", channelIds);
+        query.setParameter("templateIds", templateIds);
         if (!GenericValidator.isBlankOrNull(keyword)) {
             query.setParameter("keyword", keyword);
         }
@@ -42,5 +61,29 @@ public class LogDao extends AbstractDao<Log> {
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
         return query.getResultList();
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
+    }
+
+    public TemplateDao getTemplateDao() {
+        return templateDao;
+    }
+
+    public void setTemplateDao(TemplateDao templateDao) {
+        this.templateDao = templateDao;
+    }
+
+    public ChannelDao getChannelDao() {
+        return channelDao;
+    }
+
+    public void setChannelDao(ChannelDao channelDao) {
+        this.channelDao = channelDao;
     }
 }

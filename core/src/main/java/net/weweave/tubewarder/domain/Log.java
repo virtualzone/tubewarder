@@ -15,8 +15,10 @@ public class Log extends AbstractPersistentObject {
     private String details;
     private String templateName;
     private String templateId;
+    private Long templateIdInt;
     private String channelName;
     private String channelId;
+    private Long channelIdInt;
     private String senderName;
     private String senderAddress;
     private String recipientName;
@@ -27,6 +29,7 @@ public class Log extends AbstractPersistentObject {
     @Enumerated(EnumType.STRING)
     private QueueItemStatus status;
     private String queueId;
+
 
     public Date getDate() {
         return date;
@@ -162,5 +165,21 @@ public class Log extends AbstractPersistentObject {
 
     public void setQueueId(String queueId) {
         this.queueId = queueId;
+    }
+
+    public Long getTemplateIdInt() {
+        return templateIdInt;
+    }
+
+    public void setTemplateIdInt(Long templateIdInt) {
+        this.templateIdInt = templateIdInt;
+    }
+
+    public Long getChannelIdInt() {
+        return channelIdInt;
+    }
+
+    public void setChannelIdInt(Long channelIdInt) {
+        this.channelIdInt = channelIdInt;
     }
 }

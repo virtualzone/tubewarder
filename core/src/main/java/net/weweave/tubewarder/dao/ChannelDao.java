@@ -23,6 +23,13 @@ public class ChannelDao extends AbstractDao<Channel> {
         return query.getResultList();
     }
 
+    public List<Long> getChannelIdsWithGroups(List<Long> groupIds) {
+        TypedQuery<Long> query = getEntityManager().createQuery("SELECT c.id FROM Channel c " +
+                "WHERE c.userGroup.id IN :groupIds", Long.class);
+        query.setParameter("groupIds", groupIds);
+        return query.getResultList();
+    }
+
     public boolean canUserAcccessChannel(Channel channel, List<Long> userGroupMembershipIds) {
         if (channel == null ||
                 channel.getUserGroup() == null ||

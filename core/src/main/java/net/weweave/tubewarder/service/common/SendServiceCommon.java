@@ -285,8 +285,10 @@ public class SendServiceCommon {
         log.setDetails(model.details);
         log.setTemplateName(channelTemplate.getTemplate().getName());
         log.setTemplateId(channelTemplate.getTemplate().getExposableId());
+        log.setTemplateIdInt(channelTemplate.getTemplate().getId());
         log.setChannelName(channelTemplate.getChannel().getName());
         log.setChannelId(channelTemplate.getChannel().getExposableId());
+        log.setChannelIdInt(channelTemplate.getChannel().getId());
         log.setSenderName(sender.getName());
         log.setSenderAddress(sender.getAddress());
         log.setRecipientName(recipient.getName());
