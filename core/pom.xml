@@ -7,13 +7,12 @@
     <parent>
         <groupId>net.weweave.tubewarder</groupId>
         <artifactId>parent</artifactId>
-        <version>${version.tubewarder}</version>
+        <version>1.0-Beta5-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>core</artifactId>
-    <version>${version.tubewarder}</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -162,9 +161,8 @@
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>client</artifactId>
-            <version>${version.tubewarder}</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../clients/java/target/client.jar</systemPath>
+            <version>1.0.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     

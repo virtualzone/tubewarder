@@ -7,13 +7,12 @@
     <parent>
         <groupId>net.weweave.tubewarder</groupId>
         <artifactId>parent</artifactId>
-        <version>${version.tubewarder}</version>
+        <version>1.0-Beta5-SNAPSHOT</version>
         <relativePath>../../</relativePath>
     </parent>
 
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>outputhandler-email</artifactId>
-    <version>${version.tubewarder}</version>
     <packaging>jar</packaging>
 
     <dependencies>
