@@ -9,16 +9,19 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var load = function() {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken()
             };
             $http.get('/rs/apptoken/get', {params: payload}).success(function(data) {
                 $scope.model.tokens = data.tokens;
+                appServices.setLoading(false);
             });
         };
         
         $scope.deleteToken = function(id) {
             if (!confirm("Delete this token?")) return;
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 id: id

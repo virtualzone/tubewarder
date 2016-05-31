@@ -21,19 +21,13 @@ define(['angular', 'app'], function(angular, app) {
 	}]);
 
 	controllers.controller('RootController', ['$scope', '$rootScope', '$location', '$http', 'appServices', function($scope, $rootScope, $location, $http, appServices) {
-        $scope.isRouteChanging = false;
-		
 		$rootScope.$on('$routeChangeStart', function(event, next, current) {
-			$scope.isRouteChanging = true;
+			$rootScope.loading = true;
             if (!$rootScope.isLoggedIn) {
 				if (next.originalPath != '/login') {
 					$location.path('/login');
 				}
 			}
-		});
-
-		$rootScope.$on('$routeChangeSuccess', function(next, current) {
-			$scope.isRouteChanging = false;
 		});
         
         $scope.logout = function() {

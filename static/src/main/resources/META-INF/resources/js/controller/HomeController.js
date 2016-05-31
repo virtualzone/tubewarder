@@ -3,5 +3,6 @@ define(['angular', 'app'], function(angular, app) {
 
     app.lazy.controller('HomeController', ['$scope', '$http', 'appServices', function($scope, $http, appServices) {
         appServices.setActiveNavItem('home');
+        appServices.setLoading(false);
     }]);
 });

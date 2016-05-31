@@ -14,11 +14,13 @@ define(['angular', 'app'], function(angular, app) {
             };
             $http.get('/rs/user/get', {params: payload}).success(function(data) {
                 $scope.model.users = data.users;
+                appServices.setLoading(false);
             });
         };
         
         $scope.deleteUser = function(id) {
             if (!confirm("Delete this user?")) return;
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 id: id

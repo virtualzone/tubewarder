@@ -10,6 +10,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.saveSuccess = false;
         
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             $scope.saveSuccess = false;
             var payload = {
                 token: appServices.getToken(),
@@ -17,6 +18,7 @@ define(['angular', 'app'], function(angular, app) {
             };
             $http.post('/rs/config/set', payload).success(function(data) {
                 $scope.saveSuccess = true;
+                appServices.setLoading(false);
             });
         };
         
@@ -32,6 +34,7 @@ define(['angular', 'app'], function(angular, app) {
                     }
                 }
                 $scope.model.items = data.items;
+                appServices.setLoading(false);
             });
         };
         

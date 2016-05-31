@@ -7,11 +7,13 @@ define(['angular', 'app'], function(angular, app) {
         $scope.status = {};
         
         var load = function() {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken()
             };
             $http.get('/rs/queue/status', {params: payload}).success(function(data) {
                 $scope.status = data.status;
+                appServices.setLoading(false);
             });
         };
         

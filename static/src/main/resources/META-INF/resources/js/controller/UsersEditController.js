@@ -23,6 +23,7 @@ define(['angular', 'app'], function(angular, app) {
 		};
         
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 object: {
@@ -59,7 +60,10 @@ define(['angular', 'app'], function(angular, app) {
                 $scope.model.allowTemplates = user.allowTemplates;
                 $scope.model.allowSystemConfig = user.allowSystemConfig;
                 $scope.model.allowLogs = user.allowLogs;
+                appServices.setLoading(false);
             });
+        } else {
+            appServices.setLoading(false);
         }
     }]);
 });

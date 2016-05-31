@@ -7,6 +7,15 @@ body {
     display: none;
 }
 
+.uil-reload-css {
+    -webkit-transform: scale(0.16);
+    position: absolute;
+    top: -3px;
+    right: 80px;
+    width: 32px;
+    height: 32px;
+}
+
 .main {
     padding: 20px;
     padding-top: 100px;

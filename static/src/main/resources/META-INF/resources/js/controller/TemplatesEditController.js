@@ -13,6 +13,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.groups = [];
 
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 object: {
@@ -49,13 +50,17 @@ define(['angular', 'app'], function(angular, app) {
                     $scope.model.id = template.id;
                     $scope.model.name = template.name;
                     $scope.model.groupId = template.group.id;
-                    $scope.model.channelTemplates = template.channelTemplates; 
+                    $scope.model.channelTemplates = template.channelTemplates;
+                    appServices.setLoading(false); 
                 });
+            } else {
+                appServices.setLoading(false);
             }
         };
         
         $scope.deleteChannelTemplate = function(id) {
             if (!confirm("Delete this channel association?")) return;
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 id: id

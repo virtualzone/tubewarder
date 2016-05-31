@@ -20,6 +20,7 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         var load = function() {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken()
             };
@@ -28,11 +29,13 @@ define(['angular', 'app'], function(angular, app) {
                 for (var i=0; i<$scope.model.templates.length; i++) {
                     makeReadableChannelList($scope.model.templates[i]);
                 }
+                appServices.setLoading(false);
             });
         };
         
         $scope.deleteTemplate = function(id) {
             if (!confirm("Delete this template?")) return;
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 id: id

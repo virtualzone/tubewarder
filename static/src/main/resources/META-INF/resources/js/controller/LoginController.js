@@ -3,6 +3,7 @@ define(['angular', 'app'], function(angular, app) {
 
     app.lazy.controller('LoginController', ['$scope', '$http', '$location', '$routeParams', 'appServices', function($scope, $http, $location, $routeParams, appServices) {
         appServices.setActiveNavItem('');
+        appServices.setLoading(false);
         
         $scope.model = {
             username: '',
@@ -15,12 +16,13 @@ define(['angular', 'app'], function(angular, app) {
 		};
         
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 username: $scope.model.username,
                 password: $scope.model.password
             };
             $http.post('/rs/auth', payload).success(function(data) {
-                if (!data.error) {
+                if (data && !data.error) {
                     var session = {
 						token: data.token,
 						user: data.user
@@ -29,6 +31,7 @@ define(['angular', 'app'], function(angular, app) {
                     $location.path('/home');
                 } else {
                     form.password.$setValidity('invalid', false);
+                    appServices.setLoading(false);
                 }
             });
 		};

@@ -123,15 +123,18 @@ define(['angular', 'app'], function(angular, app) {
             };
             $http.get('/rs/template/get', {params: payload}).success(function(data) {
                 $scope.templates = data.templates;
+                appServices.setLoading(false);
             });
         };
         
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             $scope.submitButtonText = 'Sending...';
             $scope.generateSendPayload();
             $http.post('/rs/send', $scope.payload).success(function(data) {
                 $scope.response = data;
                 $scope.submitButtonText = 'Success! See response below.';
+                appServices.setLoading(false);
             });
         };
         

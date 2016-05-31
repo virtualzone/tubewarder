@@ -17,6 +17,9 @@ define(['angular-route-resolver'], function(moment) {
             clone: function(obj) {
                 return $.extend(true, {}, obj);
             },
+            setLoading: function(b) {
+                $rootScope.loading = b;
+            },
             getErrors: function() {
                 return ERROR;
             },

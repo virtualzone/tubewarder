@@ -18,6 +18,7 @@ define(['angular', 'app'], function(angular, app) {
         $scope.channelTemplates = [];
 
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 object: {
@@ -120,7 +121,10 @@ define(['angular', 'app'], function(angular, app) {
                     $scope.model.content = ct.content;
                     $scope.model.senderAddress = ct.senderAddress;
                     $scope.model.senderName = ct.senderName;
+                    appServices.setLoading(false);
                 });
+            } else {
+                appServices.setLoading(false);
             }
         };
         

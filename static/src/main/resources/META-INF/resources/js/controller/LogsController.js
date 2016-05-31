@@ -16,18 +16,21 @@ define(['angular', 'moment', 'app'], function(angular, moment, app) {
         };
         
         $scope.showLog = function(id) {
+            appServices.setLoading(true);
             $scope.model.log = {};
-            $('#logModal').modal('show');
             var payload = {
                 token: appServices.getToken(),
                 id: id
             };
             $http.get('/rs/log/get', {params: payload}).success(function(data) {
                 $scope.model.log = data.logs[0];
+                $('#logModal').modal('show');
+                appServices.setLoading(false);
             });
         };
         
         var load = function() {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 startDate: $scope.model.startDate,
@@ -37,6 +40,7 @@ define(['angular', 'moment', 'app'], function(angular, moment, app) {
             };
             $http.get('/rs/log/get', {params: payload}).success(function(data) {
                 $scope.model.logs = data.logs;
+                appServices.setLoading(false);
             });
         };
         

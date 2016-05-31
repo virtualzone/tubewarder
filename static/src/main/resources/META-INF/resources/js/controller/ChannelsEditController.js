@@ -85,6 +85,7 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 object: {
@@ -117,7 +118,10 @@ define(['angular', 'app'], function(angular, app) {
                     $scope.model.name = channel.name;
                     $scope.model.groupId = channel.group.id;
                     setConfigOptions(channel.config);
+                    appServices.setLoading(false);
                 });
+            } else {
+                appServices.setLoading(false);
             }
         };
         

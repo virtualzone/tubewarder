@@ -11,6 +11,7 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
         };
         
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 object: {
@@ -33,10 +34,12 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
                 $scope.model.id = group.id;
                 $scope.model.name = group.name;
                 $scope.model.members = group.members;
+                appServices.setLoading(false);
             });
         };
         
         $scope.addUserToGroup = function(userId, groupId) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 userId: userId,
@@ -49,6 +52,7 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
         
         $scope.removeUserFromGroup = function(userId, groupId) {
             if (!confirm("Remove this user from the group?")) return;
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 userId: userId,
@@ -89,6 +93,8 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
         
         if ($routeParams.id) {
             load();
+        } else {
+            appServices.setLoading(false);
         }
     }]);
 });

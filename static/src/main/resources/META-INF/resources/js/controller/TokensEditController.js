@@ -10,6 +10,7 @@ define(['angular', 'app'], function(angular, app) {
         };
 
         $scope.submit = function(form) {
+            appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
                 object: {
@@ -30,8 +31,11 @@ define(['angular', 'app'], function(angular, app) {
             $http.get('/rs/apptoken/get', {params: payload}).success(function(data) {
                 var token = data.tokens[0];
                 $scope.model.id = token.id;
-                $scope.model.name = token.name; 
+                $scope.model.name = token.name;
+                appServices.setLoading(false); 
             });
+        } else {
+            appServices.setLoading(false);
         }
     }]);
 });
