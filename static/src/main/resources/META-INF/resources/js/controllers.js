@@ -4,7 +4,7 @@ define(['angular', 'app'], function(angular, app) {
 	var controllers = angular.module('controllers', []);
 
 	controllers.run(['$location', '$http', '$rootScope', 'appServices', function($location, $http, $rootScope, appServices) {
-	    $rootScope.loading = true;
+	    appServices.setLoading(true);
 		appServices.loadSession();
 
         if ($rootScope.isLoggedIn) {
@@ -22,7 +22,7 @@ define(['angular', 'app'], function(angular, app) {
 
 	controllers.controller('RootController', ['$scope', '$rootScope', '$location', '$http', 'appServices', function($scope, $rootScope, $location, $http, appServices) {
 		$rootScope.$on('$routeChangeStart', function(event, next, current) {
-			$rootScope.loading = true;
+			appServices.setLoading(true);
             if (!$rootScope.isLoggedIn) {
 				if (next.originalPath != '/login') {
 					$location.path('/login');
@@ -31,6 +31,7 @@ define(['angular', 'app'], function(angular, app) {
 		});
         
         $scope.logout = function() {
+			appServices.setLoading(true);
 		    var payload = {
 		        token: appServices.getToken()
 		    };
