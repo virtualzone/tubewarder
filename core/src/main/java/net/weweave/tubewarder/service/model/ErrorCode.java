@@ -8,4 +8,8 @@ public class ErrorCode {
     public static final int AUTH_REQUIRED = 4;
     public static final int TEMPLATE_CORRUPT = 5;
     public static final int MISSING_MODEL_PARAMETER = 6;
+
+    public static final int FIELD_REQUIRED = 101;
+    public static final int FIELD_NAME_ALREADY_EXISTS = 102;
+    public static final int FIELD_INVALID = 103;
 }

@@ -1,7 +1,7 @@
 define(['angular', 'app'], function(angular, app) {
 	'use strict';
 
-    app.lazy.controller('LoginController', ['$scope', '$http', '$location', '$routeParams', 'appServices', function($scope, $http, $location, $routeParams, appServices) {
+    app.lazy.controller('LoginController', ['$scope', '$location', '$routeParams', 'appServices', function($scope, $location, $routeParams, appServices) {
         appServices.setActiveNavItem('');
         appServices.setLoading(false);
         
@@ -21,19 +21,21 @@ define(['angular', 'app'], function(angular, app) {
                 username: $scope.model.username,
                 password: $scope.model.password
             };
-            $http.post('/rs/auth', payload).success(function(data) {
-                if (data && !data.error) {
+            appServices.post('/rs/auth', payload,
+                function(data) {
                     var session = {
 						token: data.token,
 						user: data.user
 					};
 					appServices.setSession(session);
                     $location.path('/home');
-                } else {
+                },
+                function(fieldErrors) {
+                    appServices.error('Invalid username and/or password.');
                     form.password.$setValidity('invalid', false);
                     appServices.setLoading(false);
                 }
-            });
+            );
 		};
     }]);
 });

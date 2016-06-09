@@ -6,14 +6,80 @@ define(['angular-route-resolver'], function(moment) {
         INVALID_INPUT_PARAMETERS: 1,
         OBJECT_LOOKUP_ERROR: 2,
         PERMISSION_DENIED: 3,
-        AUTH_REQUIRED: 4
+        AUTH_REQUIRED: 4,
+        FIELD_REQUIRED: 101,
+        FIELD_NAME_ALREADY_EXISTS: 102,
+        FIELD_INVALID: 103
     };
 
     var angular = require('angular');
     var app = angular.module('app', ['ngRoute', 'controllers', 'routeResolverServices'])
 
-    .factory('appServices', ['$rootScope', function($rootScope) {
+    .factory('appServices', ['$rootScope', '$injector', function($rootScope, $injector) {
         var appServices = {
+            showMsgBox: function(msg, type) {
+                var alert = $('#primary-alert');
+                if (alert.length > 0) {
+                    alert.remove();
+                }
+                alert = $(document.createElement('div'));
+                var button = $(document.createElement('button'));
+                var span = $(document.createElement('span'));
+                var text = $(document.createTextNode(msg));
+                span.attr({
+                    'aria-hidden': 'true'
+                }).html('&times;');
+                button.attr({
+                    'type': 'button',
+                    'class': 'close',
+                    'data-dismiss': 'alert',
+                    'aria-label': 'Close'
+                }).append(span);
+                alert.attr({
+                    'class': 'alert alert-'+type+' alert-dismissible',
+                    'role': 'alert',
+                    'id': 'primary-alert'
+                }).append(button, text);
+                var h1 = $('h1');
+                if (h1.length) {
+                    h1.first().after(alert);
+                }
+            },
+            alert: function(msg) {
+                this.showMsgBox(msg, 'warning');
+            },
+            success: function(msg) {
+                this.showMsgBox(msg, 'success');
+            },
+            error: function(msg) {
+                this.showMsgBox(msg, 'danger');
+            },
+            httpError: function() {
+                appServices.error('Error communicating with the server. Please check your network connection and try again.');
+            },
+            handleGenericErrors: function(data, cbOk, cbInvalidParams, cbUnhandledError) {
+                if (typeof data == 'undefined' || data === null) {
+                    appServices.error('Invalid response from server. Please check your entries and try again.');
+                } else if (data.error == ERROR.OK) {
+                    if (cbOk) cbOk(data);
+                } else if (data.error == ERROR.OBJECT_LOOKUP_ERROR) {
+                    appServices.error('The object you tried to update or assign does not exist.');
+                } else if (data.error == ERROR.PERMISSION_DENIED) {
+                    appServices.error('You don\'t have permission to perform the requested action.');
+                } else if (data.error == ERROR.AUTH_REQUIRED) {
+                    appServices.error('You\'re not authenticated. Please log in again.');
+                } else if (data.error == ERROR.INVALID_INPUT_PARAMETERS) {
+                    if (cbInvalidParams) cbInvalidParams(data.fieldErrors);
+                } else {
+                    if (cbUnhandledError) cbUnhandledError(data.error);
+                }
+            },
+            post: function(rs, payload, cbOk, cbInvalidParams, cbUnhandledError) {
+                var $http = $injector.get('$http');
+                $http.post(rs, payload).success(function(data) {
+                    appServices.handleGenericErrors(data, cbOk, cbInvalidParams, cbUnhandledError);
+                }).error(appServices.httpError);
+            },
             clone: function(obj) {
                 return $.extend(true, {}, obj);
             },
