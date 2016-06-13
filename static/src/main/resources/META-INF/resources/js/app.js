@@ -17,6 +17,11 @@ define(['angular-route-resolver'], function(moment) {
 
     .factory('appServices', ['$rootScope', '$injector', function($rootScope, $injector) {
         var appServices = {
+            focus: function(selector) {
+                window.setTimeout(function() {
+                    $(selector).first().focus();
+                }, 100);
+            },
             showMsgBox: function(msg, type) {
                 var alert = $('#primary-alert');
                 if (alert.length > 0) {

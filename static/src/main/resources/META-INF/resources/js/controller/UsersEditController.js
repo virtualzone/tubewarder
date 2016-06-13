@@ -21,6 +21,11 @@ define(['angular', 'app'], function(angular, app) {
         $scope.isRequirePassword = function() {
 		    return ($scope.model.changePassword) || ($scope.model.id === '');
 		};
+
+        $scope.onUsernameChange = function(form) {
+			form.username.$setValidity('invalid', true);
+			form.username.$validate();
+		};
         
         $scope.submit = function(form) {
             appServices.setLoading(true);
@@ -39,9 +44,21 @@ define(['angular', 'app'], function(angular, app) {
                     allowLogs: $scope.model.allowLogs
                 }
             };
-            $http.post('/rs/user/set', payload).success(function(data) {
-                $location.path('/users');
-            });
+            appServices.post('/rs/user/set', payload,
+                function(data) {
+                    $location.path('/users');
+                },
+                function(fieldErrors) {
+                    if (fieldErrors.username) {
+                        form.username.$setValidity('invalid', false);
+                        appServices.focus('#username');
+                        if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS)) {
+                            appServices.error('Username already exists');
+                        }
+                    }
+                    appServices.setLoading(false);
+                }
+            );
 		};
         
         if ($routeParams.id) {
