@@ -30,10 +30,11 @@ public class TestSendServiceCommon {
         return token;
     }
 
-    public Channel createChannel(String name) {
+    public Channel createChannel(String name, UserGroup group) {
         JSONObject config = getSysoutChannelConfigJson();
 
         Channel channel = new Channel();
+        channel.setUserGroup(group);
         channel.setName(name);
         channel.setRewriteRecipientName("${recipientName}");
         channel.setRewriteRecipientAddress("${recipientAddress}");
@@ -44,6 +45,10 @@ public class TestSendServiceCommon {
         return channel;
     }
 
+    public Channel createChannel(String name) {
+        return createChannel(name, null);
+    }
+
     public JSONObject getSysoutChannelConfigJson() {
         JSONObject config = new JSONObject();
         config.put("id", "SYSOUT");
@@ -52,13 +57,22 @@ public class TestSendServiceCommon {
         return config;
     }
 
+    public Channel createChannel(UserGroup group) {
+        return createChannel("sms", group);
+    }
+
     public Channel createChannel() {
-        return createChannel("sms");
+        return createChannel("sms", null);
     }
 
     public Template createTemplate() {
+        return createTemplate(null);
+    }
+
+    public Template createTemplate(UserGroup group) {
         Template template = new Template();
         template.setName("DOI");
+        template.setUserGroup(group);
         getTemplateDao().store(template);
         return template;
     }

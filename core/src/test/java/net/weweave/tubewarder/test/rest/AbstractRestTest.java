@@ -3,7 +3,9 @@ package net.weweave.tubewarder.test.rest;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.specification.ResponseSpecification;
 import net.weweave.tubewarder.dao.UserDao;
+import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.User;
+import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.test.AbstractServiceTest;
 import net.weweave.tubewarder.test.DbTestAssist;
 import org.apache.http.HttpStatus;
@@ -27,6 +29,9 @@ import static com.jayway.restassured.RestAssured.given;
 public abstract class AbstractRestTest extends AbstractServiceTest {
     @Inject
     private UserDao userDao;
+
+    @Inject
+    private UserGroupDao userGroupDao;
 
     protected ResponseSpecification getResponseSpecificationGet(String var1, Object var2, Object... var3) {
         ResponseSpecification response = given()
@@ -90,6 +95,14 @@ public abstract class AbstractRestTest extends AbstractServiceTest {
         return user;
     }
 
+    protected UserGroup createUserGroupAndAssignUser(User user) {
+        UserGroup group = new UserGroup();
+        group.setName("g1");
+        group.getMembers().add(user);
+        getUserGroupDao().store(group);
+        return group;
+    }
+
     protected User createUserWithNoRights(String username, String displayName, String password) {
         User user = new User();
         user.setUsername(username);
@@ -142,5 +155,13 @@ public abstract class AbstractRestTest extends AbstractServiceTest {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

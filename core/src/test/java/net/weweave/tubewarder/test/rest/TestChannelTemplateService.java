@@ -330,14 +330,6 @@ public class TestChannelTemplateService extends AbstractRestTest {
                 "channelTemplates[1].channel.id", equalTo(channelId2));
     }
 
-    private UserGroup createUserGroupAndAssignUser(User user) {
-        UserGroup group = new UserGroup();
-        group.setName("g1");
-        group.getMembers().add(user);
-        getUserGroupDao().store(group);
-        return group;
-    }
-
     private String createChannelGetId(String token, String name, UserGroup group) {
         JSONObject groupJson = new JSONObject();
         groupJson.put("id", group.getExposableId());

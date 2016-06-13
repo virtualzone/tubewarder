@@ -40,7 +40,7 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
             User object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -60,16 +60,18 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
 
     @Override
     protected void validateInputParameters(UserModel model) throws InvalidInputParametersException {
-        if (GenericValidator.isBlankOrNull(model.username) ||
-                GenericValidator.isBlankOrNull(model.displayName)) {
-            throw new InvalidInputParametersException();
+        if (GenericValidator.isBlankOrNull(model.username)) {
+            throw new InvalidInputParametersException("username", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(model.displayName)) {
+            throw new InvalidInputParametersException("displayName", ErrorCode.FIELD_REQUIRED);
         }
 
         // Check if object is to be created, but username already exists
         if (GenericValidator.isBlankOrNull(model.id)) {
             try {
                 getObjectDao().getByUsername(model.username);
-                throw new InvalidInputParametersException();
+                throw new InvalidInputParametersException("username", ErrorCode.FIELD_NAME_ALREADY_EXISTS);
             } catch (ObjectNotFoundException e) {
                 // This is okay
             }
@@ -81,7 +83,7 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
                 User user = getObjectDao().getByUsername(model.username);
                 // Match found - okay if it's the object to be updated itself
                 if (!model.id.equals(user.getExposableId())) {
-                    throw new InvalidInputParametersException();
+                    throw new InvalidInputParametersException("username", ErrorCode.FIELD_NAME_ALREADY_EXISTS);
                 }
             } catch (ObjectNotFoundException e) {
                 // This is okay

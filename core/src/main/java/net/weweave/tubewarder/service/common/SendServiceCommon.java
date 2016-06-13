@@ -14,6 +14,7 @@ import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.KeyValueModel;
 import net.weweave.tubewarder.service.model.SendModel;
 import net.weweave.tubewarder.service.response.SendServiceResponse;
+import net.weweave.tubewarder.service.rest.AbstractService;
 import net.weweave.tubewarder.util.SystemIdentifier;
 import net.weweave.tubewarder.util.TemplateRenderer;
 import org.apache.commons.validator.GenericValidator;
@@ -26,7 +27,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Stateless
-public class SendServiceCommon {
+public class SendServiceCommon extends AbstractService {
     private static final Logger LOG = Logger.getLogger(SendServiceCommon.class.getName());
 
     @Inject
@@ -61,7 +62,7 @@ public class SendServiceCommon {
             checkPermission(sendModel);
             renderAndSend(sendModel, response);
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -76,12 +77,20 @@ public class SendServiceCommon {
     }
 
     private void validateInputParameters(SendModel sendModel) throws InvalidInputParametersException {
-        if (GenericValidator.isBlankOrNull(sendModel.template) ||
-                GenericValidator.isBlankOrNull(sendModel.channel) ||
-                sendModel.recipient == null ||
-                GenericValidator.isBlankOrNull(sendModel.recipient.address) ||
-                GenericValidator.isBlankOrNull(sendModel.token)) {
-            throw new InvalidInputParametersException();
+        if (GenericValidator.isBlankOrNull(sendModel.template)) {
+            throw new InvalidInputParametersException("template", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(sendModel.channel)) {
+            throw new InvalidInputParametersException("channel", ErrorCode.FIELD_REQUIRED);
+        }
+        if (sendModel.recipient == null) {
+            throw new InvalidInputParametersException("recipient", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(sendModel.recipient.address)) {
+            throw new InvalidInputParametersException("recipient.address", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(sendModel.token)) {
+            throw new InvalidInputParametersException("token", ErrorCode.FIELD_REQUIRED);
         }
     }
 

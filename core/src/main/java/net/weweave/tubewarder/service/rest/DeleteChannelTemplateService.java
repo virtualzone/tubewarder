@@ -46,7 +46,7 @@ public class DeleteChannelTemplateService extends AbstractService {
             validateInputParameters(request);
             deleteObject(session.getUser(), request.id);
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -66,7 +66,7 @@ public class DeleteChannelTemplateService extends AbstractService {
 
     private void validateInputParameters(AbstractIdRestRequest request) throws InvalidInputParametersException {
         if (GenericValidator.isBlankOrNull(request.id)) {
-            throw new InvalidInputParametersException();
+            throw new InvalidInputParametersException("id", ErrorCode.FIELD_REQUIRED);
         }
     }
 

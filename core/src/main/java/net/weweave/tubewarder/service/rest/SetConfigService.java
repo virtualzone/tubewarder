@@ -41,7 +41,7 @@ public class SetConfigService extends AbstractService {
             validateInputParameters(request.items);
             setValues(request.items);
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -62,7 +62,7 @@ public class SetConfigService extends AbstractService {
     private void validateInputParameters(List<ConfigItemModel> items) throws InvalidInputParametersException {
         for (ConfigItemModel model : items) {
             if (GenericValidator.isBlankOrNull(model.key)) {
-                throw new InvalidInputParametersException();
+                throw new InvalidInputParametersException(model.key, ErrorCode.FIELD_REQUIRED);
             }
         }
     }

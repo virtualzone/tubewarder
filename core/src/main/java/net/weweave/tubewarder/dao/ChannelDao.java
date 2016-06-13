@@ -7,6 +7,7 @@ import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -24,6 +25,9 @@ public class ChannelDao extends AbstractDao<Channel> {
     }
 
     public List<Long> getChannelIdsWithGroups(List<Long> groupIds) {
+        if (groupIds == null || groupIds.isEmpty()) {
+            return new ArrayList<>();
+        }
         TypedQuery<Long> query = getEntityManager().createQuery("SELECT c.id FROM Channel c " +
                 "WHERE c.userGroup.id IN :groupIds", Long.class);
         query.setParameter("groupIds", groupIds);

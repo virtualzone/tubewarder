@@ -263,14 +263,6 @@ public class TestChannelService extends AbstractRestTest {
         return object;
     }
 
-    private UserGroup createUserGroupAndAssignUser(User user) {
-        UserGroup group = new UserGroup();
-        group.setName("g1");
-        group.getMembers().add(user);
-        getUserGroupDao().store(group);
-        return group;
-    }
-
     private JSONObject validateSetChannelResponse(String token, String id, String name, String groupId, Object... body) {
         JSONObject payload = getSetRequestPayload(token, id, name, groupId);
         ResponseSpecification response = getResponseSpecificationPost(payload);

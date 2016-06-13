@@ -49,6 +49,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link AbstractResponse.FieldErrors }
+     * 
+     */
+    public AbstractResponse.FieldErrors createAbstractResponseFieldErrors() {
+        return new AbstractResponse.FieldErrors();
+    }
+
+    /**
      * Create an instance of {@link AttachmentModel }
      * 
      */
@@ -102,6 +110,22 @@ public class ObjectFactory {
      */
     public Send createSend() {
         return new Send();
+    }
+
+    /**
+     * Create an instance of {@link ArrayList }
+     * 
+     */
+    public ArrayList createArrayList() {
+        return new ArrayList();
+    }
+
+    /**
+     * Create an instance of {@link AbstractResponse.FieldErrors.Entry }
+     * 
+     */
+    public AbstractResponse.FieldErrors.Entry createAbstractResponseFieldErrorsEntry() {
+        return new AbstractResponse.FieldErrors.Entry();
     }
 
     /**

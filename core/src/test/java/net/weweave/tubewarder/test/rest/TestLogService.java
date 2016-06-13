@@ -1,9 +1,7 @@
 package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
-import net.weweave.tubewarder.domain.AppToken;
-import net.weweave.tubewarder.domain.Channel;
-import net.weweave.tubewarder.domain.Template;
+import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.test.TestSendServiceCommon;
 import net.weweave.tubewarder.util.DateTimeFormat;
@@ -51,10 +49,11 @@ public class TestLogService extends AbstractRestTest {
 
     @Test
     public void testThreeEntries() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        SendEssentials sendEssentials = new SendEssentials();
+        SendEssentials sendEssentials = new SendEssentials(group);
         send(sendEssentials, "DOI", "some more details 1");
         send(sendEssentials, "DOI", "some more details 2");
         send(sendEssentials, "DOI 2.0", "some more details 3");
@@ -119,10 +118,11 @@ public class TestLogService extends AbstractRestTest {
 
     @Test
     public void testGetLogDetails() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        SendEssentials sendEssentials = new SendEssentials();
+        SendEssentials sendEssentials = new SendEssentials(group);
         send(sendEssentials, "DOI", "some more details 1");
 
         Calendar startDate = Calendar.getInstance();
@@ -147,10 +147,11 @@ public class TestLogService extends AbstractRestTest {
 
     @Test
     public void testKeywordFilter() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        SendEssentials sendEssentials = new SendEssentials();
+        SendEssentials sendEssentials = new SendEssentials(group);
         send(sendEssentials, "DOI", "some more details 1");
         send(sendEssentials, "DOI", "some more details 2");
         send(sendEssentials, "DOI 2.0", "some more details 3");
@@ -173,10 +174,11 @@ public class TestLogService extends AbstractRestTest {
 
     @Test
     public void testDetailsFilter() {
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
-        SendEssentials sendEssentials = new SendEssentials();
+        SendEssentials sendEssentials = new SendEssentials(group);
         send(sendEssentials, "DOI", "some more details 1");
         send(sendEssentials, "DOI", "some more details 2");
         send(sendEssentials, "DOI 2.0", "some more details 3");
@@ -205,11 +207,12 @@ public class TestLogService extends AbstractRestTest {
 
     @Test
     public void testDateRange() throws InterruptedException{
-        createAdminUser();
+        User user = createAdminUser();
+        UserGroup group = createUserGroupAndAssignUser(user);
         String token = authAdminGetToken();
 
 
-        SendEssentials sendEssentials = new SendEssentials();
+        SendEssentials sendEssentials = new SendEssentials(group);
         send(sendEssentials, "DOI1", "some more details 1");
 
         Calendar startDate = Calendar.getInstance();
@@ -314,9 +317,13 @@ public class TestLogService extends AbstractRestTest {
         public final Template template;
 
         public SendEssentials() {
+            this(null);
+        }
+
+        public SendEssentials(UserGroup group) {
             token = getCommon().createAppToken();
-            channel = getCommon().createChannel();
-            template = getCommon().createTemplate();
+            channel = getCommon().createChannel(group);
+            template = getCommon().createTemplate(group);
             getCommon().createChannelTemplate(template, channel,
                     "Welcome to Tubewarder, ${firstname}!",
                     "Hi ${firstname} ${lastname}, here is your activation code: ${code}");

@@ -42,7 +42,7 @@ public class AddUserToGroupService extends AbstractService {
             validateInputParameters(request);
             addUserToGroup(request.userId, request.groupId);
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -61,9 +61,11 @@ public class AddUserToGroupService extends AbstractService {
     }
 
     private void validateInputParameters(UserGroupIdRestRequest request) throws InvalidInputParametersException {
-        if (GenericValidator.isBlankOrNull(request.userId) ||
-                GenericValidator.isBlankOrNull(request.groupId)) {
-            throw new InvalidInputParametersException();
+        if (GenericValidator.isBlankOrNull(request.userId)) {
+            throw new InvalidInputParametersException("userId", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(request.groupId)) {
+            throw new InvalidInputParametersException("groupId", ErrorCode.FIELD_REQUIRED);
         }
     }
 

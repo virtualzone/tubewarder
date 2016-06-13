@@ -40,7 +40,7 @@ public class SetAppTokenService extends AbstractSetObjectService<AppTokenModel, 
             AppToken object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -61,7 +61,7 @@ public class SetAppTokenService extends AbstractSetObjectService<AppTokenModel, 
     @Override
     protected void validateInputParameters(AppTokenModel model) throws InvalidInputParametersException {
         if (GenericValidator.isBlankOrNull(model.name)) {
-            throw new InvalidInputParametersException();
+            throw new InvalidInputParametersException("name", ErrorCode.FIELD_REQUIRED);
         }
     }
 

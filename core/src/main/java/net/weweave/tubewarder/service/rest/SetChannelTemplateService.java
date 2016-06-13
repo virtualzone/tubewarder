@@ -51,7 +51,7 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
             ChannelTemplate object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -84,19 +84,27 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
 
     @Override
     protected void validateInputParameters(ChannelTemplateModel model) throws InvalidInputParametersException {
-        if (model.template == null ||
-                GenericValidator.isBlankOrNull(model.template.id) ||
-                model.channel == null ||
-                GenericValidator.isBlankOrNull(model.channel.id) ||
-                GenericValidator.isBlankOrNull(model.content)) {
-            throw new InvalidInputParametersException();
+        if (model.template == null) {
+            throw new InvalidInputParametersException("template", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(model.template.id)) {
+            throw new InvalidInputParametersException("template.id", ErrorCode.FIELD_REQUIRED);
+        }
+        if (model.channel == null) {
+            throw new InvalidInputParametersException("channel", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(model.channel.id)) {
+            throw new InvalidInputParametersException("channel.id", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(model.content)) {
+            throw new InvalidInputParametersException("content", ErrorCode.FIELD_REQUIRED);
         }
 
         // Check if object is to be created, but channel/template combination already exists
         if (GenericValidator.isBlankOrNull(model.id)) {
             try {
                 getObjectDao().getChannelTemplateById(model.template.id, model.channel.id);
-                throw new InvalidInputParametersException();
+                throw new InvalidInputParametersException("model.channel.id", ErrorCode.FIELD_INVALID);
             } catch (ObjectNotFoundException e) {
                 // This is okay
             }
@@ -108,7 +116,7 @@ public class SetChannelTemplateService extends AbstractSetObjectService<ChannelT
                 ChannelTemplate channelTemplate = getObjectDao().getChannelTemplateById(model.template.id, model.channel.id);
                 // Match found - okay if it's the object to be updated itself
                 if (!model.id.equals(channelTemplate.getExposableId())) {
-                    throw new InvalidInputParametersException();
+                    throw new InvalidInputParametersException("model.channel.id", ErrorCode.FIELD_INVALID);
                 }
             } catch (ObjectNotFoundException e) {
                 // This is okay

@@ -6,6 +6,7 @@ import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -23,6 +24,9 @@ public class TemplateDao extends AbstractDao<Template> {
     }
 
     public List<Long> getTemplateIdsWithGroups(List<Long> groupIds) {
+        if (groupIds == null || groupIds.isEmpty()) {
+            return new ArrayList<>();
+        }
         TypedQuery<Long> query = getEntityManager().createQuery("SELECT t.id FROM Template t " +
                 "WHERE t.userGroup.id IN :groupIds", Long.class);
         query.setParameter("groupIds", groupIds);

@@ -52,7 +52,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
             Channel object = createUpdateObject(request.object);
             response.id = object.getExposableId();
         } catch (InvalidInputParametersException e) {
-            response.error = ErrorCode.INVALID_INPUT_PARAMETERS;
+            addErrorsToResponse(response, e);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;
         } catch (PermissionException e) {
@@ -82,19 +82,27 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
 
     @Override
     protected void validateInputParameters(ChannelModel model) throws InvalidInputParametersException {
-        if (GenericValidator.isBlankOrNull(model.name) ||
-                model.config == null ||
-                model.group == null ||
-                GenericValidator.isBlankOrNull(model.group.id) ||
-                !getOutputHandlerFactory().isValidId(model.config)) {
-            throw new InvalidInputParametersException();
+        if (GenericValidator.isBlankOrNull(model.name)) {
+            throw new InvalidInputParametersException("name", ErrorCode.FIELD_REQUIRED);
+        }
+        if (model.config == null) {
+            throw new InvalidInputParametersException("config", ErrorCode.FIELD_REQUIRED);
+        }
+        if (model.group == null) {
+            throw new InvalidInputParametersException("group", ErrorCode.FIELD_REQUIRED);
+        }
+        if (GenericValidator.isBlankOrNull(model.group.id)) {
+            throw new InvalidInputParametersException("group.id", ErrorCode.FIELD_REQUIRED);
+        }
+        if (!getOutputHandlerFactory().isValidId(model.config)) {
+            throw new InvalidInputParametersException("config", ErrorCode.FIELD_INVALID);
         }
 
         // Check if object is to be created, but name already exists
         if (GenericValidator.isBlankOrNull(model.id)) {
             try {
                 getObjectDao().getByName(model.name);
-                throw new InvalidInputParametersException();
+                throw new InvalidInputParametersException("name", ErrorCode.FIELD_NAME_ALREADY_EXISTS);
             } catch (ObjectNotFoundException e) {
                 // This is okay
             }
@@ -106,7 +114,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
                 Channel channel = getObjectDao().getByName(model.name);
                 // Match found - okay if it's the object to be updated itself
                 if (!model.id.equals(channel.getExposableId())) {
-                    throw new InvalidInputParametersException();
+                    throw new InvalidInputParametersException("name", ErrorCode.FIELD_NAME_ALREADY_EXISTS);
                 }
             } catch (ObjectNotFoundException e) {
                 // This is okay

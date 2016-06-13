@@ -7,6 +7,7 @@ import org.apache.commons.validator.GenericValidator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +36,15 @@ public class LogDao extends AbstractDao<Log> {
         List<Long> templateIds = getTemplateDao().getTemplateIdsWithGroups(groupMembershipIds);
         List<Long> channelIds = getChannelDao().getChannelIdsWithGroups(groupMembershipIds);
 
+        // If channelIds or templateIds is empty, no access to logs is possible
+        // To avoid JPQL Exception, return empty list instantly
+        if (channelIds == null ||
+                templateIds == null ||
+                channelIds.isEmpty() ||
+                templateIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         if (firstResult < 0) {
             firstResult = 0;
         }
@@ -43,7 +53,7 @@ public class LogDao extends AbstractDao<Log> {
         }
         TypedQuery<Log> query = getEntityManager().createQuery("SELECT l FROM Log l " +
                 "WHERE l.date >= :startDate AND l.date <= :endDate " +
-                "AND  l.channelIdInt IN :channelIds " +
+                "AND l.channelIdInt IN :channelIds " +
                 "AND l.templateIdInt IN :templateIds " +
                 (GenericValidator.isBlankOrNull(keyword) ? "" : "AND l.keyword = :keyword ") +
                 (GenericValidator.isBlankOrNull(searchString) ? "" : "AND (l.subject LIKE :searchString OR l.content LIKE :searchString OR l.recipientName LIKE :searchString OR l.recipientAddress LIKE :searchString OR l.details LIKE :searchString) ") +
