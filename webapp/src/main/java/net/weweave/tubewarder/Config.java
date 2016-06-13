@@ -69,15 +69,15 @@ public class Config extends Properties {
         if ("mysql".equals(getDb())) {
             System.out.println("--> mysql.path = " + getMySqlPath());
             System.out.println("--> mysql.username = " + getMySqlUser());
-            System.out.println("--> mysql.password = " + getMySqlPass());
+            System.out.println("--> mysql.password = ******");
         } else if ("h2".equals(getDb())) {
             System.out.println("--> h2.path = " + getH2Path());
             System.out.println("--> h2.username = " + getH2User());
-            System.out.println("--> h2.password = " + getH2Pass());
+            System.out.println("--> h2.password = ******");
         } else if ("postgresql".equals(getDb())) {
             System.out.println("--> postgresql.path = " + getPostgreSqlPath());
             System.out.println("--> postgresql.username = " + getPostgreSqlUser());
-            System.out.println("--> postgresql.password = " + getPostgreSqlPass());
+            System.out.println("--> postgresql.password = ******");
         }
     }
 }
