@@ -9,6 +9,11 @@ define(['angular', 'app'], function(angular, app) {
             name: ''
         };
 
+        $scope.onNameChange = function(form) {
+			form.name.$setValidity('invalid', true);
+			form.name.$validate();
+		};
+
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {
@@ -18,9 +23,21 @@ define(['angular', 'app'], function(angular, app) {
                     name: $scope.model.name
                 }
             };
-            $http.post('/rs/apptoken/set', payload).success(function(data) {
-                $location.path('/tokens');
-            });
+            appServices.post('/rs/apptoken/set', payload,
+                function(data) {
+                    $location.path('/tokens');
+                },
+                function(fieldErrors) {
+                    if (fieldErrors.name) {
+                        form.name.$setValidity('invalid', false);
+                        appServices.focus('#name');
+                        if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name)) {
+                            appServices.error('Name is required');
+                        }
+                    }
+                    appServices.setLoading(false);
+                }
+            );
 		};
         
         if ($routeParams.id) {
