@@ -67,6 +67,11 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
             throw new InvalidInputParametersException("displayName", ErrorCode.FIELD_REQUIRED);
         }
 
+        // Password is required if user is to be created
+        if (GenericValidator.isBlankOrNull(model.id) && GenericValidator.isBlankOrNull(model.password)) {
+            throw new InvalidInputParametersException("password", ErrorCode.FIELD_REQUIRED);
+        }
+
         // Check if object is to be created, but username already exists
         if (GenericValidator.isBlankOrNull(model.id)) {
             try {
@@ -94,15 +99,15 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
     @Override
     protected User createObject(UserModel model) throws ObjectNotFoundException {
         User object = new User();
-        object.setUsername(model.username);
+        object.setUsername(model.username.trim());
         getObjectDao().store(object);
         return object;
     }
 
     @Override
     protected void updateObject(User object, UserModel model) throws ObjectNotFoundException {
-        object.setUsername(model.username);
-        object.setDisplayName(model.displayName);
+        object.setUsername(model.username.trim());
+        object.setDisplayName(model.displayName.trim());
         if (!GenericValidator.isBlankOrNull(model.password)) {
             object.setHashedPassword(BCrypt.hashpw(model.password, BCrypt.gensalt()));
         }

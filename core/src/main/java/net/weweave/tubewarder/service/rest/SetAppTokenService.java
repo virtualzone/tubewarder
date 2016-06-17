@@ -74,7 +74,7 @@ public class SetAppTokenService extends AbstractSetObjectService<AppTokenModel, 
 
     @Override
     protected void updateObject(AppToken object, AppTokenModel model) throws ObjectNotFoundException {
-        object.setName(model.name);
+        object.setName(model.name.trim());
         getObjectDao().update(object);
     }
 

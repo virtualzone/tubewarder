@@ -142,7 +142,7 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         String configJson = OutputHandlerConfigUtil.configMapToJsonString(model.config);
         UserGroup group = getUserGroupDao().get(model.group.id);
 
-        object.setName(model.name);
+        object.setName(model.name.trim());
         object.setUserGroup(group);
         object.setRewriteRecipientName(model.rewriteRecipientName);
         object.setRewriteRecipientAddress(model.rewriteRecipientAddress);

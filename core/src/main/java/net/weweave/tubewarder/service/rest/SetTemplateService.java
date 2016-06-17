@@ -120,7 +120,7 @@ public class SetTemplateService extends AbstractSetObjectService<TemplateModel, 
     protected void updateObject(Template object, TemplateModel model) throws ObjectNotFoundException {
         UserGroup group = getUserGroupDao().get(model.group.id);
 
-        object.setName(model.name);
+        object.setName(model.name.trim());
         object.setUserGroup(group);
         getObjectDao().update(object);
     }

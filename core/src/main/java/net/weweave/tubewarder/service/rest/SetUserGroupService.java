@@ -92,7 +92,7 @@ public class SetUserGroupService extends AbstractSetObjectService<UserGroupModel
     @Override
     protected UserGroup createObject(UserGroupModel model) throws ObjectNotFoundException {
         UserGroup object = new UserGroup();
-        object.setName(model.name);
+        object.setName(model.name.trim());
         getObjectDao().store(object);
         return object;
     }
