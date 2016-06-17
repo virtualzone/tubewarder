@@ -83,6 +83,11 @@ define(['angular', 'app'], function(angular, app) {
                 option.value = config[option.id];
             }
         };
+
+        $scope.onNameChange = function(form) {
+			form.name.$setValidity('invalid', true);
+			form.name.$validate();
+		};
         
         $scope.submit = function(form) {
             appServices.setLoading(true);
@@ -101,9 +106,23 @@ define(['angular', 'app'], function(angular, app) {
                     config: getConfig()
                 }
             };
-            $http.post('/rs/channel/set', payload).success(function(data) {
-                $location.path('/channels');
-            });
+            appServices.post('/rs/channel/set', payload,
+                function(data) {
+                    $location.path('/channels');
+                },
+                function(fieldErrors) {
+                    if (fieldErrors.name) {
+                        form.name.$setValidity('invalid', false);
+                        appServices.focus('#name');
+                        if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors.name) !== -1) {
+                            appServices.error('Name already exists');
+                        } else if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name) !== -1) {
+                            appServices.error('Name is required');
+                        }
+                    }
+                    appServices.setLoading(false);
+                }
+            );
 		};
         
         var load = function() {

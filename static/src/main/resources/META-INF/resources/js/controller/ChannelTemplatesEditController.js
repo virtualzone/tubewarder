@@ -17,6 +17,11 @@ define(['angular', 'app'], function(angular, app) {
         $scope.channels = [];
         $scope.channelTemplates = [];
 
+        $scope.onChannelChange = function(form) {
+			form.channel.$setValidity('invalid', true);
+			form.channel.$validate();
+		};
+
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {
@@ -35,9 +40,21 @@ define(['angular', 'app'], function(angular, app) {
                     senderName: $scope.model.senderName
                 }
             };
-            $http.post('/rs/channeltemplate/set', payload).success(function(data) {
-                $location.path('/templates/edit/' + $routeParams.templateId);
-            });
+            appServices.post('/rs/channeltemplate/set', payload,
+                function(data) {
+                    $location.path('/templates/edit/' + $routeParams.templateId);
+                },
+                function(fieldErrors) {
+                    if (fieldErrors.channel) {
+                        form.channel.$setValidity('invalid', false);
+                        appServices.focus('#channel');
+                        if ($.inArray(appServices.getErrors().FIELD_INVALID, fieldErrors.name) !== -1) {
+                            appServices.error('This template is already assigned to the selected channel');
+                        }
+                    }
+                    appServices.setLoading(false);
+                }
+            );
 		};
         
         // Requires $scope.channels and $scope.channelTemplates to be both loaded

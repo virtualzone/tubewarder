@@ -9,6 +9,11 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
             name: '',
             members: []
         };
+
+        $scope.onNameChange = function(form) {
+			form.name.$setValidity('invalid', true);
+			form.name.$validate();
+		};
         
         $scope.submit = function(form) {
             appServices.setLoading(true);
@@ -19,9 +24,23 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
                     name: $scope.model.name
                 }
             };
-            $http.post('/rs/group/set', payload).success(function(data) {
-                $location.path('/groups');
-            });
+            appServices.post('/rs/group/set', payload,
+                function(data) {
+                    $location.path('/groups');
+                },
+                function(fieldErrors) {
+                    if (fieldErrors.name) {
+                        form.name.$setValidity('invalid', false);
+                        appServices.focus('#name');
+                        if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors.name) !== -1) {
+                            appServices.error('Name already exists');
+                        } else if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name) !== -1) {
+                            appServices.error('Name is required');
+                        }
+                    }
+                    appServices.setLoading(false);
+                }
+            );
 		};
         
         var load = function() {

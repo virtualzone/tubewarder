@@ -12,6 +12,11 @@ define(['angular', 'app'], function(angular, app) {
         };
         $scope.groups = [];
 
+        $scope.onNameChange = function(form) {
+			form.name.$setValidity('invalid', true);
+			form.name.$validate();
+		};
+
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {
@@ -24,9 +29,26 @@ define(['angular', 'app'], function(angular, app) {
                     }
                 }
             };
-            $http.post('/rs/template/set', payload).success(function(data) {
-                $location.path('/templates');
-            });
+            appServices.post('/rs/template/set', payload,
+                function(data) {
+                    $location.path('/templates');
+                },
+                function(fieldErrors) {
+                    if (fieldErrors.name) {
+                        form.name.$setValidity('invalid', false);
+                        appServices.focus('#name');
+                        console.log('---> ' +JSON.stringify(fieldErrors.name));
+                        if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors.name) !== -1) {
+                            console.log('---> #1');
+                            appServices.error('Name already exists');
+                        } else if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name) !== -1) {
+                            console.log('---> #2');
+                            appServices.error('Name is required');
+                        }
+                    }
+                    appServices.setLoading(false);
+                }
+            );
 		};
         
         var loadGroups = function(cb) {

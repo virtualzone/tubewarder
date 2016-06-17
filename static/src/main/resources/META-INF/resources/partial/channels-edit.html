@@ -5,7 +5,7 @@
             <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
                 <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
                     <label for="name">Unique Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Channel name" data-ng-model="model.name" autofocus="autofocus" required="required" />
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Channel name" data-ng-model="model.name" autofocus="autofocus" required="required" data-ng-change="onNameChange(form)" />
                 </div>
                 <div class="form-group" data-ng-class="{'has-error has-feedback': form.group.$dirty && form.group.$invalid}">
                     <label for="group">Group</label>

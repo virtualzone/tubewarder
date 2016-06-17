@@ -88,11 +88,8 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         if (model.config == null) {
             throw new InvalidInputParametersException("config", ErrorCode.FIELD_REQUIRED);
         }
-        if (model.group == null) {
+        if (model.group == null || GenericValidator.isBlankOrNull(model.group.id)) {
             throw new InvalidInputParametersException("group", ErrorCode.FIELD_REQUIRED);
-        }
-        if (GenericValidator.isBlankOrNull(model.group.id)) {
-            throw new InvalidInputParametersException("group.id", ErrorCode.FIELD_REQUIRED);
         }
         if (!getOutputHandlerFactory().isValidId(model.config)) {
             throw new InvalidInputParametersException("config", ErrorCode.FIELD_INVALID);

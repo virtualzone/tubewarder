@@ -78,11 +78,8 @@ public class SetTemplateService extends AbstractSetObjectService<TemplateModel, 
         if (GenericValidator.isBlankOrNull(model.name)) {
             throw new InvalidInputParametersException("name", ErrorCode.FIELD_REQUIRED);
         }
-        if (model.group == null) {
+        if (model.group == null || GenericValidator.isBlankOrNull(model.group.id)) {
             throw new InvalidInputParametersException("group", ErrorCode.FIELD_REQUIRED);
-        }
-        if (GenericValidator.isBlankOrNull(model.group.id)) {
-            throw new InvalidInputParametersException("group.id", ErrorCode.FIELD_REQUIRED);
         }
 
         // Check if object is to be created, but name already exists

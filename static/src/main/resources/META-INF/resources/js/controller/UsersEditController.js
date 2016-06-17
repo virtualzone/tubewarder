@@ -52,7 +52,7 @@ define(['angular', 'app'], function(angular, app) {
                     if (fieldErrors.username) {
                         form.username.$setValidity('invalid', false);
                         appServices.focus('#username');
-                        if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors.username)) {
+                        if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors.username) !== -1) {
                             appServices.error('Username already exists');
                         }
                     }

@@ -31,7 +31,7 @@ define(['angular', 'app'], function(angular, app) {
                     if (fieldErrors.name) {
                         form.name.$setValidity('invalid', false);
                         appServices.focus('#name');
-                        if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name)) {
+                        if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name) !== -1) {
                             appServices.error('Name is required');
                         }
                     }
