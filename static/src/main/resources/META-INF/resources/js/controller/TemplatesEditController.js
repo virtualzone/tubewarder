@@ -37,12 +37,9 @@ define(['angular', 'app'], function(angular, app) {
                     if (fieldErrors.name) {
                         form.name.$setValidity('invalid', false);
                         appServices.focus('#name');
-                        console.log('---> ' +JSON.stringify(fieldErrors.name));
                         if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors.name) !== -1) {
-                            console.log('---> #1');
                             appServices.error('Name already exists');
                         } else if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name) !== -1) {
-                            console.log('---> #2');
                             appServices.error('Name is required');
                         }
                     }
