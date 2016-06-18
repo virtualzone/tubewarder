@@ -41,11 +41,14 @@
                 </executions>  
                 <configuration>  
                     <includes>    
-                        <include>target/classes/META-INF/resources/partial/login.html</include>  
-                    </includes>  
-                    <regex>false</regex>    
-                    <token>PROJECT_VERSION</token>    
-                    <value>${project.version}</value>  
+                        <include>${project.build.directory}/classes/META-INF/resources/partial/login.html</include>  
+                    </includes>
+                    <replacements>
+                        <replacement>    
+                            <token>PROJECT_VERSION</token>    
+                            <value>${project.version}</value>
+                        </replacement>
+                    </replacements>
                 </configuration>  
             </plugin>  
             <plugin>
