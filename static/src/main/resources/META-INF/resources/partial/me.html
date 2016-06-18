@@ -1,0 +1,28 @@
+<div class="container main">
+    <div class="row">
+        <div class="col col-md-8">
+            <h1>My Profile</h1>
+            <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.username.$dirty && form.username.$invalid}">
+                    <label for="username">Username</label>
+                    <p class="form-control-static">{{model.username}}</p>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.displayName.$dirty && form.displayName.$invalid}">
+                    <label for="displayName">Display Name</label>
+                    <p class="form-control-static">{{model.displayName}}</p>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="changePassword" name="changePassword" data-ng-model="model.changePassword" />
+                        Change password
+                    </label>
+                </div>
+                <div class="form-group" data-ng-class="{'has-error has-feedback': form.password.$dirty && form.password.$invalid}">
+                    <label for="password">Password</label>
+                    <input class="form-control" id="password" name="password" placeholder="Password" type="password" data-ng-model="model.password" data-ng-required="model.changePassword" data-ng-disabled="!model.changePassword" data-ng-change="resetFormInvalid(form, 'password')" />
+                </div>
+                <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
+            </form>
+        </div>
+    </div>
+</div>

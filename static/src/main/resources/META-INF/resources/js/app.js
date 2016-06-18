@@ -211,6 +211,7 @@ define(['angular-route-resolver'], function(moment) {
             .when('/queue', route.resolve('queue', 'QueueController'))
             .when('/api/test', route.resolve('api-test', 'ApiTestController'))
             .when('/api', {redirectTo: '/api/test'})
+            .when('/me', route.resolve('me', 'MeController'))
             .otherwise({redirectTo: '/home'});
             
         $httpProvider.interceptors.push(['$q', '$injector', '$location', 'appServices', function($q, $injector, $location, appServices) {
