@@ -44,7 +44,7 @@ public class TestUserService extends AbstractRestTest {
         params = createMap(
                 "username", "user1.1",
                 "displayName", "User 1.1",
-                "password", "098765",
+                "password", "123ABCabc",
                 "enabled", true,
                 "allowAppTokens", false,
                 "allowChannels", false,
@@ -247,7 +247,7 @@ public class TestUserService extends AbstractRestTest {
         return createMap(
                 "username", "user1",
                 "displayName", "User 1",
-                "password", "123456",
+                "password", "abcABC12",
                 "enabled", true,
                 "allowAppTokens", true,
                 "allowChannels", true,
