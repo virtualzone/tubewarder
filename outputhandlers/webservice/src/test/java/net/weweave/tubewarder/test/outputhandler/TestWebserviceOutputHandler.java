@@ -3,7 +3,8 @@ package net.weweave.tubewarder.test.outputhandler;
 
 import net.weweave.tubewarder.outputhandler.WebserviceOutputHandler;
 import net.weweave.tubewarder.outputhandler.api.Config;
-import net.weweave.tubewarder.outputhandler.api.InvalidConfigException;
+import net.weweave.tubewarder.outputhandler.api.FieldInvalidException;
+import net.weweave.tubewarder.outputhandler.api.FieldRequiredException;
 import org.junit.Test;
 
 public class TestWebserviceOutputHandler {
@@ -14,7 +15,7 @@ public class TestWebserviceOutputHandler {
         handler.checkConfig(config);
     }
 
-    @Test(expected = InvalidConfigException.class)
+    @Test(expected = FieldRequiredException.class)
     public void testCheckConfigEmptyUrl() throws Exception {
         Config config = getConfig();
         config.put("url", "");
@@ -22,7 +23,7 @@ public class TestWebserviceOutputHandler {
         handler.checkConfig(config);
     }
 
-    @Test(expected = InvalidConfigException.class)
+    @Test(expected = FieldInvalidException.class)
     public void testCheckConfigInvalidUrl() throws Exception {
         Config config = getConfig();
         config.put("url", "missing.protocol/some/url.php?recipient=${recipientAddress}&param2=test");
@@ -46,7 +47,7 @@ public class TestWebserviceOutputHandler {
         handler.checkConfig(config);
     }
 
-    @Test(expected = InvalidConfigException.class)
+    @Test(expected = FieldInvalidException.class)
     public void testCheckConfigInvalidMethod() throws Exception {
         Config config = getConfig();
         config.put("method", "PATCH");
@@ -54,7 +55,7 @@ public class TestWebserviceOutputHandler {
         handler.checkConfig(config);
     }
 
-    @Test(expected = InvalidConfigException.class)
+    @Test(expected = FieldInvalidException.class)
     public void testCheckConfigInvalidAuth() throws Exception {
         Config config = getConfig();
         config.put("authType", "SOMETHING");

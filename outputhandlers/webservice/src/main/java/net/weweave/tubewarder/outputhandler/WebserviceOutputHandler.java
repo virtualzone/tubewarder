@@ -126,16 +126,16 @@ public class WebserviceOutputHandler implements IOutputHandler {
     @Override
     public void checkConfig(Config config) throws InvalidConfigException {
         if (GenericValidator.isBlankOrNull(config.getString("url"))) {
-            throw new InvalidConfigException("URL must not be empty");
+            throw new FieldRequiredException("url");
         }
         if (!isValidUrl(config.getString("url"))) {
-            throw new InvalidConfigException("URL is invalid");
+            throw new FieldInvalidException("url");
         }
         if (!("GET".equals(config.getString("method")) || "POST".equals(config.getString("method")))) {
-            throw new InvalidConfigException("Method is invalid");
+            throw new FieldInvalidException("method");
         }
         if (!("NONE".equals(config.getString("authType")) || "BASIC".equals(config.getString("authType")))) {
-            throw new InvalidConfigException("Authentication is invalid");
+            throw new FieldInvalidException("authType");
         }
     }
 
