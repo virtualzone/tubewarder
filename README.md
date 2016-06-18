@@ -15,7 +15,7 @@ Tubewarder makes sending messages to your users easier than ever:
 
 ![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
 
-Note: Tubewarder is still under active development. The current release is 1.0 Beta 2, which is feature-complete and well tested. However, we're still hunting bugs and improving stability. Use it on your own risk.
+The current release is 1.0 Release Candidate 1 (1.0-RC1), which is feature-complete and well tested. However, we're still hunting final bugs and improving stability. Use it on your own risk.
 
 ## Purpose
 Traditional infrastructures usually look similar to the following diagram: All of your applications have an n:m relationship with all of your outbound messaging services. Besides the vast connectivities, you have lots of duplicated code for logging, archiving, templating, error handling, etc. 
@@ -29,7 +29,7 @@ Introducing Tubewarder as the central system for handling your outgoing messages
 ## Documentation
 You can find the documentation at:
 
-http://tubewarder.readthedocs.org/
+http://tubewarder.readthedocs.io/
 
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications. You don't need an application server - running Tubewarder out-of-the box is easy with Java installed on your server.
@@ -71,7 +71,7 @@ For sending messages, use one of the following URLs:
 ## Configuration
 Most of the configuration can be done using the Web Interface exposed at port 8080. Some configuration options required at startup need to be done using a plain text configuration file called tubewarder.conf in the application's root directory. For more information, please refer to:
 
-http://tubewarder.readthedocs.org/en/latest/Installation/#bootstrap-configuration
+http://tubewarder.readthedocs.io/en/latest/Installation/#bootstrap-configuration
 
 ## Docker container
 There is a pre-built [Docker image](https://hub.docker.com/r/weweave/tubewarder/) for Tubewarder. We update the image regularly so that you can be sure you're always running the latest version.
@@ -96,7 +96,7 @@ If you're using Maven, add the following dependency to your pom.xml:
 <dependency>
 	<groupId>net.weweave.tubewarder</groupId>
 	<artifactId>outputhandler-api</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 </dependency>
 ```
 Check the source code of the [email output handler](https://github.com/weweave/tubewarder/blob/master/outputhandlers/email/src/main/java/net/weweave/tubewarder/outputhandler/EmailOutputHandler.java) as a reference.

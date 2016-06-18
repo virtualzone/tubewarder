@@ -14,7 +14,7 @@ If you're using Maven, add the following dependency to your pom.xml:
 <dependency>
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>outputhandler-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -96,13 +96,16 @@ In the web interface, this looks like the following:
 
 ![Email Configuration Options](img/email-config.png)
 
-This is a part of the ```checkConfig()``` implementation of the Email Output Handler:
+This is a part of the ```checkConfig()``` implementation of the Webservice Output Handler:
 
 ```
 @Override
 public void checkConfig(Config config) throws InvalidConfigException {
-    if (GenericValidator.isBlankOrNull(config.getString("smtpServer"))) {
-        throw new InvalidConfigException("SMTP server must not be empty");
+    if (GenericValidator.isBlankOrNull(config.getString("url"))) {
+        throw new FieldRequiredException("url");
+    }
+    if (!isValidUrl(config.getString("url"))) {
+        throw new FieldInvalidException("url");
     }
     ...
 }
