@@ -125,9 +125,9 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         try {
             outputHandler.checkConfig(model.config);
         } catch (FieldRequiredException e) {
-            throw new InvalidInputParametersException("config"+e.getField(), ErrorCode.FIELD_REQUIRED);
+            throw new InvalidInputParametersException("config."+e.getField(), ErrorCode.FIELD_REQUIRED);
         } catch (FieldInvalidException e) {
-            throw new InvalidInputParametersException("config"+e.getField(), ErrorCode.FIELD_INVALID);
+            throw new InvalidInputParametersException("config."+e.getField(), ErrorCode.FIELD_INVALID);
         } catch (InvalidConfigException e) {
             throw new InvalidInputParametersException(e.getMessage());
         }

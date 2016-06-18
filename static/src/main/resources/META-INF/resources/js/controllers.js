@@ -21,6 +21,11 @@ define(['angular', 'app'], function(angular, app) {
 	}]);
 
 	controllers.controller('RootController', ['$scope', '$rootScope', '$location', '$http', 'appServices', function($scope, $rootScope, $location, $http, appServices) {
+		$scope.resetFormInvalid = function(form, field) {
+			form[field].$setValidity('invalid', true);
+			form[field].$validate();
+		};
+
 		$rootScope.$on('$routeChangeStart', function(event, next, current) {
 			appServices.setLoading(true);
             if (!$rootScope.isLoggedIn) {

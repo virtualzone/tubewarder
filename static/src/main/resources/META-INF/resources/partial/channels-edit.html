@@ -5,7 +5,7 @@
             <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
                 <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
                     <label for="name">Unique Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Channel name" data-ng-model="model.name" autofocus="autofocus" required="required" data-ng-change="onNameChange(form)" />
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Channel name" data-ng-model="model.name" autofocus="autofocus" required="required" data-ng-change="resetFormInvalid(form, 'name')" />
                 </div>
                 <div class="form-group" data-ng-class="{'has-error has-feedback': form.group.$dirty && form.group.$invalid}">
                     <label for="group">Group</label>
@@ -60,12 +60,12 @@
                 <div class="form-group" data-ng-repeat="configOption in configOptions" data-ng-switch="configOption.type">
                     <div data-ng-switch-when="string" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label for="option-{{configOption.id}}">{{configOption.label}}</label>
-                        <input data-ng-if="!configOption.multiLine" type="text" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" />
-                        <textarea data-ng-if="configOption.multiLine" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" rows="20"></textarea>
+                        <input data-ng-if="!configOption.multiLine" type="text" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" data-ng-change="resetFormInvalid(form, 'option-{{configOption.id}}')" />
+                        <textarea data-ng-if="configOption.multiLine" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" rows="20" data-ng-change="resetFormInvalid(form, 'option-{{configOption.id}}')"></textarea>
                     </div>
                     <div data-ng-switch-when="int" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label for="option-{{configOption.id}}">{{configOption.label}}</label>
-                        <input type="number" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" />
+                        <input type="number" class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" placeholder="{{configOption.label}}" data-ng-model="configOption.value" data-ng-required="configOption.required" data-ng-change="resetFormInvalid(form, 'option-{{configOption.id}}')" />
                     </div>
                     <div data-ng-switch-when="bool" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label>
@@ -74,7 +74,7 @@
                     </div>
                     <div data-ng-switch-when="select" data-ng-class="{'has-error has-feedback': form['option-'+configOption.id].$dirty && form['option-'+configOption.id].$invalid}">
                         <label for="option-{{configOption.id}}">{{configOption.label}}</label>
-                        <select class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" data-ng-model="configOption.value" data-ng-options="k as v for (k, v) in configOption.options" data-ng-required="configOption.required">
+                        <select class="form-control" id="option-{{configOption.id}}" name="option-{{configOption.id}}" data-ng-model="configOption.value" data-ng-options="k as v for (k, v) in configOption.options" data-ng-required="configOption.required" data-ng-change="resetFormInvalid(form, 'option-{{configOption.id}}')">
                         </select>
                     </div>
                 </div>

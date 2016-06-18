@@ -83,11 +83,6 @@ define(['angular', 'app'], function(angular, app) {
                 option.value = config[option.id];
             }
         };
-
-        $scope.onNameChange = function(form) {
-			form.name.$setValidity('invalid', true);
-			form.name.$validate();
-		};
         
         $scope.submit = function(form) {
             appServices.setLoading(true);
@@ -118,6 +113,21 @@ define(['angular', 'app'], function(angular, app) {
                             appServices.error('Name already exists');
                         } else if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors.name) !== -1) {
                             appServices.error('Name is required');
+                        }
+                    }
+                    var config = getConfig();
+                    for (var i=0; i<$scope.configOptions.length; i++) {
+                        var configOption = $scope.configOptions[i];
+                        if (fieldErrors['config.'+configOption.id]) {
+                            form['option-'+configOption.id].$setValidity('invalid', false);
+                            appServices.focus('#option-'+configOption.id);
+                            if ($.inArray(appServices.getErrors().FIELD_NAME_ALREADY_EXISTS, fieldErrors['config.'+configOption.id]) !== -1) {
+                                appServices.error(configOption.label+' already exists');
+                            } else if ($.inArray(appServices.getErrors().FIELD_REQUIRED, fieldErrors['config.'+configOption.id]) !== -1) {
+                                appServices.error(configOption.label+' is required');
+                            } else if ($.inArray(appServices.getErrors().FIELD_INVALID, fieldErrors['config.'+configOption.id]) !== -1) {
+                                appServices.error(configOption.label+' is invalid');
+                            }
                         }
                     }
                     appServices.setLoading(false);
