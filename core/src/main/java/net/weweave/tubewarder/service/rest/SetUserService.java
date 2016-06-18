@@ -11,6 +11,7 @@ import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.model.UserModel;
 import net.weweave.tubewarder.service.request.SetUserRequest;
 import net.weweave.tubewarder.service.response.SetObjectRestResponse;
+import net.weweave.tubewarder.util.PasswordPolicy;
 import org.apache.commons.validator.GenericValidator;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -70,6 +71,11 @@ public class SetUserService extends AbstractSetObjectService<UserModel, User> {
         // Password is required if user is to be created
         if (GenericValidator.isBlankOrNull(model.id) && GenericValidator.isBlankOrNull(model.password)) {
             throw new InvalidInputParametersException("password", ErrorCode.FIELD_REQUIRED);
+        }
+
+        // Check if password matches policy
+        if (!GenericValidator.isBlankOrNull(model.password) && !PasswordPolicy.matches(model.password)) {
+            throw new InvalidInputParametersException("password", ErrorCode.FIELD_INVALID);
         }
 
         // Check if object is to be created, but username already exists

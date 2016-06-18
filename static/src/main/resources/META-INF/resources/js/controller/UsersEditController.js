@@ -23,6 +23,11 @@ define(['angular', 'app'], function(angular, app) {
 		};
         
         $scope.submit = function(form) {
+            if ($scope.model.id === '' || $scope.model.changePassword) {
+                if (!appServices.checkPasswordPolicy($scope.model.password, form, 'password')) {
+                    return;
+                }
+            }
             appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),

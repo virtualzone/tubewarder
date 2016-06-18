@@ -17,6 +17,31 @@ define(['angular-route-resolver'], function(moment) {
 
     .factory('appServices', ['$rootScope', '$injector', function($rootScope, $injector) {
         var appServices = {
+            checkPasswordPolicy: function(password, form, field) {
+                password = password.trim();
+                if (password.length < 8) {
+                    form[field].$setValidity('invalid', false);
+                    appServices.focus('#'+field);
+                    appServices.error('Password must have at least 8 characters');
+                    return false;
+                } else if (!password.match(/[0-9]/g)) {
+                    form[field].$setValidity('invalid', false);
+                    appServices.focus('#'+field);
+                    appServices.error('Password must contain at least 1 number (0-9)');
+                    return false;
+                } else if (!password.match(/[A-Z]/g)) {
+                    form[field].$setValidity('invalid', false);
+                    appServices.focus('#'+field);
+                    appServices.error('Password must contain at least 1 uppercase character (A-Z)');
+                    return false;
+                } else if (!password.match(/[a-z]/g)) {
+                    form[field].$setValidity('invalid', false);
+                    appServices.focus('#'+field);
+                    appServices.error('Password must contain at least 1 lowercase character (a-z)');
+                    return false;
+                }
+                return true;
+            },
             focus: function(selector) {
                 window.setTimeout(function() {
                     $(selector).first().focus();
