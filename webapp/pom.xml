@@ -93,22 +93,10 @@
         </dependency>
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
-            <artifactId>outputhandler-api</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.weweave.tubewarder</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
             <scope>system</scope>
             <systemPath>${basedir}/../core/target/core.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.weweave.tubewarder</groupId>
-            <artifactId>static</artifactId>
-            <version>${project.version}</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../static/target/static.jar</systemPath>
         </dependency>
     </dependencies>
 
