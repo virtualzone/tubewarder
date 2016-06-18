@@ -12,6 +12,8 @@ import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.outputhandler.OutputHandlerConfigUtil;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
+import net.weweave.tubewarder.outputhandler.api.FieldInvalidException;
+import net.weweave.tubewarder.outputhandler.api.FieldRequiredException;
 import net.weweave.tubewarder.outputhandler.api.IOutputHandler;
 import net.weweave.tubewarder.outputhandler.api.InvalidConfigException;
 import net.weweave.tubewarder.service.model.ChannelModel;
@@ -122,6 +124,10 @@ public class SetChannelService extends AbstractSetObjectService<ChannelModel, Ch
         IOutputHandler outputHandler = getOutputHandlerFactory().getOutputHandler(model.config);
         try {
             outputHandler.checkConfig(model.config);
+        } catch (FieldRequiredException e) {
+            throw new InvalidInputParametersException("config"+e.getField(), ErrorCode.FIELD_REQUIRED);
+        } catch (FieldInvalidException e) {
+            throw new InvalidInputParametersException("config"+e.getField(), ErrorCode.FIELD_INVALID);
         } catch (InvalidConfigException e) {
             throw new InvalidInputParametersException(e.getMessage());
         }
