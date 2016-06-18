@@ -21,11 +21,6 @@ define(['angular', 'app'], function(angular, app) {
         $scope.isRequirePassword = function() {
 		    return ($scope.model.changePassword) || ($scope.model.id === '');
 		};
-
-        $scope.onUsernameChange = function(form) {
-			form.username.$setValidity('invalid', true);
-			form.username.$validate();
-		};
         
         $scope.submit = function(form) {
             appServices.setLoading(true);

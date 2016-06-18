@@ -12,11 +12,6 @@ define(['angular', 'app'], function(angular, app) {
         };
         $scope.groups = [];
 
-        $scope.onNameChange = function(form) {
-			form.name.$setValidity('invalid', true);
-			form.name.$validate();
-		};
-
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {

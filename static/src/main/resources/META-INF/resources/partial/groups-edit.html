@@ -12,7 +12,7 @@
             <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
                 <div class="form-group" data-ng-class="{'has-error has-feedback': form.name.$dirty && form.name.$invalid}">
                     <label for="name">Unique Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" data-ng-model="model.name" autofocus="autofocus" required="required" data-ng-change="onNameChange(form)" />
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" data-ng-model="model.name" autofocus="autofocus" required="required" data-ng-change="resetFormInvalid(form, 'name')" />
                 </div>
                 <button class="btn btn-default" type="submit" data-ng-disabled="form.$invalid">Save</button>
             </form>

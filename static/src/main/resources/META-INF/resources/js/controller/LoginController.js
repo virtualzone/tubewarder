@@ -10,11 +10,6 @@ define(['angular', 'app'], function(angular, app) {
             password: ''
         };
         
-        $scope.onPasswordChange = function(form) {
-			form.password.$setValidity('invalid', true);
-			form.password.$validate();
-		};
-        
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {

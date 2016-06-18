@@ -9,11 +9,6 @@ define(['angular', 'app', 'typeahead'], function(angular, app, typeahead) {
             name: '',
             members: []
         };
-
-        $scope.onNameChange = function(form) {
-			form.name.$setValidity('invalid', true);
-			form.name.$validate();
-		};
         
         $scope.submit = function(form) {
             appServices.setLoading(true);

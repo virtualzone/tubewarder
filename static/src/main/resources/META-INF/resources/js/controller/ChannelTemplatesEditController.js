@@ -17,11 +17,6 @@ define(['angular', 'app'], function(angular, app) {
         $scope.channels = [];
         $scope.channelTemplates = [];
 
-        $scope.onChannelChange = function(form) {
-			form.channel.$setValidity('invalid', true);
-			form.channel.$validate();
-		};
-
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {
