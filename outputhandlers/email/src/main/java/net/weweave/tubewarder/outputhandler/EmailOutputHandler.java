@@ -53,16 +53,16 @@ public class EmailOutputHandler implements IOutputHandler {
     @Override
     public void checkConfig(Config config) throws InvalidConfigException {
         if (GenericValidator.isBlankOrNull(config.getString("smtpServer"))) {
-            throw new InvalidConfigException("SMTP server must not be empty");
+            throw new FieldRequiredException("smtpServer");
         }
         if (config.getInt("port") == null || config.getInt("port") <= 0 || config.getInt("port") > 65535) {
-            throw new InvalidConfigException("Port is invalid");
+            throw new FieldInvalidException("port");
         }
         if (config.getBool("auth") && GenericValidator.isBlankOrNull(config.getString("username"))) {
-            throw new InvalidConfigException("Username must not be empty if authentication is enabled");
+            throw new FieldRequiredException("username");
         }
         if (!("NONE".equals(config.getString("security")) || "SSL".equals(config.getString("security")) || "TLS".equals(config.getString("security")))) {
-            throw new InvalidConfigException("Security is invalid");
+            throw new FieldInvalidException("security");
         }
     }
 

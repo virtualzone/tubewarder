@@ -25,7 +25,7 @@
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>outputhandler-api</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
