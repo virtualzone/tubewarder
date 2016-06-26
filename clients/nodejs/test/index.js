@@ -109,3 +109,74 @@ describe('#SendRequest.getJson', function() {
     });
 });
 
+describe('#send', function() {
+    /**
+     * The test cases below are disabled by default because they require a running
+     * Tubewarder Server. You can enable them on your behalf.
+     */
+
+    /*
+    it('should send successfully', function(done) {
+        var client = new TubewarderClient('http://localhost:8080');
+        var sr = client.createSendRequest('your-access-token');
+        sr.template = 'DOI';
+        sr.channel = 'Email';
+        sr.recipient.address = 'some@email.address';
+        sr.recipient.name = 'some recipient name';
+        sr.addModelParam('firstname', 'John');
+        sr.addModelParam('lastname', 'Doe');
+        sr.keyword = 'DOI123';
+        sr.details = 'some uninterpreted text';
+        sr.echo = true;
+        client.send(sr, function(res) {
+            res.should.be.an('object');
+            done();
+        }, function(e) {
+            'this should not happen'.echo.should.equal(false);
+            done();
+        });
+    });
+
+    it('should throw a network error on wrong host', function(done) {
+        var client = new TubewarderClient('http://localhoooost:8080');
+        var sr = client.createSendRequest('your-access-token');
+        client.send(sr, function(res) {
+            'this should not happen'.echo.should.equal(false);
+            done();
+        }, function(e) {
+            e.should.be.an('object');
+            e.networkError.should.equal(true);
+            e.networkErrorCode.should.equal('ENOTFOUND');
+            done();
+        });
+    });
+
+    it('should throw a network error on wrong protocol', function(done) {
+        var client = new TubewarderClient('https://localhost:8080');
+        var sr = client.createSendRequest('your-access-token');
+        client.send(sr, function(res) {
+            'this should not happen'.echo.should.equal(false);
+            done();
+        }, function(e) {
+            e.should.be.an('object');
+            e.networkError.should.equal(true);
+            e.networkErrorCode.should.equal('EPROTO');
+            done();
+        });
+    });
+
+    it('should throw a http error on wrong path', function(done) {
+        var client = new TubewarderClient('http://localhost:8080/something/');
+        var sr = client.createSendRequest('your-access-token');
+        client.send(sr, function(res) {
+            'this should not happen'.echo.should.equal(false);
+            done();
+        }, function(e) {
+            e.should.be.an('object');
+            e.httpError.should.equal(true);
+            e.httpStatusCode.should.equal(405);
+            done();
+        });
+    });
+    */
+});

@@ -15,7 +15,7 @@
                 name: this.name
             };
         }
-    };
+    }
     
     class Attachment {
         constructor(filename) {
@@ -23,7 +23,7 @@
             this.contentType = '';
             this.payload = '';
         }
-    };
+    }
     
     class SendRequest {
         constructor(token) {
@@ -85,7 +85,7 @@
                 echo: this.echo
             };
         }
-    };
+    }
     
     class SendResponse {
         constructor(error) {
@@ -95,7 +95,16 @@
             this.content = '';
             this.queueId = '';
         }
-    };
+    }
+
+    class SendError {
+        constructor(networkError, httpError) {
+            this.networkError = networkError;
+            this.httpError = httpError;
+            this.networkErrorCode = null;
+            this.httpStatusCode = null;
+        }
+    }
     
     module.exports = class TubewarderClient {
         constructor(uri) {
@@ -113,7 +122,7 @@
          * @param {Function} cb
          * @returns {SendResponse}
          */
-        send(sendRequest, cb) {
+        send(sendRequest, cbSuccess, cbError) {
             var options = {
                 url: this.uri + 'rs/send',
                 json: sendRequest.getJson(),
@@ -122,12 +131,22 @@
                 }
             };
             request.post(options, function(error, response, body) {
-                var res = new SendResponse(body.error);
-                res.recipient = new Address(body.recipient.address, body.recipient.name);
-                res.subject = body.subject;
-                res.content = body.content;
-                res.queueId = body.queueId;
-                cb(res);
+                if (error) {
+                    let e = new SendError(true, false);
+                    e.networkErrorCode = error.code;
+                    cbError(e);
+                } else if (response.statusCode != 200) {
+                    let e = new SendError(false, true);
+                    e.httpStatusCode = response.statusCode;
+                    cbError(e);
+                } else {
+                    var res = new SendResponse(body.error);
+                    res.recipient = new Address(body.recipient.address, body.recipient.name);
+                    res.subject = body.subject;
+                    res.content = body.content;
+                    res.queueId = body.queueId;
+                    cbSuccess(res);
+                }
             });
         }
         
