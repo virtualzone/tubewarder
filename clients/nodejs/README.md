@@ -37,7 +37,13 @@ client.send(sr, function(res) {
         console.log('Body:              ' + res.body);
         console.log('Queue ID:          ' + res.queueId);
     } else {
-        console.log('ERROR!');
+        console.log('Application error code: ' + res.error);
+    }
+}, function(e) {
+    if (e.networkError) {
+        console.log('A network error occurred: ' + e.networkErrorCode);
+    } else if (e.httpError) {
+        console.log('An http error occurred: ' + e.httpStatusCode);
     }
 });
 ```

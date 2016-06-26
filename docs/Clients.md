@@ -1,4 +1,4 @@
-# Clients for sending to Tubewardee
+# Clients for sending to Tubewarder
 Instead of directly dealing with the Send API, you can instead use pre-implemented client libraries. These libraries hide the SOAP and REST interfaces from the developer, so you can focus on the actual sending of messages.
 
 The following client libraries are currently available:
@@ -34,7 +34,7 @@ SendResponse resp = client.send(req);
 ```
 
 # NodeJS (NPM)
-The NodeJS/NPM Client also supports the REST API. It is written in ECMAScript 2015 (ES6), so make sure you're using an up-to-date version of NodeJS (successfully tested in NodeJS 6 and newer versions).
+The [NodeJS/NPM Client](https://www.npmjs.com/package/tubewarder-client) supports the REST API. It is written in ECMAScript 2015 (ES6), so make sure you're using an up-to-date version of NodeJS (successfully tested in NodeJS 6 and newer versions).
 
 Here is an example code which covers all the relevant functionalities of the client library:
 
@@ -66,7 +66,13 @@ client.send(sr, function(res) {
         console.log('Body:              ' + res.body);
         console.log('Queue ID:          ' + res.queueId);
     } else {
-        console.log('ERROR!');
+        console.log('Application error code: ' + res.error);
+    }
+}, function(e) {
+    if (e.networkError) {
+        console.log('A network error occurred: ' + e.networkErrorCode);
+    } else if (e.httpError) {
+        console.log('An http error occurred: ' + e.httpStatusCode);
     }
 });
 ```
