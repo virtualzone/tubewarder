@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.net.ConnectException;
 
 @RunWith(Arquillian.class)
 public class TestRestClient extends AbstractServiceTest {
@@ -20,7 +21,7 @@ public class TestRestClient extends AbstractServiceTest {
     private TestSendServiceCommon common;
 
     @Test
-    public void testSimple() {
+    public void testSimple() throws Exception {
         AppToken token = getCommon().createAppToken();
         Channel channel = getCommon().createChannel();
         Template template = getCommon().createTemplate();
@@ -45,7 +46,7 @@ public class TestRestClient extends AbstractServiceTest {
     }
 
     @Test
-    public void testInvalidToken() {
+    public void testInvalidToken() throws Exception {
         TubewarderClient client = new TubewarderRestClient(deploymentUrl.toString());
         SendRequest request = new SendRequest("000000");
         request.setChannel("test");
@@ -58,6 +59,36 @@ public class TestRestClient extends AbstractServiceTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(new Integer(ErrorCode.PERMISSION_DENIED), response.getError());
         Assert.assertEquals("", response.getQueueId());
+    }
+
+    @Test(expected = ConnectException.class)
+    public void testInvalidServer() throws Exception {
+        TubewarderClient client = new TubewarderRestClient("http://localhost:" + (deploymentUrl.getPort()+1));
+        SendRequest request = new SendRequest("000000");
+        request.setChannel("test");
+        request.setTemplate("test");
+        request.addModelParam(new KeyValue("code", "12345"));
+        request.setRecipient(new Address("no-reply@weweave.net", "weweave"));
+        request.setEcho(true);
+        client.send(request);
+    }
+
+    @Test(expected = ConnectException.class)
+    public void testInvalidPath() throws Exception {
+        String url = deploymentUrl.toString();
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
+        url += "something/";
+
+        TubewarderClient client = new TubewarderRestClient(url);
+        SendRequest request = new SendRequest("000000");
+        request.setChannel("test");
+        request.setTemplate("test");
+        request.addModelParam(new KeyValue("code", "12345"));
+        request.setRecipient(new Address("no-reply@weweave.net", "weweave"));
+        request.setEcho(true);
+        client.send(request);
     }
 
     public TestSendServiceCommon getCommon() {

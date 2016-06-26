@@ -1,5 +1,7 @@
 package net.weweave.tubewarder.client;
 
+import java.net.ConnectException;
+
 /**
  * An abstract class for sending messages to a Tubewarder server.
  * The concrete implementations define the used protocol and libs.
@@ -19,7 +21,7 @@ public abstract class TubewarderClient {
      * @param request
      * @return
      */
-    public abstract SendResponse send(SendRequest request);
+    public abstract SendResponse send(SendRequest request) throws ConnectException;
 
     public String getUri() {
         return uri;

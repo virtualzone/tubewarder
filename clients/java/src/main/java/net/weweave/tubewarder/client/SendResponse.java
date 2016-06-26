@@ -1,6 +1,9 @@
 package net.weweave.tubewarder.client;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A response returned by the send() method of a {@link TubewarderClient}.
@@ -11,6 +14,7 @@ public class SendResponse implements Serializable {
     private String subject;
     private String content;
     private String queueId;
+    public Map<String, ArrayList<Integer>> fieldErrors = new HashMap<>();
 
     public Integer getError() {
         return error;
@@ -50,5 +54,13 @@ public class SendResponse implements Serializable {
 
     public void setQueueId(String queueId) {
         this.queueId = queueId;
+    }
+
+    public Map<String, ArrayList<Integer>> getFieldErrors() {
+        return fieldErrors;
+    }
+
+    public void setFieldErrors(Map<String, ArrayList<Integer>> fieldErrors) {
+        this.fieldErrors = fieldErrors;
     }
 }

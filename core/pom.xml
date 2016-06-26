@@ -161,7 +161,7 @@
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>client</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
