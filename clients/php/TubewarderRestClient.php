@@ -7,6 +7,7 @@ class TubewarderRestClient extends TubewarderClient {
     /**
      * @param SendRequest $request
      * @return SendResponse
+     * @throws Exception
      */
     public function send(SendRequest $request) {
         $ch = curl_init($this->getUri().'rs/send');
@@ -20,7 +21,7 @@ class TubewarderRestClient extends TubewarderClient {
         }
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($status != 200) {
-            throw new Exception('Invalid http code ' + $status);
+            throw new Exception('Invalid http code '.$status);
         }
         $json = json_decode($result, true);
         return SendResponse::createFromObject($json);

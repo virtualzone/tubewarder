@@ -5,6 +5,12 @@ require('SendResponse.php');
 require('ErrorCode.php');
 require('KeyValue.php');
 
+/**
+ * Class TubewarderClient
+ * @package Tubewarder
+ * @version 1.0.0
+ * @link http://tubewarder.readthedocs.io
+ */
 abstract class TubewarderClient {
     private $uri;
 
