@@ -14,7 +14,7 @@ public class SendResponse implements Serializable {
     private String subject;
     private String content;
     private String queueId;
-    public Map<String, ArrayList<Integer>> fieldErrors = new HashMap<>();
+    private Map<String, ArrayList<Integer>> fieldErrors = new HashMap<>();
 
     public Integer getError() {
         return error;
