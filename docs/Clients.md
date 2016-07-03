@@ -5,6 +5,7 @@ The following client libraries are currently available:
 
 * Java
 * NodeJS (NPM)
+* PHP
 
 Libs for more languages will follow. In the meantime, you can of course connect directly to the Send API.
 
@@ -18,7 +19,7 @@ To get started with the Java Client library, the easiest way is to include the f
 <dependency>
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>client</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
@@ -43,7 +44,7 @@ const fs = require('fs');
 const TubewarderClient = require('tubewarder-client');
 
 var client = new TubewarderClient('https://localhost:8080');
-var sr = client.createSendRequest('your-access-token');
+var sr = client.createSendRequest('your-app-token');
 sr.template = 'DOI';
 sr.channel = 'Email';
 sr.recipient.address = 'some@email.address';
@@ -78,3 +79,49 @@ client.send(sr, function(res) {
 ```
 
 Note that the fs library is only required in this example as the attached file is loaded with it. You may not require it in your case.
+
+# PHP
+The [PHP client](https://weweave.net/products/tubewarder/) (get it from the "Download" tab) supports the REST API. It requires PHP >= 5.3.
+
+Here is an example taken from the "examples" folder included in the downloadable ZIP file linked above.
+
+```
+<?php
+// Include the required files
+require('libs/tubewarder/TubewarderRestClient.php');
+
+// Import the classes
+use Tubewarder\TubewarderRestClient as TubewarderRestClient;
+use Tubewarder\SendRequest as SendRequest;
+use Tubewarder\Address as Address;
+use Tubewarder\ErrorCode as ErrorCode;
+
+// Create a new client
+$client = new TubewarderRestClient('http://localhost:8080');
+
+// Prepare the send request
+$sr = new SendRequest('your-app-token');
+$sr->setChannel('Sysout');
+$sr->setTemplate('Dummy');
+$sr->setRecipient(new Address('noreply@weweave.net', 'weweave GbR'));
+$sr->setEcho(true);
+$sr->setKeyword('UnitTest');
+$sr->setDetails('php unit test testSendSuccess()');
+$sr->addModelParam('firstname', 'John');
+$sr->addModelParam('code', '123456');
+
+try {
+    // Send the request
+    $res = $client->send($sr);
+    // We received a response code from the server
+    if ($res->getError() == ErrorCode::OK) {
+        echo "Success!\n";
+    } else {
+        echo "Error code: ".$res->getError()."\n";
+    }
+} catch (Exception $e) {
+    // Could not connect to the server
+    echo "An errror occurred while connecting to the Tubewarder Server!\n";
+}
+?>
+```
