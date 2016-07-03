@@ -1,7 +1,7 @@
 <?php
 namespace Tubewarder;
 use phpunit\framework\TestCase;
-require('TubewarderRestClient.php');
+require('../src/TubewarderRestClient.php');
 
 class TubewarderClientTest extends TestCase {
     public function testConstructorWithoutTrailingSlash() {
@@ -13,7 +13,6 @@ class TubewarderClientTest extends TestCase {
         $client = new TubewarderRestClient('http://localhost:8080/');
         $this->assertEquals('http://localhost:8080/', $client->getUri());
     }
-
 
     public function testSendRequest() {
         $sr = new SendRequest('464bed09-9875-45b3-9111-44f633de9d30');
@@ -56,31 +55,38 @@ class TubewarderClientTest extends TestCase {
      * localhost port 8080. They are therefore disabled by default.
      */
 
+    /*
     public function testSendInvalidRequest() {
         $client = new TubewarderRestClient('http://localhost:8080');
         $sr = new SendRequest('abcdefg');
         $res = $client->send($sr);
         $this->assertEquals(ErrorCode::INVALID_INPUT_PARAMETERS, $res->getError());
     }
+    */
 
     /**
      * @expectedException \Exception
      */
+     /*
     public function testInvalidHost() {
         $client = new TubewarderRestClient('http://localhost:8081');
         $sr = new SendRequest('abcdefg');
         $client->send($sr);
     }
+    */
 
     /**
      * @expectedException \Exception
      */
+     /*
     public function testInvalidPath() {
         $client = new TubewarderRestClient('http://localhost:8080/test');
         $sr = new SendRequest('abcdefg');
         $client->send($sr);
     }
+    */
 
+    /*
     public function testSendSuccess() {
         $client = new TubewarderRestClient('http://localhost:8080');
         $sr = new SendRequest('464bed09-9875-45b3-9111-44f633de9d30');
@@ -102,5 +108,6 @@ class TubewarderClientTest extends TestCase {
         $this->assertNotEmpty($res->getQueueId());
         $this->assertEmpty($res->getFieldErrors());
     }
+    */
 }
 ?>
