@@ -111,5 +111,7 @@ You can find the log files in these locations:
 ## License
 For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
 
+For commercial use, please visit [our website](https://weweave.net/products/tubewarder/) for licensing information.
+
 ## Next steps
 Take a look at the [milestones](https://github.com/weweave/tubewarder/milestones) to find out what is planned for upcoming releases.
