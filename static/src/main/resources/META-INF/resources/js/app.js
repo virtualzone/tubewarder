@@ -104,6 +104,17 @@ define(['angular-route-resolver'], function(moment) {
                     if (cbUnhandledError) cbUnhandledError(data.error);
                 }
             },
+            logout: function() {
+                var $location = $injector.get('$location');
+                appServices.setLoading(true);
+                var payload = {
+                    token: appServices.getToken()
+                };
+                appServices.post('/rs/logout', payload, function(response) {
+                    appServices.setSession(null);
+                    $location.path('/login');
+                });
+            },
             post: function(rs, payload, cbOk, cbInvalidParams, cbUnhandledError) {
                 var $http = $injector.get('$http');
                 $http.post(rs, payload).success(function(data) {

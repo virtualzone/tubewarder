@@ -8,6 +8,15 @@ define(['angular', 'app'], function(angular, app) {
             items: []
         };
         $scope.saveSuccess = false;
+
+        var isTermsAccepted = function() {
+            for (var i=0; i<$scope.model.items.length; i++) {
+                var item = $scope.model.items[i];
+                if (item.key == "TERMS_ACCEPTED") {
+                    return (item.value && item.value == '1' ? true : false);
+                }
+            }
+        };
         
         $scope.submit = function(form) {
             appServices.setLoading(true);
@@ -19,6 +28,9 @@ define(['angular', 'app'], function(angular, app) {
             $http.post('/rs/config/set', payload).success(function(data) {
                 $scope.saveSuccess = true;
                 appServices.setLoading(false);
+                if (!isTermsAccepted()) {
+                    appServices.logout();
+                }
             });
         };
         

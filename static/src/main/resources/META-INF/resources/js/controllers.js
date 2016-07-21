@@ -45,14 +45,7 @@ define(['angular', 'app'], function(angular, app) {
 		});
         
         $scope.logout = function() {
-			appServices.setLoading(true);
-		    var payload = {
-		        token: appServices.getToken()
-		    };
-		    $http.post('/rs/logout', payload).success(function(response) {
-                appServices.setSession(null);
-                $location.path('/login');
-            });
+			appServices.logout();
 		};
 	}]);
 
