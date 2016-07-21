@@ -3,7 +3,14 @@ define(['angular', 'app'], function(angular, app) {
 
     app.lazy.controller('LoginController', ['$scope', '$location', '$routeParams', 'appServices', function($scope, $location, $routeParams, appServices) {
         appServices.setActiveNavItem('');
-        appServices.setLoading(false);
+
+        appServices.get('/rs/checklicense', function(data) {
+            appServices.setLoading(false);
+            if (!data.termsAccepted) {
+                appServices.setSession(null);
+                $location.path('/terms');
+            }
+        });
         
         $scope.model = {
             username: '',

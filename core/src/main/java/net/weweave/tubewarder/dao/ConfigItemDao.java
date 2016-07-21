@@ -48,6 +48,14 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
         setValue(key, value, key);
     }
 
+    public void setValue(String key, Boolean value, String label) {
+        setRawItem(key, ConfigItemType.BOOL, (value != null && value ? "1" : "0"), label);
+    }
+
+    public void setValue(String key, Boolean value) {
+        setValue(key, value, key);
+    }
+
     public String getString(String key) throws ObjectNotFoundException {
         if (cache.containsKey(key)) {
             return cache.get(key);
@@ -74,6 +82,24 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
     public Integer getInt(String key, Integer defaultValue) {
         try {
             return getInt(key);
+        } catch (ObjectNotFoundException e) {
+            return defaultValue;
+        }
+    }
+
+    public Boolean getBool(String key) throws ObjectNotFoundException {
+        String val;
+        if (cache.containsKey(key)) {
+            val = cache.get(key);
+            return (val != null && "1".equals(val));
+        }
+        val = getRawItem(key).getValue();
+        return (val != null && "1".equals(val));
+    }
+
+    public Boolean getBool(String key, Boolean defaultValue) {
+        try {
+            return getBool(key);
         } catch (ObjectNotFoundException e) {
             return defaultValue;
         }

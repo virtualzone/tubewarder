@@ -11,10 +11,14 @@ public class ConfigManager {
     public static final String CONFIG_MAX_CONCURRENT_THREADS = "QUEUE_MAX_CONCURRENT_THREADS";
     public static final String CONFIG_MAX_RETRIES = "QUEUE_MAX_RETRIES";
     public static final String CONFIG_RETRY_WAIT_TIME_SECONDS = "QUEUE_RETRY_WAIT_TIME_SECONDS";
+    public static final String CONFIG_LICENSE_KEY_1 = "LICENSE_KEY_1";
+    public static final String CONFIG_LICENSE_KEY_2 = "LICENSE_KEY_2";
+    public static final String CONFIG_LICENSE_KEY_3 = "LICENSE_KEY_3";
+    public static final String CONFIG_LICENSE_KEY_4 = "LICENSE_KEY_4";
+    public static final String CONFIG_TERMS_ACCEPTED = "TERMS_ACCEPTED";
 
     @Inject
     private ConfigItemDao configItemDao;
-
 
     public void checkCreateConfig() {
         if (!getConfigItemDao().hasKey(CONFIG_MAX_CONCURRENT_THREADS)) {
@@ -28,6 +32,14 @@ public class ConfigManager {
         }
         if (!getConfigItemDao().hasKey(CONFIG_SYSTEM_DEAD_SECONDS)) {
             getConfigItemDao().setValue(CONFIG_SYSTEM_DEAD_SECONDS, 600, "Period after which system is considered down (seconds)");
+        }
+        for (int i=1; i<=4; i++) {
+            if (!getConfigItemDao().hasKey("LICENSE_KEY_"+i)) {
+                getConfigItemDao().setValue("LICENSE_KEY_"+i, "", "License Key for Instance #"+i);
+            }
+        }
+        if (!getConfigItemDao().hasKey(CONFIG_TERMS_ACCEPTED)) {
+            getConfigItemDao().setValue(CONFIG_TERMS_ACCEPTED, false, "I have read and accept the License Agreement");
         }
     }
 

@@ -12,6 +12,7 @@
             <form role="form" name="form" novalidate="novalidate" data-ng-submit="submit(form)">
                 <div class="alert alert-success ng-cloak" role="alert" data-ng-show="saveSuccess">Settings successfully saved.</div>
                 <div class="form-group" data-ng-repeat="item in model.items" data-ng-switch="item.type">
+                    <input type="checkbox" id="item-{{item.key}}" data-ng-model="item.value" data-ng-switch-when="BOOL" />
                     <label for="item-{{item.key}}">{{item.label}}</label>
                     <input type="text" data-ng-model="item.value" data-ng-switch-when="STRING" class="form-control" id="item-{{item.key}}" />
                     <input type="number" data-ng-model="item.value" data-ng-switch-when="INT" class="form-control" id="item-{{item.key}}" />

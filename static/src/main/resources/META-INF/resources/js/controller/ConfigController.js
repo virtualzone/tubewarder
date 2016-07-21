@@ -31,6 +31,8 @@ define(['angular', 'app'], function(angular, app) {
                     var item = data.items[i];
                     if (item.type == "INT") {
                         item.value = parseInt(item.value);
+                    } else if (item.type == "BOOL") {
+                        item.value = (item.value && item.value == '1' ? true : false);
                     }
                 }
                 $scope.model.items = data.items;

@@ -69,7 +69,9 @@ public class SetConfigService extends AbstractService {
 
     private void setValues(List<ConfigItemModel> items) throws ObjectNotFoundException {
         for (ConfigItemModel model : items) {
-            if (ConfigItemType.INT.toString().equals(model.type)) {
+            if (ConfigItemType.BOOL.toString().equals(model.type)) {
+                getConfigItemDao().setValue(model.key, "1".equals(model.value) || "true".equals(model.value.toLowerCase()) ? true : false);
+            } else if (ConfigItemType.INT.toString().equals(model.type)) {
                 getConfigItemDao().setValue(model.key, Integer.valueOf(model.value));
             } else {
                 getConfigItemDao().setValue(model.key, model.value);

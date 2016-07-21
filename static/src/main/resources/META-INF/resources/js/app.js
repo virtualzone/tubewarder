@@ -110,6 +110,12 @@ define(['angular-route-resolver'], function(moment) {
                     appServices.handleGenericErrors(data, cbOk, cbInvalidParams, cbUnhandledError);
                 }).error(appServices.httpError);
             },
+            get: function(rs, cbOk, cbInvalidParams, cbUnhandledError) {
+                var $http = $injector.get('$http');
+                $http.get(rs).success(function(data) {
+                    appServices.handleGenericErrors(data, cbOk, cbInvalidParams, cbUnhandledError);
+                }).error(appServices.httpError);
+            },
             clone: function(obj) {
                 return $.extend(true, {}, obj);
             },
@@ -212,6 +218,7 @@ define(['angular-route-resolver'], function(moment) {
             .when('/api/test', route.resolve('api-test', 'ApiTestController'))
             .when('/api', {redirectTo: '/api/test'})
             .when('/me', route.resolve('me', 'MeController'))
+            .when('/terms', route.resolve('terms', 'TermsController'))
             .otherwise({redirectTo: '/home'});
             
         $httpProvider.interceptors.push(['$q', '$injector', '$location', 'appServices', function($q, $injector, $location, appServices) {
