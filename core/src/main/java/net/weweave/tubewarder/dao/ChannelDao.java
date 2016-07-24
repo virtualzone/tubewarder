@@ -34,11 +34,8 @@ public class ChannelDao extends AbstractDao<Channel> {
     }
 
     public boolean canUserAcccessChannel(Channel channel, List<Long> userGroupMembershipIds) {
-        if (channel == null ||
+        return channel == null ||
                 channel.getUserGroup() == null ||
-                userGroupMembershipIds.contains(channel.getUserGroup().getId())) {
-            return true;
-        }
-        return false;
+                userGroupMembershipIds.contains(channel.getUserGroup().getId());
     }
 }

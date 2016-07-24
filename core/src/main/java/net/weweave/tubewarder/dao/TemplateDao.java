@@ -34,11 +34,8 @@ public class TemplateDao extends AbstractDao<Template> {
     }
 
     public boolean canUserAcccessTemplate(Template template, List<Long> userGroupMembershipIds) {
-        if (template == null ||
+        return template == null ||
                 template.getUserGroup() == null ||
-                userGroupMembershipIds.contains(template.getUserGroup().getId())) {
-            return true;
-        }
-        return false;
+                userGroupMembershipIds.contains(template.getUserGroup().getId());
     }
 }

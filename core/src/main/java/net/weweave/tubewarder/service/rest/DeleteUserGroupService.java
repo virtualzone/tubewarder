@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
+import java.util.Collections;
 
 @RequestScoped
 @Path("/group/delete")
@@ -73,10 +74,10 @@ public class DeleteUserGroupService extends AbstractService {
 
     private void deleteObject(String id) throws ObjectNotFoundException, InvalidInputParametersException {
         UserGroup group = getUserGroupDao().get(id);
-        if (getChannelDao().getChannelIdsWithGroups(Arrays.asList(group.getId())).size() > 0) {
+        if (getChannelDao().getChannelIdsWithGroups(Collections.singletonList(group.getId())).size() > 0) {
             throw new InvalidInputParametersException();
         }
-        if (getTemplateDao().getTemplateIdsWithGroups(Arrays.asList(group.getId())).size() > 0) {
+        if (getTemplateDao().getTemplateIdsWithGroups(Collections.singletonList(group.getId())).size() > 0) {
             throw new InvalidInputParametersException();
         }
         getUserGroupDao().delete(group);

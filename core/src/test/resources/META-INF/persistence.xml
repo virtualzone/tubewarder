@@ -7,16 +7,20 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:jboss/datasources/TubewarderDS</jta-data-source>
 		<class>net.weweave.tubewarder.domain.AppToken</class>
+		<class>net.weweave.tubewarder.domain.Attachment</class>
 		<class>net.weweave.tubewarder.domain.Channel</class>
 		<class>net.weweave.tubewarder.domain.ChannelTemplate</class>
-		<class>net.weweave.tubewarder.domain.EmailOutputHandlerConfiguration</class>
+		<class>net.weweave.tubewarder.domain.ConfigItem</class>
+		<class>net.weweave.tubewarder.domain.ConfigItemType</class>
 		<class>net.weweave.tubewarder.domain.Log</class>
 		<class>net.weweave.tubewarder.domain.MailSecurity</class>
-		<class>net.weweave.tubewarder.domain.OutputHandler</class>
+		<class>net.weweave.tubewarder.domain.QueueItemStatus</class>
+		<class>net.weweave.tubewarder.domain.SendQueueItem</class>
 		<class>net.weweave.tubewarder.domain.Session</class>
-		<class>net.weweave.tubewarder.domain.SysoutOutputHandlerConfiguration</class>
+		<class>net.weweave.tubewarder.domain.System</class>
 		<class>net.weweave.tubewarder.domain.Template</class>
 		<class>net.weweave.tubewarder.domain.User</class>
+		<class>net.weweave.tubewarder.domain.UserGroup</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="create" />

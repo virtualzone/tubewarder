@@ -36,8 +36,7 @@ public class TermsFilter implements Filter {
     private boolean isAllowedPathForUnacceptedTerms(String path) {
         if (path.endsWith("/checklicense")) return true;
         if (path.endsWith("/acceptterms")) return true;
-        if (path.endsWith("/logout")) return true;
-        return false;
+        return path.endsWith("/logout");
     }
 
     @Override

@@ -8,14 +8,14 @@ import javax.persistence.TypedQuery;
 
 public class DbValueRetriever {
     public static Long getLongValueOrZero(TypedQuery<Long> query) {
-        Long result = 0l;
+        Long result = 0L;
         try {
             result = query.getSingleResult();
         } catch (NoResultException e) {
-            result = 0l;
+            result = 0L;
         } finally {
             if (result == null) {
-                result = 0l;
+                result = 0L;
             }
         }
         return result;

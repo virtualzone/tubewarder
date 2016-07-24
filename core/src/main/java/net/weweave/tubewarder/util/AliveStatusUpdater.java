@@ -55,7 +55,7 @@ public class AliveStatusUpdater {
         List<System> aliveSystems =  getSystemDao().getAllAlive(getSystemDeadSeconds());
         StringBuilder sb = new StringBuilder("Cluster consists of "+aliveSystems.size()+" alive systems:");
         for (System system : aliveSystems) {
-            sb.append("\n---> ID = "+system.getSystemId());
+            sb.append("\n---> ID = ").append(system.getSystemId());
         }
         LOG.info(sb.toString());
     }

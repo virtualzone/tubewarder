@@ -45,7 +45,7 @@ public class UserDao extends AbstractDao<User> {
                 "WHERE LOWER(u.username) LIKE :s OR LOWER(u.displayName) LIKE :s " +
                 "ORDER BY u.username ASC");
         query.setParameter("s", "%"+s.trim().toLowerCase()+"%");
-        List<Object[]> list = query.getResultList();
+        @SuppressWarnings("unchecked") List<Object[]> list = query.getResultList();
         for (Object[] o : list) {
             result.put((String)o[0], (String)o[1]);
         }

@@ -72,6 +72,7 @@ public class OutputHandlerFactory {
             LOG.info("Found annotated output handler class: " + clazz.getName());
             if (IOutputHandler.class.isAssignableFrom(clazz)) {
                 String id = clazz.getAnnotation(OutputHandler.class).id();
+                //noinspection unchecked
                 handlers.put(id, (Class<? extends IOutputHandler>)clazz);
                 LOG.info("Added output handler " + id + " in class: " + clazz.getName());
             }

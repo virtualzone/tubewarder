@@ -15,10 +15,7 @@ import java.util.List;
 public class SystemDao extends AbstractDao<System> {
     public boolean isMasterOfAliveSystems(Integer systemId, int minLastAliveSeconds) {
         List<System> alive = getAllAlive(minLastAliveSeconds);
-        if (alive != null && alive.size() > 0 && alive.get(0).getSystemId().equals(systemId)) {
-            return true;
-        }
-        return false;
+        return alive != null && alive.size() > 0 && alive.get(0).getSystemId().equals(systemId);
     }
 
     public List<System> getAllDeadWithQueueItems(int minLastAliveSeconds) {
