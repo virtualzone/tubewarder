@@ -13,6 +13,7 @@ import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.SetConfigRequest;
 import net.weweave.tubewarder.service.response.AbstractResponse;
 import net.weweave.tubewarder.service.response.SetObjectRestResponse;
+import net.weweave.tubewarder.util.LicenseManager;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.RequestScoped;
@@ -29,6 +30,9 @@ import java.util.List;
 public class SetConfigService extends AbstractService {
     @Inject
     private ConfigItemDao configItemDao;
+
+    @Inject
+    private LicenseManager licenseManager;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -77,6 +81,7 @@ public class SetConfigService extends AbstractService {
                 getConfigItemDao().setValue(model.key, model.value);
             }
         }
+        getLicenseManager().checkAllStoredKeys();
     }
 
     public ConfigItemDao getConfigItemDao() {
@@ -85,5 +90,13 @@ public class SetConfigService extends AbstractService {
 
     public void setConfigItemDao(ConfigItemDao configItemDao) {
         this.configItemDao = configItemDao;
+    }
+
+    public LicenseManager getLicenseManager() {
+        return licenseManager;
+    }
+
+    public void setLicenseManager(LicenseManager licenseManager) {
+        this.licenseManager = licenseManager;
     }
 }
