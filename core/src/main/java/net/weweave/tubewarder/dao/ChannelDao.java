@@ -1,7 +1,6 @@
 package net.weweave.tubewarder.dao;
 
 import net.weweave.tubewarder.domain.Channel;
-import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 

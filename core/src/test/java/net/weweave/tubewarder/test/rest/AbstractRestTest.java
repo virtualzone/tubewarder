@@ -7,21 +7,12 @@ import net.weweave.tubewarder.dao.UserGroupDao;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.domain.UserGroup;
 import net.weweave.tubewarder.test.AbstractServiceTest;
-import net.weweave.tubewarder.test.DbTestAssist;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.jayway.restassured.RestAssured.given;

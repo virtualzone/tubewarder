@@ -13,7 +13,6 @@ import net.weweave.tubewarder.service.model.UserGroupModel;
 import net.weweave.tubewarder.service.request.SetUserGroupRequest;
 import net.weweave.tubewarder.service.response.SetObjectRestResponse;
 import org.apache.commons.validator.GenericValidator;
-import org.mindrot.jbcrypt.BCrypt;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

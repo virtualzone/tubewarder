@@ -1,10 +1,6 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.ConfigItemDao;
-import net.weweave.tubewarder.exception.AuthRequiredException;
-import net.weweave.tubewarder.service.model.ErrorCode;
-import net.weweave.tubewarder.service.request.AbstractRestRequest;
-import net.weweave.tubewarder.service.response.AbstractResponse;
 import net.weweave.tubewarder.service.response.CheckLicenseResponse;
 import net.weweave.tubewarder.util.ConfigManager;
 import net.weweave.tubewarder.util.LicenseManager;
@@ -12,7 +8,6 @@ import net.weweave.tubewarder.util.LicenseManager;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 
 @RequestScoped
 @Path("/checklicense")

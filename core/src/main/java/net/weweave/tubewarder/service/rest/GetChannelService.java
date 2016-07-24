@@ -7,7 +7,6 @@ import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.exception.PermissionException;
 import net.weweave.tubewarder.outputhandler.OutputHandlerFactory;
-import net.weweave.tubewarder.outputhandler.api.OutputHandler;
 import net.weweave.tubewarder.service.model.ChannelModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.response.GetChannelResponse;

@@ -1,8 +1,6 @@
 package net.weweave.tubewarder.test.dao;
 
 import net.weweave.tubewarder.dao.ConfigItemDao;
-import net.weweave.tubewarder.domain.ConfigItem;
-import net.weweave.tubewarder.domain.ConfigItemType;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.test.AbstractServiceTest;
 import net.weweave.tubewarder.test.DbTestAssist;
@@ -12,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.util.UUID;
 
 @RunWith(Arquillian.class)
 public class TestConfigItemDao extends AbstractServiceTest {

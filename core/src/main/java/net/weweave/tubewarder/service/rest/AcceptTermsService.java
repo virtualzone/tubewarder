@@ -1,22 +1,12 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.dao.ConfigItemDao;
-import net.weweave.tubewarder.domain.ConfigItem;
-import net.weweave.tubewarder.domain.ConfigItemType;
-import net.weweave.tubewarder.domain.Session;
-import net.weweave.tubewarder.domain.User;
-import net.weweave.tubewarder.exception.AuthRequiredException;
 import net.weweave.tubewarder.exception.InvalidInputParametersException;
-import net.weweave.tubewarder.exception.ObjectNotFoundException;
-import net.weweave.tubewarder.exception.PermissionException;
-import net.weweave.tubewarder.service.model.ConfigItemModel;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.service.request.AcceptTermsRequest;
-import net.weweave.tubewarder.service.request.SetConfigRequest;
 import net.weweave.tubewarder.service.response.AbstractResponse;
 import net.weweave.tubewarder.service.response.SetObjectRestResponse;
 import net.weweave.tubewarder.util.ConfigManager;
-import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -25,7 +15,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @RequestScoped
 @Path("/acceptterms")

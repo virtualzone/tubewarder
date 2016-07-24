@@ -5,7 +5,6 @@ import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.service.model.ErrorCode;
 import net.weweave.tubewarder.test.TestSendServiceCommon;
 import org.jboss.arquillian.junit.Arquillian;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
