@@ -21,6 +21,7 @@ public class DateTimeFormat {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isDateTime(String s) {
         return parse(s) != null;
     }

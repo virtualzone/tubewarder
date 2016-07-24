@@ -11,12 +11,11 @@ import java.io.File;
 public class Deployments {
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class)
                 .addPackages(true, "net.weweave.tubewarder")
                 .addAsResource("META-INF/persistence.xml")
                 .addAsWebInfResource("resources.xml")
                 .addAsWebInfResource("openejb-jar.xml")
                 .addAsLibrary(new File("../outputhandlers/sysout/target/outputhandler-sysout.jar"), "outputhandler-sysout.jar");
-        return war;
     }
 }

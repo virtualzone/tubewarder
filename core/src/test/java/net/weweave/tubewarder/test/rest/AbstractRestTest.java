@@ -25,23 +25,21 @@ public abstract class AbstractRestTest extends AbstractServiceTest {
     private UserGroupDao userGroupDao;
 
     protected ResponseSpecification getResponseSpecificationGet(String var1, Object var2, Object... var3) {
-        ResponseSpecification response = given()
+        return given()
                 .parameters(var1, var2, var3)
                 .contentType(ContentType.JSON)
         .expect()
                 .contentType(ContentType.JSON)
                 .statusCode(HttpStatus.SC_OK);
-        return response;
     }
 
     protected ResponseSpecification getResponseSpecificationPost(JSONObject payload) {
-        ResponseSpecification response = given()
+        return given()
                 .body(payload.toString())
                 .contentType(ContentType.JSON)
         .expect()
                 .contentType(ContentType.JSON)
                 .statusCode(HttpStatus.SC_OK);
-        return response;
     }
 
     protected void setExpectedBodies(ResponseSpecification response, Object... body) {

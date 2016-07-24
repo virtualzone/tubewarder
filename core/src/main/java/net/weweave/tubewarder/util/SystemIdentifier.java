@@ -15,8 +15,7 @@ public class SystemIdentifier {
     private static int createUniqueIdentifier() {
         try {
             InetAddress address = getLocalAddress();
-            int hash = Arrays.hashCode(address.getAddress());
-            return hash;
+            return Arrays.hashCode(address.getAddress());
         } catch (Exception e) {
             return ThreadLocalRandom.current().nextInt();
         }
