@@ -94,19 +94,19 @@ public class SendQueueItem extends AbstractPersistentObject {
     }
 
     public Date getCreateDate() {
-        return createDate;
+        return (createDate == null ? null : new Date(createDate.getTime()));
     }
 
     public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+        this.createDate = (createDate == null ? null : new Date(createDate.getTime()));
     }
 
     public Date getLastTryDate() {
-        return lastTryDate;
+        return (lastTryDate == null ? null : new Date(lastTryDate.getTime()));
     }
 
     public void setLastTryDate(Date lastTryDate) {
-        this.lastTryDate = lastTryDate;
+        this.lastTryDate = (lastTryDate == null ? null : new Date(lastTryDate.getTime()));
     }
 
     public Integer getTryCount() {

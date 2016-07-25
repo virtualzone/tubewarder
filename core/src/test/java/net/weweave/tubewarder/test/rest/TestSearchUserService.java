@@ -22,8 +22,8 @@ public class TestSearchUserService extends AbstractRestTest {
 
         User u1 = createUserWithNoRights("john.doe", "John Doe", "dummy");
         User u2 = createUserWithNoRights("john.miller", "John Miller", "dummy");
-        User u3 = createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
-        User u4 = createUserWithNoRights("weweave", "This is weweave", "dummy");
+        createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
+        createUserWithNoRights("weweave", "This is weweave", "dummy");
 
         JSONObject users = validateSearchUserResponse(token, "john",
                 "error", equalTo(ErrorCode.OK)).getJSONObject("users");
@@ -42,8 +42,8 @@ public class TestSearchUserService extends AbstractRestTest {
 
         User u1 = createUserWithNoRights("john.doe", "John Doe", "dummy");
         User u2 = createUserWithNoRights("john.miller", "John Miller", "dummy");
-        User u3 = createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
-        User u4 = createUserWithNoRights("weweave", "This is weweave", "dummy");
+        createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
+        createUserWithNoRights("weweave", "This is weweave", "dummy");
 
         JSONObject users = validateSearchUserResponse(token, "oh",
                 "error", equalTo(ErrorCode.OK)).getJSONObject("users");
@@ -60,10 +60,10 @@ public class TestSearchUserService extends AbstractRestTest {
         createAdminUser();
         String token = authAdminGetToken();
 
-        User u1 = createUserWithNoRights("john.doe", "John Doe", "dummy");
-        User u2 = createUserWithNoRights("john.miller", "John Miller", "dummy");
+        createUserWithNoRights("john.doe", "John Doe", "dummy");
+        createUserWithNoRights("john.miller", "John Miller", "dummy");
         User u3 = createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
-        User u4 = createUserWithNoRights("weweave", "This is weweave", "dummy");
+        createUserWithNoRights("weweave", "This is weweave", "dummy");
 
         JSONObject users = validateSearchUserResponse(token, "good",
                 "error", equalTo(ErrorCode.OK)).getJSONObject("users");
@@ -81,7 +81,7 @@ public class TestSearchUserService extends AbstractRestTest {
         User u1 = createUserWithNoRights("john.doe", "John Doe", "dummy");
         User u2 = createUserWithNoRights("john.miller", "John Miller", "dummy");
         User u3 = createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
-        User u4 = createUserWithNoRights("weweave", "This is weweave", "dummy");
+        createUserWithNoRights("weweave", "This is weweave", "dummy");
 
         JSONObject users = validateSearchUserResponse(token, "j",
                 "error", equalTo(ErrorCode.OK)).getJSONObject("users");
@@ -100,10 +100,10 @@ public class TestSearchUserService extends AbstractRestTest {
         createAdminUser();
         String token = authAdminGetToken();
 
-        User u1 = createUserWithNoRights("john.doe", "John Doe", "dummy");
-        User u2 = createUserWithNoRights("john.miller", "John Miller", "dummy");
-        User u3 = createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
-        User u4 = createUserWithNoRights("weweave", "This is weweave", "dummy");
+        createUserWithNoRights("john.doe", "John Doe", "dummy");
+        createUserWithNoRights("john.miller", "John Miller", "dummy");
+        createUserWithNoRights("jack.something", "NoGoodUsername", "dummy");
+        createUserWithNoRights("weweave", "This is weweave", "dummy");
 
         JSONObject users = validateSearchUserResponse(token, "blah",
                 "error", equalTo(ErrorCode.OK)).getJSONObject("users");

@@ -20,18 +20,18 @@ public class System extends AbstractPersistentObject {
     }
 
     public Date getFirstAlive() {
-        return firstAlive;
+        return (firstAlive == null ? null : new Date(lastAlive.getTime()));
     }
 
     public void setFirstAlive(Date firstAlive) {
-        this.firstAlive = firstAlive;
+        this.firstAlive = (firstAlive == null ? null : new Date(firstAlive.getTime()));
     }
 
     public Date getLastAlive() {
-        return lastAlive;
+        return (lastAlive == null ? null : new Date(lastAlive.getTime()));
     }
 
     public void setLastAlive(Date lastAlive) {
-        this.lastAlive = lastAlive;
+        this.lastAlive = (lastAlive == null ? null : new Date(lastAlive.getTime()));
     }
 }

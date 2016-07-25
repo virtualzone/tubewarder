@@ -22,7 +22,6 @@ public class SystemIdentifier {
     }
 
     private static InetAddress getLocalAddress() throws SocketException, UnknownHostException {
-        InetAddress fav = null;
         for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
             NetworkInterface iface = ifaces.nextElement();
             for (Enumeration<InetAddress> addrs = iface.getInetAddresses(); addrs.hasMoreElements(); ) {

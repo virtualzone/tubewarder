@@ -23,7 +23,7 @@ public class TermsFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest)servletRequest;
-        String path = req.getPathInfo();
+        String path = req.getRequestURI();
         Boolean termsAccepted = getConfigItemDao().getBool(ConfigManager.CONFIG_TERMS_ACCEPTED, false);
         if (!termsAccepted && !isAllowedPathForUnacceptedTerms(path)) {
             HttpServletResponse resp = (HttpServletResponse)servletResponse;

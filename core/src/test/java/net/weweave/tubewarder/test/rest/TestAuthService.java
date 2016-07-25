@@ -1,7 +1,10 @@
 package net.weweave.tubewarder.test.rest;
 
+import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.specification.ResponseSpecification;
 import net.weweave.tubewarder.service.model.ErrorCode;
+import net.weweave.tubewarder.util.ConfigManager;
+import org.apache.http.HttpStatus;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -10,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.UUID;
 
+import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Arquillian.class)
@@ -100,6 +104,19 @@ public class TestAuthService extends AbstractRestTest {
     public void testPingEmptyToken() {
         validatePingResponse("",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
+    }
+
+    @Test
+    public void testWithoutTermsAccepted() {
+        getConfigItemDao().setValue(ConfigManager.CONFIG_TERMS_ACCEPTED, false);
+        createAdminUser();
+        JSONObject payload = getAuthRequestPayload("admin", "admin");
+        ResponseSpecification response = given()
+                .body(payload.toString())
+                .contentType(ContentType.JSON)
+            .expect()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        response.when().post(getUri("auth"));
     }
 
     @Test

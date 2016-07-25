@@ -19,18 +19,18 @@ public class Session extends AbstractPersistentObject {
     }
 
     public Date getLoginDate() {
-        return loginDate;
+        return (loginDate == null ? null : new Date(loginDate.getTime()));
     }
 
     public void setLoginDate(Date loginDate) {
-        this.loginDate = loginDate;
+        this.loginDate = (loginDate == null ? null : new Date(loginDate.getTime()));
     }
 
     public Date getLastActionDate() {
-        return lastActionDate;
+        return (lastActionDate == null ? null : new Date(lastActionDate.getTime()));
     }
 
     public void setLastActionDate(Date lastActionDate) {
-        this.lastActionDate = lastActionDate;
+        this.lastActionDate = (lastActionDate == null ? null : new Date(lastActionDate.getTime()));
     }
 }

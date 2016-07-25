@@ -1,5 +1,7 @@
 package net.weweave.tubewarder.test;
 
+import net.weweave.tubewarder.dao.ConfigItemDao;
+import net.weweave.tubewarder.util.ConfigManager;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,6 +19,9 @@ public abstract class AbstractServiceTest {
     @Inject
     private DbTestAssist dbTestAssist;
 
+    @Inject
+    private ConfigItemDao configItemDao;
+
     @BeforeClass
     public static void beforeClass() {
         java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
@@ -26,6 +31,7 @@ public abstract class AbstractServiceTest {
     @Before
     public final void initialize() {
         getDbTestAssist().cleanDb();
+        getConfigItemDao().setValue(ConfigManager.CONFIG_TERMS_ACCEPTED, true);
     }
 
     public String getUri(String serviceName) {
@@ -53,5 +59,13 @@ public abstract class AbstractServiceTest {
 
     public void setDbTestAssist(DbTestAssist dbTestAssist) {
         this.dbTestAssist = dbTestAssist;
+    }
+
+    public ConfigItemDao getConfigItemDao() {
+        return configItemDao;
+    }
+
+    public void setConfigItemDao(ConfigItemDao configItemDao) {
+        this.configItemDao = configItemDao;
     }
 }

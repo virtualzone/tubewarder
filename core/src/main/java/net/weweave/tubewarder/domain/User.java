@@ -51,11 +51,11 @@ public class User extends AbstractPersistentObject {
     }
 
     public Date getLastLogin() {
-        return lastLogin;
+        return (lastLogin == null ? null : new Date(lastLogin.getTime()));
     }
 
     public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
+        this.lastLogin = (lastLogin == null ? null : new Date(lastLogin.getTime()));
     }
 
     public Boolean getAllowAppTokens() {
