@@ -6,7 +6,7 @@
 
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0-RC2-SNAPSHOT</version>
+    <version>1.0-RC2</version>
     <packaging>pom</packaging>
     
     <name>${project.groupId}:${project.artifactId}</name>

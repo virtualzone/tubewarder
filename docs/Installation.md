@@ -48,7 +48,7 @@ While most of the configuration is handily done using Tubewarder's Web Interface
 
 The bootstrap configuration is located in the file: tubewarder.conf
 
-The file is well documented, so here's a cut & paste of the default configuration file:
+The file is well documented, so here's a copy & paste of the default configuration file:
 
 ```
 # Tubewarder Bootstrap Configuration
@@ -101,6 +101,11 @@ If you're using the Docker image and want to modify the bootstrap configuration,
 FROM weweave/tubewarder
 ADD my-custom-config.conf /opt/tubewarder/tubewarder.conf
 ```
+
+# Initial start
+You need to accept the License Agreement after the first start of Tubewarder. If you omit this step, all services will return a "Forbidden" (403) HTTP Status Code.
+
+To accept the terms, just browse to the web interface at port 8080 (http://localhost:8080) and tick the checkbox below the License Agreement.
 
 # Log Files
 If you're using the Docker image, you can find the log files in these locations:

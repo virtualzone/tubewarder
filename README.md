@@ -15,7 +15,7 @@ Tubewarder makes sending messages to your users easier than ever:
 
 ![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
 
-The current release is 1.0 Release Candidate 1 (1.0-RC1), which is feature-complete and well tested. However, we're still hunting final bugs and improving stability. Use it on your own risk.
+The current release is 1.0 Release Candidate 2 (1.0-RC2), which is feature-complete and well tested. However, we're still hunting final bugs and improving stability. Use it on your own risk.
 
 ## Purpose
 Traditional infrastructures usually look similar to the following diagram: All of your applications have an n:m relationship with all of your outbound messaging services. Besides the vast connectivities, you have lots of duplicated code for logging, archiving, templating, error handling, etc. 
