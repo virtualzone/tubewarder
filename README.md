@@ -15,8 +15,6 @@ Tubewarder makes sending messages to your users easier than ever:
 
 ![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
 
-The current release is 1.0 Release Candidate 2 (1.0-RC2), which is feature-complete and well tested. However, we're still hunting final bugs and improving stability. Use it on your own risk.
-
 ## Purpose
 Traditional infrastructures usually look similar to the following diagram: All of your applications have an n:m relationship with all of your outbound messaging services. Besides the vast connectivities, you have lots of duplicated code for logging, archiving, templating, error handling, etc. 
 
@@ -109,9 +107,4 @@ You can find the log files in these locations:
 * Stderr log: /var/log/tubewarder.err
 
 ## License
-For non-commercial projects, you may use Tubewarder under the terms of the GPLv3.
-
-For commercial use, please visit [our website](https://weweave.net/products/tubewarder/) for licensing information.
-
-## Next steps
-Take a look at the [milestones](https://github.com/weweave/tubewarder/milestones) to find out what is planned for upcoming releases.
+Tubewarder can be used under the terms of this [License Agreement](https://weweave.net/products/tubewarder/license-agreement/).
