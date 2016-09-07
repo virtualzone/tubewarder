@@ -84,7 +84,9 @@ docker run \
     weweave/tubewarder
 ```
 
-This will expose Tubewarder's web interface on port 8080. Access it at: http://localhost:8080/ (replace localhost with your docker host's hostname or ip address)
+This will expose Tubewarder's web interface on port 8080. Access it at: http://localhost:8080/ (replace localhost with your docker host's hostname or ip address).
+
+Please refer to the [documentation](http://tubewarder.readthedocs.io/) for information on how to set up persistence.
 
 ## Output Handler API
 Output Handlers do the actual work, as they perform the outbound processing. There are built-in output handlers for email and console output. You can easily develop additional output handlers by using the Output Handler API.

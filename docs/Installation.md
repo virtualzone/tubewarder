@@ -9,7 +9,7 @@ Tubewarder is based on WildFly Swarm, a Java Enterprise Edition (JEE) modular co
 * Optional: Git (if you want to build from source)
 
 # Using Docker
-The easiest way to get Tubewarder up and running is by using the pre-built Docker images. Our Docker image has a MySQL server pre-installed, so it's fully self-contained. If you have Docker installed on your system, run the following command to start the Tubewarder Docker Container:
+The easiest way to get Tubewarder up and running is by using the pre-built Docker images. If you have Docker installed on your system, run the following command to start the Tubewarder Docker Container:
 
 ```
 docker pull weweave/tubewarder
@@ -20,6 +20,68 @@ docker run \
 ```
 
 This will expose Tubewarder's web interface on port 8080. Access it at: http://localhost:8080/ (replace localhost with your docker host's hostname or ip address)
+
+Note: If nothing else has been specified, the Docker container will start with an in-memory H2 database, so there will be no persistence. To enable persistence, you need to change the Tuberwarder configuration.
+
+## Method 1: Deriving from the base image
+
+Create a Dockerfile like this:
+
+```
+FROM weweave/tubewarder
+ADD my-tubewarder.conf /opt/tubewarder/tubewarder.conf
+```
+
+## Method 2: Using environment variables
+
+You can overwrite all configuration parameters using environment variables, i.e.:
+
+```
+docker run \
+    -p 8080:8080 \
+    --name tubewarder \
+    --link mysql:mysql \
+    -e "TUBEWARDER_DB=mysql" \
+    -e "TUBEWARDER_MYSQL_PATH=mysql:3306/tubewarder" \
+    weweave/tubewarder
+```
+
+The environment variables all start with TUBEWARDER\_ and end with the key of the bootstrap configuration option in uppercase, whereby a dot (.) becomes an underscore (\_). So the bootstrap configuration option mysql.path is TUBEWARDER\_MYSQL\_PATH as an environment variable.
+
+## Example: Using Docker Compose to set up MySQL and Tubewarder
+
+Here is an example docker-compose.yml which sets up a MySQL server and links it to a depending Tubewarder container.
+
+```
+version: '2'
+services:
+  tubewarder:
+    image: weweave/tubewarder
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+      - "8080:8080"
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    environment:
+      - TUBEWARDER_DB=mysql
+      - TUBEWARDER_MYSQL_PATH=mysql:3306/tubewarder
+      - TUBEWARDER_MYSQL_USERNAME=tubewarder
+      - TUBEWARDER_MYSQL_PASSWORD=Test1234
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/docker/storage/mysql/mysql:/var/lib/mysql"
+      - "/docker/storage/mysql/conf.d:/etc/mysql/conf.d"
+    environment:
+      - MYSQL_ROOT_PASSWORD=Test1234
+      - MYSQL_DATABASE=tubewarder
+      - MYSQL_USER=tubewarder
+      - MYSQL_PASSWORD=Test1234
+```
 
 # Using pre-built packages
 If you don't want to use the Docker image, you can download a ZIP file containing pre-compiled JAR packages:
