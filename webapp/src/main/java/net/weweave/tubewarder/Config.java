@@ -12,47 +12,55 @@ public class Config extends Properties {
     }
 
     public String getHttpPort() {
-        return getProperty("http.port", "8080");
+        return getEnvProperty("http.port", "8080");
     }
 
     public String getDb() {
-        return getProperty("db", "h2");
+        return getEnvProperty("db", "h2");
     }
 
     public String getH2Path() {
-        return getProperty("h2.path", "mem:tubewarder");
+        return getEnvProperty("h2.path", "mem:tubewarder");
     }
 
     public String getH2User() {
-        return getProperty("h2.username", "tubewarder");
+        return getEnvProperty("h2.username", "tubewarder");
     }
 
     public String getH2Pass() {
-        return getProperty("h2.password", "tubewarder");
+        return getEnvProperty("h2.password", "tubewarder");
     }
 
     public String getMySqlPath() {
-        return getProperty("mysql.path", "localhost:3306/tubewarder");
+        return getEnvProperty("mysql.path", "localhost:3306/tubewarder");
     }
 
     public String getMySqlUser() {
-        return getProperty("mysql.username", "tubewarder");
+        return getEnvProperty("mysql.username", "tubewarder");
     }
 
     public String getMySqlPass() {
-        return getProperty("mysql.password", "tubewarder");
+        return getEnvProperty("mysql.password", "tubewarder");
     }
 
     public String getPostgreSqlPath() {
-        return getProperty("postgresql.path", "localhost:5432/tubewarder");
+        return getEnvProperty("postgresql.path", "localhost:5432/tubewarder");
     }
 
     public String getPostgreSqlUser() {
-        return getProperty("postgresql.username", "tubewarder");
+        return getEnvProperty("postgresql.username", "tubewarder");
     }
 
     public String getPostgreSqlPass() {
-        return getProperty("postgresql.password", "tubewarder");
+        return getEnvProperty("postgresql.password", "tubewarder");
+    }
+
+    private String getEnvProperty(String key, String defaultValue) {
+        String result = System.getenv("TUBEWARDER_"+key.toUpperCase().replace('.', '_'));
+        if (result == null) {
+            result = getProperty(key, defaultValue);
+        }
+        return result;
     }
 
     public void checkConfig() throws IllegalArgumentException {
