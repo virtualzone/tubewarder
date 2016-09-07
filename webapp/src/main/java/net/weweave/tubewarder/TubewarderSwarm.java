@@ -5,7 +5,6 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.config.datasources.DataSource;
-import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.datasources.DatasourceArchive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
@@ -76,7 +75,7 @@ public class TubewarderSwarm extends Swarm {
         deploy(jar);
     }
 
-    private void deployDatasourceFraction(String jdbcString) throws DeploymentException {
+    private void deployDatasourceFraction(String jdbcString) throws Exception {
         JARArchive dsArchive = ShrinkWrap.create(JARArchive.class);
         DataSource ds = new DataSource("TubewarderDS");
         ds.connectionUrl(jdbcString);
