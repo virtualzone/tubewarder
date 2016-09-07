@@ -1,0 +1,29 @@
+version: '2'
+services:
+  tubewarder:
+    image: weweave/tubewarder
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+      - "8080:8080"
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    environment:
+      - TUBEWARDER_DB=mysql
+      - TUBEWARDER_MYSQL_PATH=mysql:3306/tubewarder
+      - TUBEWARDER_MYSQL_USERNAME=tubewarder
+      - TUBEWARDER_MYSQL_PASSWORD=Test1234
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+#      - "/docker/storage/mysql/mysql:/var/lib/mysql"
+#      - "/docker/storage/mysql/conf.d:/etc/mysql/conf.d"
+    environment:
+      - MYSQL_ROOT_PASSWORD=Test1234
+      - MYSQL_DATABASE=tubewarder
+      - MYSQL_USER=tubewarder
+      - MYSQL_PASSWORD=Test1234
+      
