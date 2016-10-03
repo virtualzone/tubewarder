@@ -25,6 +25,9 @@ public class CorsFilter implements Filter {
         if (corsEnabled) {
             HttpServletResponse resp = (HttpServletResponse) servletResponse;
             resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            resp.addHeader("Access-Control-Allow-Headers", "Content-Type");
+            resp.addHeader("Access-Control-Max-Age", "1000");
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
