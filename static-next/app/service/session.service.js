@@ -20,9 +20,11 @@ var SessionService = (function () {
             username: username,
             password: password
         };
-        this.http.post('/rs/auth', payload)
+        this.http.post('auth', payload)
             .then(function (res) {
-            console.log("------------------> " + res);
+            console.log("------------------> " + res.error);
+            console.log("------------------> " + res.token);
+            console.log("------------------> " + res.user);
         });
     };
     SessionService.prototype.logout = function () {

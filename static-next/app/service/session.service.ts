@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
+import { AuthResponse } from '../response/auth-response';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -14,9 +15,11 @@ export class SessionService {
             username: username,
             password: password
         };
-        this.http.post('/rs/auth', payload)
-            .then(res => {
-                console.log("------------------> " + res);
+        this.http.post('auth', payload)
+            .then((res: AuthResponse) => {
+                console.log("------------------> " + res.error);
+                console.log("------------------> " + res.token);
+                console.log("------------------> " + res.user);
             });
     }
 

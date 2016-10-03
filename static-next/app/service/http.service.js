@@ -15,17 +15,18 @@ var HttpService = (function () {
     function HttpService(http) {
         this.http = http;
         this.headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        this.rsUrl = 'http://localhost:8080/rs/';
     }
     HttpService.prototype.post = function (rs, payload) {
         return this.http
-            .post(rs, JSON.stringify(payload), { headers: this.headers })
+            .post(this.rsUrl + rs, JSON.stringify(payload), { headers: this.headers })
             .toPromise()
             .then(function (res) { return res.json(); })
             .catch(this.handleError);
     };
     HttpService.prototype.get = function (rs) {
         return this.http
-            .get(rs)
+            .get(this.rsUrl + rs)
             .toPromise()
             .then(function (res) { return res.json(); })
             .catch(this.handleError);

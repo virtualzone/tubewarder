@@ -18,8 +18,7 @@ var LoginComponent = (function () {
     }
     LoginComponent.prototype.onSubmit = function () {
         this.sessionService
-            .login(this.user.username, this.user.password)
-            .then();
+            .login(this.user.username, this.user.password);
     };
     LoginComponent.prototype.onPasswordChange = function () {
         // TODO

@@ -1,29 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http } from '@angular/http';
+import { RestResponse } from '../response/rest-response';
 
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class HttpService {
     private headers = new Headers({'Content-Type': 'application/json'});
+    private rsUrl: string = 'http://localhost:8080/rs/';
 
     constructor(private http: Http) {
 
     }
 
-    post(rs: string, payload: Object): Promise<any> {
+    post<T extends RestResponse>(rs: string, payload: Object): Promise<T> {
         return this.http
-            .post(rs, JSON.stringify(payload), {headers: this.headers})
+            .post(this.rsUrl + rs, JSON.stringify(payload), {headers: this.headers})
             .toPromise()
-            .then(res => res.json())
+            .then(res => <T>res.json())
             .catch(this.handleError);
     }
 
-    get(rs: string): Promise<any> {
+    get<T extends RestResponse>(rs: string): Promise<T> {
         return this.http
-            .get(rs)
+            .get(this.rsUrl + rs)
             .toPromise()
-            .then(res => res.json())
+            .then(res => <T>res.json())
             .catch(this.handleError);
     }
 

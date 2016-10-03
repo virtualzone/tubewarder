@@ -17,8 +17,7 @@ export class LoginComponent {
 
     onSubmit(): void {
         this.sessionService
-            .login(this.user.username, this.user.password)
-            .then();
+            .login(this.user.username, this.user.password);
     }
 
     onPasswordChange(): void {
