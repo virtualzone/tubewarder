@@ -16,6 +16,7 @@ public class ConfigManager {
     public static final String CONFIG_LICENSE_KEY_3 = "LICENSE_KEY_3";
     public static final String CONFIG_LICENSE_KEY_4 = "LICENSE_KEY_4";
     public static final String CONFIG_TERMS_ACCEPTED = "TERMS_ACCEPTED";
+    public static final String CONFIG_CORS_ENABLED= "CORS_ENABLED";
 
     @Inject
     private ConfigItemDao configItemDao;
@@ -40,6 +41,9 @@ public class ConfigManager {
         }
         if (!getConfigItemDao().hasKey(CONFIG_TERMS_ACCEPTED)) {
             getConfigItemDao().setValue(CONFIG_TERMS_ACCEPTED, false, "I have read and accept the License Agreement");
+        }
+        if (!getConfigItemDao().hasKey(CONFIG_CORS_ENABLED)) {
+            getConfigItemDao().setValue(CONFIG_CORS_ENABLED, false, "Enable Cross-origin resource sharing for REST Services");
         }
     }
 
