@@ -146,6 +146,10 @@ define(['angular', 'app'], function(angular, app) {
                     $scope.model.id = channel.id;
                     $scope.model.name = channel.name;
                     $scope.model.groupId = channel.group.id;
+                    $scope.model.rewriteRecipientName = channel.rewriteRecipientName;
+                    $scope.model.rewriteRecipientAddress = channel.rewriteRecipientAddress;
+                    $scope.model.rewriteSubject = channel.rewriteSubject;
+                    $scope.model.rewriteContent = channel.rewriteContent;
                     setConfigOptions(channel.config);
                     appServices.setLoading(false);
                 });
