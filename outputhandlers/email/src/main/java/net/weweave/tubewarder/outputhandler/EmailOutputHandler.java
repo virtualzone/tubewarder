@@ -10,6 +10,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -20,7 +21,7 @@ public class EmailOutputHandler implements IOutputHandler {
     private static final Logger LOG = Logger.getLogger(EmailOutputHandler.class.getName());
 
     @Override
-    public void process(Config config, SendItem item) {
+    public void process(Config config, SendItem item) throws TemporaryProcessingException, PermanentProcessingException {
         Session session = getSession(config);
         try {
             MimeMessage message = createMimeMessage(session, item.getSender());
@@ -28,8 +29,12 @@ public class EmailOutputHandler implements IOutputHandler {
             appendAttachments(multipart, item.getAttachments());
             message.setContent(multipart);
             sendMail(config, session, message);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            throw new TemporaryProcessingException(e.getMessage());
+        } catch (MessagingException e) {
+            throw new TemporaryProcessingException(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            throw new PermanentProcessingException(e.getMessage());
         }
     }
 
@@ -134,7 +139,7 @@ public class EmailOutputHandler implements IOutputHandler {
         multipart.addBodyPart(messageBodyPart);
     }
 
-    private void sendMail(Config config, Session session, MimeMessage message) throws MessagingException {
+    private void sendMail(Config config, Session session, MimeMessage message) throws MessagingException, UnknownHostException {
         if ((Boolean)config.getOrDefault("simulate", false)) {
             return;
         }
