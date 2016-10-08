@@ -1,13 +1,11 @@
 package net.weweave.tubewarder.outputhandler;
 
 import net.weweave.tubewarder.outputhandler.api.*;
+import net.weweave.tubewarder.outputhandler.api.Address;
 import net.weweave.tubewarder.outputhandler.api.configoption.*;
 import org.apache.commons.validator.GenericValidator;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
@@ -81,17 +79,35 @@ public class EmailOutputHandler implements IOutputHandler {
     }
 
     private Session getSession(Config config) {
-        Session session = Session.getDefaultInstance(getProperties(config), null);
+        javax.mail.Authenticator authenticator = null;
+        if ((Boolean)config.getOrDefault("auth", false)) {
+            authenticator = new javax.mail.Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication((String)config.getOrDefault("username", ""), (String)config.getOrDefault("password", ""));
+                }
+            };
+        }
+        Properties props = getProperties(config);
+        Session session = Session.getInstance(props, authenticator);
         return session;
     }
 
     private Properties getProperties(Config config) {
         Properties props = new Properties();
+
+        props.put("mail.smtp.host", config.getOrDefault("smtpServer", ""));
+        props.put("mail.smtp.port", String.valueOf(config.getOrDefault("port", 25)));
+        props.put("mail.smtp.auth", String.valueOf(config.getOrDefault("auth", false)));
+
         if ("TLS".equals(config.getOrDefault("security", ""))) {
             props.put("mail.smtp.starttls.enable", "true");
         } else if ("SSL".equals(config.getOrDefault("security", ""))) {
             props.put("mail.smtp.ssl.enable", "true");
+            props.put("mail.smtp.socketFactory.port", String.valueOf(config.getOrDefault("port", 25)));
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         }
+
         return props;
     }
 
@@ -145,6 +161,12 @@ public class EmailOutputHandler implements IOutputHandler {
         }
 
         Transport tr = session.getTransport("smtp");
+        connectTransport(tr, config);
+        tr.sendMessage(message, message.getAllRecipients());
+        tr.close();
+    }
+
+    private void connectTransport(Transport tr, Config config) throws MessagingException, UnknownHostException {
         if (!(Boolean)config.getOrDefault("auth", false)) {
             tr.connect(
                     (String)config.getOrDefault("smtpServer", ""),
@@ -160,8 +182,5 @@ public class EmailOutputHandler implements IOutputHandler {
                     (String)config.getOrDefault("password", "")
             );
         }
-        message.saveChanges();
-        tr.sendMessage(message, message.getAllRecipients());
-        tr.close();
     }
 }
