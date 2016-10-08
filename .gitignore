@@ -10,4 +10,5 @@ target/*
 *.class
 *.war
 *.ear
+*.iml
 docs/_*
