@@ -31,6 +31,7 @@ public abstract class AbstractServiceTest {
     @Before
     public final void initialize() {
         getDbTestAssist().cleanDb();
+        getConfigItemDao().clearCache();
         getConfigItemDao().setValue(ConfigManager.CONFIG_TERMS_ACCEPTED, true);
     }
 
