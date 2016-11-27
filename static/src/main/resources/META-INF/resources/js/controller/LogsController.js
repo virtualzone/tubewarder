@@ -4,15 +4,19 @@ define(['angular', 'moment', 'app'], function(angular, moment, app) {
     app.lazy.controller('LogsController', ['$scope', '$http', 'appServices', function($scope, $http, appServices) {
         appServices.setActiveNavItem('logs');
         
+        var dateTimeFormat = 'YYYY-MM-DD HH:mm:ss';
         var endDate = moment();
         var startDate = moment().subtract(1, 'month');
         $scope.model = {
             logs: [],
-            startDate: startDate.format('YYYY-MM-DD HH:mm:ss'),
-            endDate: endDate.format('YYYY-MM-DD HH:mm:ss'),
+            startDate: startDate.format(dateTimeFormat),
+            endDate: endDate.format(dateTimeFormat),
             keyword: '',
             searchString: '',
             log: {}
+        };
+        $scope.dateTimePickerOptions = {
+            format: dateTimeFormat
         };
         
         $scope.showLog = function(id) {
@@ -45,9 +49,11 @@ define(['angular', 'moment', 'app'], function(angular, moment, app) {
         };
         
         load();
+        /*
         $('.datetimepicker').datetimepicker({
             format: 'YYYY-MM-DD HH:mm:ss'
         });
+        */
         
         $scope.applyFilter = function() {
             load();
