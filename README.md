@@ -4,7 +4,7 @@ A centric, extensible, template-based solution for outbound messaging (email, sm
 ## Enjoy a new quality of outbound communication
 Tubewarder makes sending messages to your users easier than ever:
 * All your outbound communication in one place
-* Easy-to-use templating system based on [Apache Freemarker](http://freemarker.incubator.apache.org)
+* Easy-to-use templating system based on [Handlebars](http://handlebarsjs.com/)
 * Connect your applications using SOAP web services or RESTful services
 * Built-in outbound connectors: Email, HTTP(S)
 * Configurable, extendable outbound connectors (API available)

@@ -36,7 +36,7 @@ Channels are routes to send outbound messages by using a specific configuration 
 # Templates
 Templats are concrete messages you want to send. A Template can contain variables and control structures (e.g. placeholders for salutation, name, and personalized URLs). A Template can be bound to one or more Channels, each with different texts as desired. So, you could have a Template called "New User Welcome Message", with different contents for saying Welcome to your new user via Plain Text Email, HTML Email, or SMS.
 
-Tubewarder uses the Apache Freemarker template engine. Refer to the Freemarker documentation regarding the features and syntax you can use in your templates: http://freemarker.org
+Tubewarder uses the Handlebars template system syntax. Refer to the Handlebars documentation regarding the features and syntax you can use in your templates: http://handlebarsjs.com/
 
 # Logs
 When a message is sent using the Send API, it is automatically logged/archived for legal purposes. The Send Queue Scheduler which is in charge of the actual processing updates the status of the sending process in the logged items. You can view and filter the logged messages in the web interface.

@@ -18,6 +18,7 @@ public class SendModel {
     @XmlElement(required = true)
     public AddressModel recipient;
     public List<KeyValueModel> model;
+    public String modelJson;
     public List<AttachmentModel> attachments;
     public String keyword;
     public String details;

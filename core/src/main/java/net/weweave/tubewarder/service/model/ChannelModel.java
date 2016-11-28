@@ -24,10 +24,10 @@ public class ChannelModel extends AbstractRestModel {
         model.id = channel.getExposableId();
         model.name = channel.getName();
         model.group = (channel.getUserGroup() == null) ? null : UserGroupModel.factorySmall(channel.getUserGroup());
-        model.rewriteRecipientName = (GenericValidator.isBlankOrNull(channel.getRewriteRecipientName()) ? "${recipientName}" : channel.getRewriteRecipientName());
-        model.rewriteRecipientAddress = (GenericValidator.isBlankOrNull(channel.getRewriteRecipientAddress()) ? "${recipientAddress}" : channel.getRewriteRecipientAddress());
-        model.rewriteSubject = (GenericValidator.isBlankOrNull(channel.getRewriteSubject()) ? "${subject}" : channel.getRewriteSubject());
-        model.rewriteContent = (GenericValidator.isBlankOrNull(channel.getRewriteContent()) ? "${content}" : channel.getRewriteContent());
+        model.rewriteRecipientName = (GenericValidator.isBlankOrNull(channel.getRewriteRecipientName()) ? "{{recipientName}}" : channel.getRewriteRecipientName());
+        model.rewriteRecipientAddress = (GenericValidator.isBlankOrNull(channel.getRewriteRecipientAddress()) ? "{{recipientAddress}}" : channel.getRewriteRecipientAddress());
+        model.rewriteSubject = (GenericValidator.isBlankOrNull(channel.getRewriteSubject()) ? "{{subject}}" : channel.getRewriteSubject());
+        model.rewriteContent = (GenericValidator.isBlankOrNull(channel.getRewriteContent()) ? "{{content}}" : channel.getRewriteContent());
         model.config = OutputHandlerConfigUtil.configJsonStringToMap(channel.getConfigJson());
         model.outputHandlerReadableName = factory.getNameForId(model.config.getString("id"));
         return model;

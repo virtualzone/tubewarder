@@ -19,7 +19,7 @@
                         <input type="text" class="form-control" id="rewriteRecipientName" name="rewriteRecipientName" placeholder="Recipient Name" data-ng-model="model.rewriteRecipientName" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" data-ng-click="resetRecipientName()">Reset</button>
-                            <a tabindex="0" role="button" class="btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
+                            <a tabindex="0" role="button" class="btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="{{recipientName}}<br />{{recipientAddress}}<br />{{subject}}<br />{{content}}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
                         </span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                         <input type="text" class="form-control" id="rewriteRecipientAddress" name="rewriteRecipientAddress" placeholder="Recipient Address" data-ng-model="model.rewriteRecipientAddress" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" data-ng-click="resetRecipientAddress()">Reset</button>
-                            <a tabindex="0" role="button" class="btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
+                            <a tabindex="0" role="button" class="btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="{{recipientName}}<br />{{recipientAddress}}<br />{{subject}}<br />{{content}}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
                         </span>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                         <input type="text" class="form-control" id="rewriteSubject" name="rewriteSubject" placeholder="Subject" data-ng-model="model.rewriteSubject" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" data-ng-click="resetSubject()">Reset</button>
-                            <a tabindex="0" role="button" class="btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
+                            <a tabindex="0" role="button" class="btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="{{recipientName}}<br />{{recipientAddress}}<br />{{subject}}<br />{{content}}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
                         </span>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                     <div class="input-group">
                         <textarea class="form-control" id="rewriteContent" name="rewriteContent" placeholder="Content" data-ng-model="model.rewriteContent" rows="3"></textarea>
                         <span type="button" class="input-group-addon btn btn-default" data-ng-click="resetContent()">Reset</span>
-                        <a tabindex="0" role="button" class="input-group-addon btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="${recipientName}<br />${recipientAddress}<br />${subject}<br />${content}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
+                        <a tabindex="0" role="button" class="input-group-addon btn btn-default" data-toggle="popover" data-trigger="focus" data-placement="right" title="Available parameters" data-content="{{recipientName}}<br />{{recipientAddress}}<br />{{subject}}<br />{{content}}" data-html="true"><span class="glyphicon glyphicon-info-sign"></span></a>
                     </div>
                 </div>
                 <div class="form-group">

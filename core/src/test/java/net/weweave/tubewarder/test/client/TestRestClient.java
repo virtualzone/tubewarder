@@ -27,7 +27,7 @@ public class TestRestClient extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel,
                 "Welcome to Tubewarder!",
-                "Hi, here is your activation code: ${code}");
+                "Hi, here is your activation code: {{code}}");
 
         TubewarderClient client = new TubewarderRestClient(deploymentUrl.toString());
         SendRequest request = new SendRequest(token.getExposableId());

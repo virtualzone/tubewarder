@@ -36,10 +36,10 @@ public class TestSendServiceCommon {
         Channel channel = new Channel();
         channel.setUserGroup(group);
         channel.setName(name);
-        channel.setRewriteRecipientName("${recipientName}");
-        channel.setRewriteRecipientAddress("${recipientAddress}");
-        channel.setRewriteSubject("${subject}");
-        channel.setRewriteContent("${content}");
+        channel.setRewriteRecipientName("{{recipientName}}");
+        channel.setRewriteRecipientAddress("{{recipientAddress}}");
+        channel.setRewriteSubject("{{subject}}");
+        channel.setRewriteContent("{{content}}");
         channel.setConfigJson(config.toString());
         getChannelDao().store(channel);
         return channel;
@@ -93,6 +93,7 @@ public class TestSendServiceCommon {
                                                 String templateName,
                                                 String channelName,
                                                 Map<String, Object> model,
+                                                JSONObject modelJson,
                                                 String recipientName,
                                                 String recipientAddress,
                                                 String keyword,
@@ -102,11 +103,13 @@ public class TestSendServiceCommon {
         recipient.put("address", recipientAddress);
 
         JSONArray modelArray = new JSONArray();
-        for (String key : model.keySet()) {
-            JSONObject entry = new JSONObject();
-            entry.put("key", key);
-            entry.put("value", model.get(key));
-            modelArray.put(entry);
+        if (model != null) {
+            for (String key : model.keySet()) {
+                JSONObject entry = new JSONObject();
+                entry.put("key", key);
+                entry.put("value", model.get(key));
+                modelArray.put(entry);
+            }
         }
 
         JSONObject payload = new JSONObject();
@@ -115,7 +118,12 @@ public class TestSendServiceCommon {
         payload.put("template", templateName);
         payload.put("channel", channelName);
         payload.put("recipient", recipient);
-        payload.put("model", modelArray);
+        if (modelArray.length() > 0) {
+            payload.put("model", modelArray);
+        }
+        if (modelJson != null) {
+            payload.put("modelJson", modelJson.toString());
+        }
         payload.put("keyword", keyword);
         payload.put("details", details);
         return payload;

@@ -8,10 +8,10 @@ define(['angular', 'app'], function(angular, app) {
             id: '',
             name: '',
             groupId: '',
-            rewriteRecipientName: '${recipientName}',
-            rewriteRecipientAddress: '${recipientAddress}',
-            rewriteSubject: '${subject}',
-            rewriteContent: '${content}',
+            rewriteRecipientName: '{{recipientName}}',
+            rewriteRecipientAddress: '{{recipientAddress}}',
+            rewriteSubject: '{{subject}}',
+            rewriteContent: '{{content}}',
             outputHandler: ''
         };
         $scope.groups = [];
@@ -43,19 +43,19 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         $scope.resetRecipientName = function() {
-            $scope.model.rewriteRecipientName = '${recipientName}';
+            $scope.model.rewriteRecipientName = '{{recipientName}}';
         };
         
         $scope.resetRecipientAddress = function() {
-            $scope.model.rewriteRecipientAddress = '${recipientAddress}';
+            $scope.model.rewriteRecipientAddress = '{{recipientAddress}}';
         };
         
         $scope.resetSubject = function() {
-            $scope.model.rewriteSubject = '${subject}';
+            $scope.model.rewriteSubject = '{{subject}}';
         };
         
         $scope.resetContent = function() {
-            $scope.model.rewriteContent = '${content}';
+            $scope.model.rewriteContent = '{{content}}';
         };
         
         $scope.renderAvailableConfigOptions = function() {

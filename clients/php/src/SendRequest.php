@@ -9,6 +9,7 @@ class SendRequest {
     private $channel;
     private $recipient;
     private $model = array();
+    private $modelJson;
     private $attachments = array();
     private $keyword;
     private $details;
@@ -164,6 +165,7 @@ class SendRequest {
             'channel' => $this->getChannel(),
             'recipient' => $this->getRecipient()->getObject(),
             'model' => $modelArray,
+            'modelJson' => $modelJson,
             'attachments' => $attachmentsArray,
             'keyword' => $this->getKeyword(),
             'details' => $this->getDetails(),

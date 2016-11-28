@@ -8,6 +8,7 @@ import net.weweave.tubewarder.test.AbstractServiceTest;
 import net.weweave.tubewarder.test.TestSendServiceCommon;
 import net.weweave.tubewarder.test.soap.client.*;
 import org.jboss.arquillian.junit.Arquillian;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,14 +40,36 @@ public class TestSendService extends AbstractServiceTest {
         Channel channel = getCommon().createChannel();
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel,
-                "Welcome to Tubewarder, ${firstname}!",
-                "Hi ${firstname} ${lastname}, here is your activation code: ${code}");
+                "Welcome to Tubewarder, {{firstname}}!",
+                "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
 
         Map<String, Object> model = createMap(
                 "firstname", "John",
                 "lastname", "Doe",
                 "code", "1234567890");
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000");
+        SendService port = getService().getWs_002fSend_002fPort();
+        SendServiceResponse response = port.send(payload);
+
+        Assert.assertEquals(ErrorCode.OK, (long)response.getError());
+        Assert.assertEquals("Welcome to Tubewarder, John!", response.getSubject());
+        Assert.assertEquals("Hi John Doe, here is your activation code: 1234567890", response.getContent());
+    }
+
+    @Test
+    public void testSendSuccessJsonModel() {
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "Welcome to Tubewarder, {{firstname}}!",
+                "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
+
+        JSONObject model = new JSONObject(createMap(
+                "firstname", "John",
+                "lastname", "Doe",
+                "code", "1234567890"));
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), null, model, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -61,25 +84,28 @@ public class TestSendService extends AbstractServiceTest {
         Channel channel = getCommon().createChannel();
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel,
-                "${firstname}",
-                "${firstname} ${lastname}");
+                "{{firstname}}",
+                "{{firstname}} {{lastname}}");
 
         Map<String, Object> model = createMap(
                 "firstname", "John");
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
-        Assert.assertEquals(ErrorCode.MISSING_MODEL_PARAMETER, (long)response.getError());
+        Assert.assertEquals(ErrorCode.OK, (long)response.getError());
+        Assert.assertEquals("John", response.getSubject());
+        Assert.assertEquals("John ", response.getContent());
     }
 
+    /*
     @Test
     public void testCorruptTemplate() {
         AppToken token = getCommon().createAppToken();
         Channel channel = getCommon().createChannel();
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel,
-                "${firstname)",
+                "{{firstname)}",
                 "Nothing");
 
         Map<String, Object> model = createMap(
@@ -90,6 +116,7 @@ public class TestSendService extends AbstractServiceTest {
 
         Assert.assertEquals(ErrorCode.TEMPLATE_CORRUPT, (long)response.getError());
     }
+    */
 
     @Test
     public void testInvalidTemplate() {
@@ -98,7 +125,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), "Unknown", channel.getName(), createMap(), "John", "+490000");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), "Unknown", channel.getName(), createMap(), null, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -112,7 +139,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), "Unknown", createMap(), "John", "+490000");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), "Unknown", createMap(), null, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -127,7 +154,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel2.getName(), createMap(), "John", "+490000");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel2.getName(), createMap(), null, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -141,7 +168,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), "John", "+490000");
+        SendModel payload = getSendRequestPayload(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), null, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -155,7 +182,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), createMap(), "John", "");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), createMap(), null, "John", "");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -169,7 +196,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload("", template.getName(), channel.getName(), createMap(), "John", "+490000");
+        SendModel payload = getSendRequestPayload("", template.getName(), channel.getName(), createMap(), null, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -183,14 +210,14 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), createMap(), "", "+490000");
+        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), createMap(), null, "", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
         Assert.assertEquals(ErrorCode.OK, (long)response.getError());
     }
 
-    private SendModel getSendRequestPayload(String token, String templateName, String channelName, Map<String, Object> model, String recipientName, String recipientAddress) {
+    private SendModel getSendRequestPayload(String token, String templateName, String channelName, Map<String, Object> model, JSONObject modelJson, String recipientName, String recipientAddress) {
         AddressModel recipient = new AddressModel();
         recipient.setName(recipientName);
         recipient.setAddress(recipientAddress);
@@ -202,12 +229,19 @@ public class TestSendService extends AbstractServiceTest {
         payload.setChannel(channelName);
         payload.setRecipient(recipient);
 
-        for (String key : model.keySet()) {
-            KeyValueModel entry = new KeyValueModel();
-            entry.setKey(key);
-            entry.setValue(model.get(key));
-            payload.getModel().add(entry);
+        if (model != null) {
+            for (String key : model.keySet()) {
+                KeyValueModel entry = new KeyValueModel();
+                entry.setKey(key);
+                entry.setValue(model.get(key));
+                payload.getModel().add(entry);
+            }
         }
+
+        if (modelJson != null) {
+            payload.setModelJson(modelJson.toString());
+        }
+
         return payload;
     }
 

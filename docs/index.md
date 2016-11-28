@@ -12,7 +12,7 @@ Tubewarder is easy to deploy, has low overhead, and is a good idea if you have a
 
 # Features
 * Connect applications to Tubewarder using SOAP web services or RESTful services
-* Easy-to-use templating system based on [Apache Freemarker](http://freemarker.incubator.apache.org)
+* Easy-to-use templating system based on [Handlebars](http://handlebarsjs.com/)
 * Built-in outbound connectors: Email, HTTP(S)
 * Configurable, extendable outbound connectors (API available)
 * Error handling for outgoing messages

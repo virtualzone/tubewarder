@@ -6,7 +6,7 @@
 
     <groupId>net.weweave.tubewarder.clients</groupId>
     <artifactId>php</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <build>
         <finalName>tubewarder-php-client-${project.version}</finalName>

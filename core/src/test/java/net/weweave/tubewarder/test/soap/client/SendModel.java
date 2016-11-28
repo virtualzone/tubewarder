@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="channel" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="recipient" type="{http://soap.service.tubewarder.weweave.net/}addressModel"/>
  *         &lt;element name="model" type="{http://soap.service.tubewarder.weweave.net/}keyValueModel" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="modelJson" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="attachments" type="{http://soap.service.tubewarder.weweave.net/}attachmentModel" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="keyword" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="details" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -43,6 +44,7 @@ import javax.xml.bind.annotation.XmlType;
     "channel",
     "recipient",
     "model",
+    "modelJson",
     "attachments",
     "keyword",
     "details",
@@ -60,6 +62,7 @@ public class SendModel {
     protected AddressModel recipient;
     @XmlElement(nillable = true)
     protected List<KeyValueModel> model;
+    protected String modelJson;
     @XmlElement(nillable = true)
     protected List<AttachmentModel> attachments;
     protected String keyword;
@@ -189,6 +192,30 @@ public class SendModel {
             model = new ArrayList<KeyValueModel>();
         }
         return this.model;
+    }
+
+    /**
+     * Gets the value of the modelJson property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getModelJson() {
+        return modelJson;
+    }
+
+    /**
+     * Sets the value of the modelJson property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setModelJson(String value) {
+        this.modelJson = value;
     }
 
     /**

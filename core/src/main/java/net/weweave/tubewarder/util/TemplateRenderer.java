@@ -1,55 +1,85 @@
 package net.weweave.tubewarder.util;
 
-import freemarker.core.InvalidReferenceException;
-import freemarker.core.ParseException;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jknack.handlebars.*;
+import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache;
+import com.github.jknack.handlebars.context.MapValueResolver;
 import net.weweave.tubewarder.exception.TemplateCorruptException;
 import net.weweave.tubewarder.exception.TemplateModelException;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.*;
+import java.util.Map;
 
 @ApplicationScoped
 public class TemplateRenderer {
-    private static Configuration CONFIG = null;
-
     public String render(String content, Map<String, Object> dataModel) throws TemplateCorruptException, TemplateModelException {
-        if (GenericValidator.isBlankOrNull(content)) {
-            return "";
-        }
+        Context context = getMapContext(dataModel);
+        return render(content, context);
+    }
+
+    public String render(String content, JsonNode json) throws TemplateCorruptException, TemplateModelException {
         try {
-            Template freemarkerTemplate = new Template(UUID.randomUUID().toString(), new StringReader(content), getConfiguration());
-            Writer out = new StringWriter();
-            freemarkerTemplate.process(dataModel, out);
-            return out.toString();
-        } catch (InvalidReferenceException e) {
-            throw new TemplateModelException();
-        } catch (ParseException e) {
-            throw new TemplateCorruptException();
+            Context context = getJsonContext(json);
+            return render(content, context);
         } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        } catch (TemplateException e) {
             throw new TemplateModelException();
         }
     }
 
-    private Configuration getConfiguration() {
-        if (CONFIG == null) {
-            Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-            cfg.setDefaultEncoding("UTF-8");
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-            cfg.setLogTemplateExceptions(false);
-            CONFIG = cfg;
+    public String render(String content, String json) throws TemplateCorruptException, TemplateModelException {
+        try {
+            Context context = getJsonContext(json);
+            return render(content, context);
+        } catch (IOException e) {
+            throw new TemplateModelException();
         }
-        return CONFIG;
+    }
+
+    private String render(String content, Context context) {
+        if (GenericValidator.isBlankOrNull(content)) {
+            return "";
+        }
+
+        Handlebars hbs = getHandlebarsInstance();
+        try {
+            Template template = hbs.compileInline(content);
+            String result = template.apply(context);
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private Handlebars getHandlebarsInstance() {
+        Handlebars hbs = new Handlebars()
+                .with(EscapingStrategy.NOOP)
+                .with(new ConcurrentMapTemplateCache());
+        return hbs;
+    }
+
+    private Context getMapContext(Map<String, Object> dataModel) {
+        Context context = Context
+                .newBuilder(dataModel)
+                .resolver(MapValueResolver.INSTANCE)
+                .build();
+        return context;
+    }
+
+    private Context getJsonContext(String json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode model = mapper.readValue(json, JsonNode.class);
+        return getJsonContext(model);
+    }
+
+    private Context getJsonContext(JsonNode model) throws IOException {
+        Context context = Context
+                .newBuilder(model)
+                .resolver(JsonNodeValueResolver.INSTANCE)
+                .build();
+        return context;
     }
 }

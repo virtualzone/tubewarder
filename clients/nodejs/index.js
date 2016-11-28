@@ -32,6 +32,7 @@
             this.channel = '';
             this.recipient = new Address('', '');
             this.model = {};
+            this.modelJson = '';
             this.attachments = [];
             this.keyword = '';
             this.details = '';
@@ -40,6 +41,10 @@
         
         addModelParam(k, v) {
             this.model[k] = v;
+        }
+
+        setModelJsonFromObject(o) {
+            this.modelJson = JSON.stringify(o);
         }
         
         createAttachment(filename) {
@@ -79,6 +84,7 @@
                 channel: this.channel,
                 recipient: this.recipient.getAsObject(),
                 model: this.getKeyValueModel(),
+                modelJson: this.modelJson,
                 attachments: this.getAttachmentsAsObjectArray(),
                 keyword: this.keyword,
                 details: this.details,

@@ -294,6 +294,7 @@ public class TestLogService extends AbstractRestTest {
                 templateName,
                 channelName,
                 model,
+                null,
                 recipientName,
                 recipientAddress,
                 keyword,
@@ -325,8 +326,8 @@ public class TestLogService extends AbstractRestTest {
             channel = getCommon().createChannel(group);
             template = getCommon().createTemplate(group);
             getCommon().createChannelTemplate(template, channel,
-                    "Welcome to Tubewarder, ${firstname}!",
-                    "Hi ${firstname} ${lastname}, here is your activation code: ${code}");
+                    "Welcome to Tubewarder, {{firstname}}!",
+                    "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
         }
     }
 }

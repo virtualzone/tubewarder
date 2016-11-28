@@ -34,6 +34,7 @@ Request {
     channel (string, required - the channel's name)
     recipient (Address, required - the recipient's address)
     model (array of Model, optional - a key-value-list of template parameters)
+    modelJson (string, optional - a string representation of a JSON Object)
     attachments (array of Attachment, optional - a key-value-list of template parameters)
 }
 Address {
@@ -89,6 +90,7 @@ Response {
       {"key": "code", "value": "1234567890"},
       {"key": "includeDisclaimer", "value": false}
    ],
+   "modelJson": "{\"firstname\": \"John\"}",
    "attachments": [
       {
         "filename": "Terms.pdf",

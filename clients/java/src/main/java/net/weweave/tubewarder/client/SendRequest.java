@@ -16,6 +16,7 @@ public class SendRequest implements Serializable {
     private String channel;
     private Address recipient;
     private List<KeyValue> model = new ArrayList<>();
+    private String modelJson;
     private List<Attachment> attachments = new ArrayList<>();
     private String keyword;
     private String details;
@@ -74,6 +75,14 @@ public class SendRequest implements Serializable {
         for (Map.Entry<String, Object> e : map.entrySet()) {
             addModelParam(new KeyValue(e.getKey(), e.getValue()));
         }
+    }
+
+    public String getModelJson() {
+        return modelJson;
+    }
+
+    public void setModelJson(String modelJson) {
+        this.modelJson = modelJson;
     }
 
     public List<Attachment> getAttachments() {

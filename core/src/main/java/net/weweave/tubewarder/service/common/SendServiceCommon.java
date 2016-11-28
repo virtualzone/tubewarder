@@ -1,5 +1,8 @@
 package net.weweave.tubewarder.service.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.weweave.tubewarder.dao.*;
 import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.exception.*;
@@ -21,7 +24,9 @@ import org.apache.commons.validator.GenericValidator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.System;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.logging.Logger;
@@ -107,7 +112,8 @@ public class SendServiceCommon extends AbstractService {
         Channel channel = channelTemplate.getChannel();
 
         // Render subject and content
-        Map<String, Object> model = convertDataModelToMap(sendModel.model == null ? new ArrayList<>() : sendModel.model);
+        //Map<String, Object> model = convertDataModelToMap(sendModel.model == null ? new ArrayList<>() : sendModel.model);
+        JsonNode model = getJsonModelFromRequest(sendModel);
         String subject = getTemplateRenderer().render(channelTemplate.getSubject(), model);
         String content = getTemplateRenderer().render(channelTemplate.getContent(), model);
 
@@ -155,6 +161,29 @@ public class SendServiceCommon extends AbstractService {
         response.queueId = sendQueueItem.getExposableId();
         LOG.info("Queueing " + sendQueueItem.getExposableId() + " ("+sendQueueItem.getId()+")");
         getSendQueueScheduler().addSendQueueItem(sendQueueItem.getId());
+    }
+
+    private JsonNode getJsonModelFromRequest(SendModel sendModel) throws TemplateModelException {
+        JsonNode result;
+        if (!GenericValidator.isBlankOrNull(sendModel.modelJson)) {
+            result = stringToJsoNode(sendModel.modelJson);
+        } else if (sendModel.model != null) {
+            Map<String, Object> map = convertDataModelToMap(sendModel.model);
+            result = mapToJsonNode(map);
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            result = mapToJsonNode(map);
+        }
+        return result;
+    }
+
+    private JsonNode stringToJsoNode(String s) throws TemplateModelException {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(s, JsonNode.class);
+        } catch (IOException e) {
+            throw new TemplateModelException();
+        }
     }
 
     private void updateLogWithQueueId(Log log, SendQueueItem sendQueueItem) {
@@ -205,14 +234,14 @@ public class SendServiceCommon extends AbstractService {
         return item;
     }
 
-    private void rewriteConfig(IOutputHandler outputHandler, Config config, Map<String, Object> model, Rewrites rewrites) throws TemplateCorruptException, TemplateModelException {
-        Map<String, Object> newModel = new HashMap<>(model);
+    private void rewriteConfig(IOutputHandler outputHandler, Config config, JsonNode model, Rewrites rewrites) throws TemplateCorruptException, TemplateModelException {
+        ObjectNode newModel = cloneJsonNodeToObjectNode(model);
         newModel.put("recipientName", rewrites.recipientName);
         newModel.put("recipientAddress", rewrites.recipientAddress);
         newModel.put("subject", rewrites.subject);
         newModel.put("content", rewrites.content);
 
-        Map<String, Object> uriEncodedModel = getUriEncodedModel(newModel);
+        ObjectNode uriEncodedModel = getUriEncodedModel(newModel);
 
         List<OutputHandlerConfigOption> configOptions = outputHandler.getConfigOptions();
 
@@ -229,19 +258,21 @@ public class SendServiceCommon extends AbstractService {
         }
     }
 
-    private Map<String, Object> getUriEncodedModel(Map<String, Object> model) {
-        Map<String, Object> result = new HashMap<>();
-        for (Map.Entry<String, Object> entry : model.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (value instanceof String) {
+    private ObjectNode cloneJsonNodeToObjectNode(JsonNode node) {
+        return (ObjectNode)node.deepCopy();
+    }
+
+    private ObjectNode getUriEncodedModel(ObjectNode model) {
+        ObjectNode result = cloneJsonNodeToObjectNode(model);
+        for (Iterator<String> i = result.fieldNames(); i.hasNext(); ) {
+            String key = i.next();
+            JsonNode value = model.get(key);
+            if (value.isTextual()) {
                 try {
-                    result.put(key, URLEncoder.encode((String) value, "UTF-8"));
+                    result.put(key, URLEncoder.encode(value.asText(), "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
                     result.put(key, "");
                 }
-            } else {
-                result.put(key, value);
             }
         }
         return result;
@@ -270,6 +301,12 @@ public class SendServiceCommon extends AbstractService {
         rewrites.recipientAddress = getTemplateRenderer().render(channel.getRewriteRecipientAddress(), model);
         rewrites.subject = getTemplateRenderer().render(channel.getRewriteSubject(), model);
         rewrites.content = getTemplateRenderer().render(channel.getRewriteContent(), model);
+    }
+
+    private JsonNode mapToJsonNode(Map<String, Object> map) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode result = mapper.convertValue(map, JsonNode.class);
+        return result;
     }
 
     private Map<String, Object> convertDataModelToMap(List<KeyValueModel> dataModel) {
