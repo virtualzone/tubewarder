@@ -34,7 +34,7 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         $scope.deleteTemplate = function(id) {
-            if (!confirm("Delete this template?")) return;
+            if (!confirm("Delete this template? This will delete all manifestations for the associated channels.")) return;
             appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),

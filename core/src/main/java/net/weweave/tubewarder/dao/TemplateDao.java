@@ -1,16 +1,21 @@
 package net.weweave.tubewarder.dao;
 
+import net.weweave.tubewarder.domain.ChannelTemplate;
 import net.weweave.tubewarder.domain.Template;
 import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import net.weweave.tubewarder.util.DbValueRetriever;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
 public class TemplateDao extends AbstractDao<Template> {
+    @Inject
+    private ChannelTemplateDao channelTemplateDao;
+
     public Template getByName(String name) throws ObjectNotFoundException {
         TypedQuery<Template> query = getEntityManager().createQuery("SELECT t FROM Template t WHERE t.name = :name", Template.class);
         query.setParameter("name", name);
@@ -37,5 +42,22 @@ public class TemplateDao extends AbstractDao<Template> {
         return template == null ||
                 template.getUserGroup() == null ||
                 userGroupMembershipIds.contains(template.getUserGroup().getId());
+    }
+
+    @Override
+    public void delete(Template item) {
+        List<ChannelTemplate> channelTemplates = getChannelTemplateDao().getChannelTemplatesForTemplate(item.getId());
+        for (ChannelTemplate ct : channelTemplates) {
+            getChannelTemplateDao().delete(ct);
+        }
+        super.delete(item);
+    }
+
+    public ChannelTemplateDao getChannelTemplateDao() {
+        return channelTemplateDao;
+    }
+
+    public void setChannelTemplateDao(ChannelTemplateDao channelTemplateDao) {
+        this.channelTemplateDao = channelTemplateDao;
     }
 }
