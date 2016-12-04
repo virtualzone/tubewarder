@@ -17,6 +17,13 @@ define(['angular', 'app'], function(angular, app) {
                 appServices.setLoading(false);
             });
         };
+
+        $scope.canDelete = function(id) {
+            if (id == appServices.getSessionUser().id) {
+                return false;
+            }
+            return true;
+        };
         
         $scope.deleteUser = function(id) {
             if (!confirm("Delete this user?")) return;

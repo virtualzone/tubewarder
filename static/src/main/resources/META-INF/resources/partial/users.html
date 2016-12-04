@@ -26,7 +26,7 @@
                         <td>{{user.username}}</td>
                         <td>{{user.lastLogin}}</td>
                         <td><a data-ng-href="#/users/edit/{{user.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                        <td><button data-ng-click="deleteUser(user.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
+                        <td><button data-ng-click="deleteUser(user.id)" data-ng-disabled="!canDelete(user.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
                     </tr>
                 </tbody>
             </table>

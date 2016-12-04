@@ -35,6 +35,7 @@ public class DeleteUserService extends AbstractService {
             Session session = getSession(request.token);
             checkPermissions(session.getUser());
             validateInputParameters(request);
+            preventDeleteSelf(session.getUser(), request.id);
             deleteObject(request.id);
         } catch (InvalidInputParametersException e) {
             addErrorsToResponse(response, e);
@@ -58,6 +59,12 @@ public class DeleteUserService extends AbstractService {
     private void validateInputParameters(AbstractIdRestRequest request) throws InvalidInputParametersException {
         if (GenericValidator.isBlankOrNull(request.id)) {
             throw new InvalidInputParametersException("id", ErrorCode.FIELD_REQUIRED);
+        }
+    }
+
+    private void preventDeleteSelf(User sessionUser, String id) throws InvalidInputParametersException {
+        if (id.equals(sessionUser.getExposableId())) {
+            throw new InvalidInputParametersException("id", ErrorCode.FIELD_INVALID);
         }
     }
 
