@@ -35,4 +35,12 @@ public class ChannelTemplateDao extends AbstractDao<ChannelTemplate> {
         query.setParameter("templateId", templateId);
         return query.getResultList();
     }
+
+    public List<ChannelTemplate> getChannelTemplatesForChannel(Long channelId) {
+        TypedQuery<ChannelTemplate> query = getEntityManager().createQuery("SELECT ct FROM ChannelTemplate ct " +
+                "WHERE ct.channel.id = :channelId " +
+                "ORDER BY ct.template.name ASC", ChannelTemplate.class);
+        query.setParameter("channelId", channelId);
+        return query.getResultList();
+    }
 }

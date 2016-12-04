@@ -19,7 +19,7 @@ define(['angular', 'app'], function(angular, app) {
         };
         
         $scope.deleteChannel = function(configId, channelId) {
-            if (!confirm("Delete this channel?")) return;
+            if (!confirm("Delete this channel? This will delete all channel-templates associated with this channel.")) return;
             appServices.setLoading(true);
             var payload = {
                 id: channelId,
