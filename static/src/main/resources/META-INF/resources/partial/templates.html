@@ -7,6 +7,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Group</th>
                         <th>Channels</th>
                         <th></th>
                         <th></th>
@@ -15,6 +16,7 @@
                 <tbody>
                     <tr data-ng-repeat="template in model.templates">
                         <td>{{template.name}}</td>
+                        <td>{{template.group.name}}</td>
                         <td>{{template.channels}}</td>
                         <td><a data-ng-href="#/templates/edit/{{template.id}}" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a></td>
                         <td><button data-ng-click="deleteTemplate(template.id)" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-remove"></span></button></td>
