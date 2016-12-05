@@ -1,6 +1,6 @@
 {
   "name": "tubewarder-client",
-  "version": "1.0.5",
+  "version": "1.1.1",
   "description": "NodeJS Client for the Tubewarder Central Messaging Gateway",
   "main": "index.js",
   "scripts": {
@@ -27,11 +27,11 @@
   "author": "Heiner Peuser <heiner.peuser@weweave.net> (https://weweave.net)",
   "license": "GPL-3.0",
   "devDependencies": {
-    "mocha": "~2.4.5",
+    "mocha": "~3.2.0",
     "chai": "~3.5.0",
     "jshint": "~2.9.2"
   },
   "dependencies": {
-    "request": "~2.72.0"
+    "request": "~2.79.0"
   }
 }

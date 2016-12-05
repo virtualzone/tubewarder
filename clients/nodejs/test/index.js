@@ -92,10 +92,9 @@ describe('#SendRequest.getJson', function() {
         json.recipient.should.be.an('object');
         json.recipient.address.should.equal('noreply@weweave.net');
         json.recipient.name.should.equal('weweave');
-        json.model.should.be.an('array');
-        json.model.should.have.length(2);
-        json.model[0].should.deep.equal({'key': 'firstname', 'value': 'John'});
-        json.model[1].should.deep.equal({'key': 'lastname', 'value': 'Doe'});
+        json.model.should.be.an('object');
+        json.model.should.have.property('firstname','John');
+        json.model.should.have.property('lastname','Doe');
         json.keyword.should.equal('DOI123');
         json.details.should.equal('some uninterpreted text');
         json.echo.should.equal(true);
