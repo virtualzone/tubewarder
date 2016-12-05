@@ -31,8 +31,8 @@
                     <input type="text" class="form-control" id="recipientName" name="recipientName" placeholder="Recipient Name" data-ng-model="model.recipient.name" data-ng-change="generateSendPayload()" />
                 </div>
                 <div class="form-group">
-                    <label>Data Model / Template Parameters</label>
-                    
+                    <label for="model">Data Model / Template Parameters (JSON)</label>
+                    <textarea id="model" name="model" class="form-control" data-ng-model="model.model" rows="10" data-ng-change="generateSendPayload()"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Attachments</label>

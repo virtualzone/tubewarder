@@ -12,7 +12,7 @@ define(['angular', 'app'], function(angular, app) {
                 name: '',
                 address: ''
             },
-            model: [],
+            model: '{}',
             attachments: [],
             keyword: '',
             details: '',
@@ -43,7 +43,11 @@ define(['angular', 'app'], function(angular, app) {
             return '';
         };
         
-         $scope.generateSendPayload = function() {
+        $scope.generateSendPayload = function() {
+            var model = {};
+            try {
+                 model = JSON.parse($scope.model.model);
+            } catch (e) {}
             $scope.payload = {
                 token: ($scope.model.token ? $scope.model.token : ''),
                 template: getTemplateName($scope.model.templateId),
@@ -52,7 +56,7 @@ define(['angular', 'app'], function(angular, app) {
                     name: $scope.model.recipient.name,
                     address: $scope.model.recipient.address
                 },
-                model: $scope.model.model,
+                model: model,
                 attachments: $scope.model.attachments,
                 keyword: $scope.model.keyword,
                 details: $scope.model.details,
@@ -60,11 +64,6 @@ define(['angular', 'app'], function(angular, app) {
             };
             $scope.response = null;
             $scope.submitButtonText = 'Send';
-        };
-        
-        $scope.addModelParameter = function() {
-            $scope.model.model.push({key: '', value: ''});
-            $scope.generateSendPayload();
         };
         
         $scope.addAttachment = function() {
