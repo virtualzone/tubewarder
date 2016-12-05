@@ -294,7 +294,6 @@ public class TestLogService extends AbstractRestTest {
                 templateName,
                 channelName,
                 model,
-                null,
                 recipientName,
                 recipientAddress,
                 keyword,

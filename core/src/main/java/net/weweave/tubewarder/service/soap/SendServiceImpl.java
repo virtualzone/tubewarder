@@ -1,7 +1,7 @@
 package net.weweave.tubewarder.service.soap;
 
 import net.weweave.tubewarder.service.common.SendServiceCommon;
-import net.weweave.tubewarder.service.model.SendModel;
+import net.weweave.tubewarder.service.model.SoapSendModel;
 import net.weweave.tubewarder.service.response.SendServiceResponse;
 
 import javax.enterprise.context.RequestScoped;
@@ -17,7 +17,7 @@ public class SendServiceImpl implements SendService {
     private SendServiceCommon sendServiceCommon;
 
     @Override
-    public SendServiceResponse send(@XmlElement(name = "message", required = true) @WebParam(name = "message") SendModel sendModel) {
+    public SendServiceResponse send(@XmlElement(name = "message", required = true) @WebParam(name = "message") SoapSendModel sendModel) {
         return getSendServiceCommon().process(sendModel);
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -23,8 +24,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="template" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="channel" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="recipient" type="{http://soap.service.tubewarder.weweave.net/}addressModel"/>
- *         &lt;element name="model" type="{http://soap.service.tubewarder.weweave.net/}keyValueModel" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="modelJson" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="attachments" type="{http://soap.service.tubewarder.weweave.net/}attachmentModel" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="keyword" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="details" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -43,14 +42,15 @@ import javax.xml.bind.annotation.XmlType;
     "template",
     "channel",
     "recipient",
-    "model",
-    "modelJson",
     "attachments",
     "keyword",
     "details",
     "echo"
 })
-public class SendModel {
+@XmlSeeAlso({
+    SoapSendModel.class
+})
+public abstract class SendModel {
 
     @XmlElement(required = true)
     protected String token;
@@ -60,9 +60,6 @@ public class SendModel {
     protected String channel;
     @XmlElement(required = true)
     protected AddressModel recipient;
-    @XmlElement(nillable = true)
-    protected List<KeyValueModel> model;
-    protected String modelJson;
     @XmlElement(nillable = true)
     protected List<AttachmentModel> attachments;
     protected String keyword;
@@ -166,59 +163,6 @@ public class SendModel {
     }
 
     /**
-     * Gets the value of the model property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the model property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getModel().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link KeyValueModel }
-     * 
-     * 
-     */
-    public List<KeyValueModel> getModel() {
-        if (model == null) {
-            model = new ArrayList<>();
-        }
-        return this.model;
-    }
-
-    /**
-     * Gets the value of the modelJson property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getModelJson() {
-        return modelJson;
-    }
-
-    /**
-     * Sets the value of the modelJson property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setModelJson(String value) {
-        this.modelJson = value;
-    }
-
-    /**
      * Gets the value of the attachments property.
      * 
      * <p>
@@ -242,7 +186,7 @@ public class SendModel {
      */
     public List<AttachmentModel> getAttachments() {
         if (attachments == null) {
-            attachments = new ArrayList<>();
+            attachments = new ArrayList<AttachmentModel>();
         }
         return this.attachments;
     }

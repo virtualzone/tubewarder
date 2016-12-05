@@ -14,7 +14,6 @@ import net.weweave.tubewarder.outputhandler.api.Attachment;
 import net.weweave.tubewarder.outputhandler.api.configoption.OutputHandlerConfigOption;
 import net.weweave.tubewarder.outputhandler.api.configoption.StringConfigOption;
 import net.weweave.tubewarder.service.model.ErrorCode;
-import net.weweave.tubewarder.service.model.KeyValueModel;
 import net.weweave.tubewarder.service.model.SendModel;
 import net.weweave.tubewarder.service.response.SendServiceResponse;
 import net.weweave.tubewarder.service.rest.AbstractService;
@@ -112,7 +111,12 @@ public class SendServiceCommon extends AbstractService {
 
         // Render subject and content
         //Map<String, Object> model = convertDataModelToMap(sendModel.model == null ? new ArrayList<>() : sendModel.model);
-        JsonNode model = getJsonModelFromRequest(sendModel);
+        JsonNode model;
+        try {
+            model = sendModel.getModelAsJsonNode();
+        } catch (IOException e) {
+            throw new TemplateModelException();
+        }
         String subject = getTemplateRenderer().render(channelTemplate.getSubject(), model);
         String content = getTemplateRenderer().render(channelTemplate.getContent(), model);
 
@@ -160,29 +164,6 @@ public class SendServiceCommon extends AbstractService {
         response.queueId = sendQueueItem.getExposableId();
         LOG.info("Queueing " + sendQueueItem.getExposableId() + " ("+sendQueueItem.getId()+")");
         getSendQueueScheduler().addSendQueueItem(sendQueueItem.getId());
-    }
-
-    private JsonNode getJsonModelFromRequest(SendModel sendModel) throws TemplateModelException {
-        JsonNode result;
-        if (!GenericValidator.isBlankOrNull(sendModel.modelJson)) {
-            result = stringToJsoNode(sendModel.modelJson);
-        } else if (sendModel.model != null) {
-            Map<String, Object> map = convertDataModelToMap(sendModel.model);
-            result = mapToJsonNode(map);
-        } else {
-            Map<String, Object> map = new HashMap<>();
-            result = mapToJsonNode(map);
-        }
-        return result;
-    }
-
-    private JsonNode stringToJsoNode(String s) throws TemplateModelException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(s, JsonNode.class);
-        } catch (IOException e) {
-            throw new TemplateModelException();
-        }
     }
 
     private void updateLogWithQueueId(Log log, SendQueueItem sendQueueItem) {
@@ -300,20 +281,6 @@ public class SendServiceCommon extends AbstractService {
         rewrites.recipientAddress = getTemplateRenderer().render(channel.getRewriteRecipientAddress(), model);
         rewrites.subject = getTemplateRenderer().render(channel.getRewriteSubject(), model);
         rewrites.content = getTemplateRenderer().render(channel.getRewriteContent(), model);
-    }
-
-    private JsonNode mapToJsonNode(Map<String, Object> map) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode result = mapper.convertValue(map, JsonNode.class);
-        return result;
-    }
-
-    private Map<String, Object> convertDataModelToMap(List<KeyValueModel> dataModel) {
-        Map<String, Object> result = new HashMap<>();
-        for (KeyValueModel entry : dataModel) {
-            result.put(entry.key, entry.value);
-        }
-        return result;
     }
 
     private Log log(SendModel model, ChannelTemplate channelTemplate, Address sender, Address recipient, String subject, String content) {

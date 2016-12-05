@@ -1,14 +1,16 @@
 package net.weweave.tubewarder.service.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import net.weweave.tubewarder.outputhandler.api.Attachment;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement
-public class SendModel {
+public abstract class SendModel {
     @XmlElement(required = true)
     public String token;
     @XmlElement(required = true)
@@ -17,8 +19,6 @@ public class SendModel {
     public String channel;
     @XmlElement(required = true)
     public AddressModel recipient;
-    public List<KeyValueModel> model;
-    public String modelJson;
     public List<AttachmentModel> attachments;
     public String keyword;
     public String details;
@@ -33,4 +33,6 @@ public class SendModel {
         }
         return result;
     }
+
+    public abstract JsonNode getModelAsJsonNode() throws IOException;
 }

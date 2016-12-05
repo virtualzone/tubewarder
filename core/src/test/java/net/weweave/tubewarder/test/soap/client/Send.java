@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="message" type="{http://soap.service.tubewarder.weweave.net/}sendModel"/>
+ *         &lt;element name="message" type="{http://soap.service.tubewarder.weweave.net/}soapSendModel"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,17 +33,17 @@ import javax.xml.bind.annotation.XmlType;
 public class Send {
 
     @XmlElement(required = true)
-    protected SendModel message;
+    protected SoapSendModel message;
 
     /**
      * Gets the value of the message property.
      * 
      * @return
      *     possible object is
-     *     {@link SendModel }
+     *     {@link SoapSendModel }
      *     
      */
-    public SendModel getMessage() {
+    public SoapSendModel getMessage() {
         return message;
     }
 
@@ -52,10 +52,10 @@ public class Send {
      * 
      * @param value
      *     allowed object is
-     *     {@link SendModel }
+     *     {@link SoapSendModel }
      *     
      */
-    public void setMessage(SendModel value) {
+    public void setMessage(SoapSendModel value) {
         this.message = value;
     }
 

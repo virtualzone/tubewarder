@@ -10,6 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.lang.System;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,52 +36,72 @@ public class TestSendService extends AbstractRestTest {
                 "firstname", "John",
                 "lastname", "Doe",
                 "code", "1234567890");
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
                 "error", equalTo(ErrorCode.OK),
                 "subject", equalTo("Welcome to Tubewarder, John!"),
                 "content", equalTo("Hi John Doe, here is your activation code: 1234567890"));
     }
 
     @Test
-    public void testSendSuccessJsonModel() {
+    public void testConditional() {
         AppToken token = getCommon().createAppToken();
         Channel channel = getCommon().createChannel();
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel,
-                "Welcome to Tubewarder, {{firstname}}!",
-                "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
-
-        JSONObject model = new JSONObject(createMap(
-                "firstname", "John",
-                "lastname", "Doe",
-                "code", "1234567890"));
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), null, model, "John", "+490000",
-                "error", equalTo(ErrorCode.OK),
-                "subject", equalTo("Welcome to Tubewarder, John!"),
-                "content", equalTo("Hi John Doe, here is your activation code: 1234567890"));
-    }
-
-    @Test
-    public void testSendSuccessJsonTopsModel() {
-        AppToken token = getCommon().createAppToken();
-        Channel channel = getCommon().createChannel();
-        Template template = getCommon().createTemplate();
-        getCommon().createChannelTemplate(template, channel,
-                "Welcome to Tubewarder, {{firstname}}!",
-                "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
+                "",
+                "Hello {{#if male}}Mr. {{name}}{{else}}Mrs. {{name}}{{/if}}!");
 
         Map<String, Object> model = createMap(
-                "firstname", "John",
-                "lastname", "Doe",
-                "code", "1234567890");
-        JSONObject modelJson = new JSONObject(createMap(
-                "firstname", "Max",
-                "lastname", "Miller",
-                "code", "99999"));
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, modelJson, "John", "+490000",
+                "name", "Smith",
+                "male", true);
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
                 "error", equalTo(ErrorCode.OK),
-                "subject", equalTo("Welcome to Tubewarder, Max!"),
-                "content", equalTo("Hi Max Miller, here is your activation code: 99999"));
+                "subject", equalTo(""),
+                "content", equalTo("Hello Mr. Smith!"));
+    }
+
+    @Test
+    public void testConditionalElse() {
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "",
+                "Hello {{#if male}}Mr. {{name}}{{else}}Mrs. {{name}}{{/if}}!");
+
+        Map<String, Object> model = createMap(
+                "name", "Smith",
+                "male", false);
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
+                "error", equalTo(ErrorCode.OK),
+                "subject", equalTo(""),
+                "content", equalTo("Hello Mrs. Smith!"));
+    }
+
+    @Test
+    public void testList() {
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "",
+                "Hello{{#each people}} -> {{firstname}} {{lastname}}{{/each}}!");
+
+        Map<String, Object> p1 = createMap(
+                "firstname", "John",
+                "lastname", "Doe");
+        Map<String, Object> p2 = createMap(
+                "firstname", "Max",
+                "lastname", "Miller");
+        List<Map> people = new ArrayList<>();
+        people.add(p1);
+        people.add(p2);
+        Map<String, Object> model = createMap(
+                "people", people);
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
+                "error", equalTo(ErrorCode.OK),
+                "subject", equalTo(""),
+                "content", equalTo("Hello -> John Doe -> Max Miller!"));
     }
 
     @Test
@@ -92,28 +115,11 @@ public class TestSendService extends AbstractRestTest {
 
         Map<String, Object> model = createMap(
                 "firstname", "John");
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
                 "error", equalTo(ErrorCode.OK),
                 "subject", equalTo("John"),
                 "content", equalTo("John "));
     }
-
-    /*
-    @Test
-    public void testCorruptTemplate() {
-        AppToken token = getCommon().createAppToken();
-        Channel channel = getCommon().createChannel();
-        Template template = getCommon().createTemplate();
-        getCommon().createChannelTemplate(template, channel,
-                "{{firstname)}",
-                "Nothing");
-
-        Map<String, Object> model = createMap(
-                "firstname", "John");
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
-                "error", equalTo(ErrorCode.TEMPLATE_CORRUPT));
-    }
-    */
 
     @Test
     public void testInvalidTemplate() {
@@ -122,7 +128,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse(token.getExposableId(), "Unknown", channel.getName(), createMap(), null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), "Unknown", channel.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
     }
 
@@ -133,7 +139,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse(token.getExposableId(), template.getName(), "Unknown", createMap(), null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), "Unknown", createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
     }
 
@@ -145,7 +151,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse(token.getExposableId(), template.getName(), channel2.getName(), createMap(), null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), channel2.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.OBJECT_LOOKUP_ERROR));
     }
 
@@ -156,7 +162,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), null, "John", "+490000",
+        validateSendResponse(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.PERMISSION_DENIED));
     }
 
@@ -167,7 +173,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), null, "John", "",
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), "John", "",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
     }
 
@@ -178,7 +184,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse("", template.getName(), channel.getName(), createMap(), null, "John", "+490000",
+        validateSendResponse("", template.getName(), channel.getName(), createMap(), "John", "+490000",
                 "error", equalTo(ErrorCode.INVALID_INPUT_PARAMETERS));
     }
 
@@ -189,7 +195,7 @@ public class TestSendService extends AbstractRestTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), null, "", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), createMap(), "", "+490000",
                 "error", equalTo(ErrorCode.OK));
     }
 
@@ -216,7 +222,7 @@ public class TestSendService extends AbstractRestTest {
                 "firstname", "John",
                 "lastname", "Doe",
                 "code", "1234567890");
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
                 "error", equalTo(ErrorCode.OK),
                 "subject", equalTo("This is a message to John"),
                 "content", equalTo("Hi John Doe, here is your activation code: 1234567890"));
@@ -245,7 +251,7 @@ public class TestSendService extends AbstractRestTest {
                 "firstname", "John",
                 "lastname", "Doe",
                 "code", "1234567890");
-        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000",
+        validateSendResponse(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000",
                 "error", equalTo(ErrorCode.OK),
                 "recipient.name", equalTo("Welcome to Tubewarder, John!"),
                 "recipient.address", equalTo("smsgateway@some.where"),
@@ -257,7 +263,6 @@ public class TestSendService extends AbstractRestTest {
                                             String templateName,
                                             String channelName,
                                             Map<String, Object> model,
-                                            JSONObject modelJson,
                                             String recipientName,
                                             String recipientAddress,
                                             Object... body) {
@@ -266,7 +271,6 @@ public class TestSendService extends AbstractRestTest {
                 templateName,
                 channelName,
                 model,
-                modelJson,
                 recipientName,
                 recipientAddress,
                 "",

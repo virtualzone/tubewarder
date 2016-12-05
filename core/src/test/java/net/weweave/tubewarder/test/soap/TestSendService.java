@@ -17,8 +17,7 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import java.net.URL;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RunWith(Arquillian.class)
 public class TestSendService extends AbstractServiceTest {
@@ -43,11 +42,11 @@ public class TestSendService extends AbstractServiceTest {
                 "Welcome to Tubewarder, {{firstname}}!",
                 "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
 
-        Map<String, Object> model = createMap(
+        JSONObject model = new JSONObject(createMap(
                 "firstname", "John",
                 "lastname", "Doe",
-                "code", "1234567890");
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000");
+                "code", "1234567890"));
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -57,25 +56,74 @@ public class TestSendService extends AbstractServiceTest {
     }
 
     @Test
-    public void testSendSuccessJsonModel() {
+    public void testConditional() {
         AppToken token = getCommon().createAppToken();
         Channel channel = getCommon().createChannel();
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel,
-                "Welcome to Tubewarder, {{firstname}}!",
-                "Hi {{firstname}} {{lastname}}, here is your activation code: {{code}}");
+                "",
+                "Hello {{#if male}}Mr. {{name}}{{else}}Mrs. {{name}}{{/if}}!");
 
         JSONObject model = new JSONObject(createMap(
-                "firstname", "John",
-                "lastname", "Doe",
-                "code", "1234567890"));
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), null, model, "John", "+490000");
+                "name", "Smith",
+                "male", true));
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
         Assert.assertEquals(ErrorCode.OK, (long)response.getError());
-        Assert.assertEquals("Welcome to Tubewarder, John!", response.getSubject());
-        Assert.assertEquals("Hi John Doe, here is your activation code: 1234567890", response.getContent());
+        Assert.assertEquals("", response.getSubject());
+        Assert.assertEquals("Hello Mr. Smith!", response.getContent());
+    }
+
+    @Test
+    public void testConditionalElse() {
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "",
+                "Hello {{#if male}}Mr. {{name}}{{else}}Mrs. {{name}}{{/if}}!");
+
+        JSONObject model = new JSONObject(createMap(
+                "name", "Smith",
+                "male", false));
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
+        SendService port = getService().getWs_002fSend_002fPort();
+        SendServiceResponse response = port.send(payload);
+
+        Assert.assertEquals(ErrorCode.OK, (long)response.getError());
+        Assert.assertEquals("", response.getSubject());
+        Assert.assertEquals("Hello Mrs. Smith!", response.getContent());
+    }
+
+    @Test
+    public void testList() {
+        AppToken token = getCommon().createAppToken();
+        Channel channel = getCommon().createChannel();
+        Template template = getCommon().createTemplate();
+        getCommon().createChannelTemplate(template, channel,
+                "",
+                "Hello{{#each people}} -> {{firstname}} {{lastname}}{{/each}}!");
+
+        Map<String, Object> p1 = createMap(
+                "firstname", "John",
+                "lastname", "Doe");
+        Map<String, Object> p2 = createMap(
+                "firstname", "Max",
+                "lastname", "Miller");
+        List<Map> people = new java.util.ArrayList<>();
+        people.add(p1);
+        people.add(p2);
+        JSONObject model = new JSONObject(createMap(
+                "people", people));
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
+        SendService port = getService().getWs_002fSend_002fPort();
+        SendServiceResponse response = port.send(payload);
+
+        Assert.assertEquals(ErrorCode.OK, (long)response.getError());
+        Assert.assertEquals("", response.getSubject());
+        Assert.assertEquals("Hello -> John Doe -> Max Miller!", response.getContent());
     }
 
     @Test
@@ -87,9 +135,9 @@ public class TestSendService extends AbstractServiceTest {
                 "{{firstname}}",
                 "{{firstname}} {{lastname}}");
 
-        Map<String, Object> model = createMap(
-                "firstname", "John");
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, null, "John", "+490000");
+        JSONObject model = new JSONObject(createMap(
+                "firstname", "John"));
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -98,26 +146,6 @@ public class TestSendService extends AbstractServiceTest {
         Assert.assertEquals("John ", response.getContent());
     }
 
-    /*
-    @Test
-    public void testCorruptTemplate() {
-        AppToken token = getCommon().createAppToken();
-        Channel channel = getCommon().createChannel();
-        Template template = getCommon().createTemplate();
-        getCommon().createChannelTemplate(template, channel,
-                "{{firstname)}",
-                "Nothing");
-
-        Map<String, Object> model = createMap(
-                "firstname", "John");
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), model, "John", "+490000");
-        SendService port = getService().getWs_002fSend_002fPort();
-        SendServiceResponse response = port.send(payload);
-
-        Assert.assertEquals(ErrorCode.TEMPLATE_CORRUPT, (long)response.getError());
-    }
-    */
-
     @Test
     public void testInvalidTemplate() {
         AppToken token = getCommon().createAppToken();
@@ -125,7 +153,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), "Unknown", channel.getName(), createMap(), null, "John", "+490000");
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), "Unknown", channel.getName(), new JSONObject(createMap()), "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -139,7 +167,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), "Unknown", createMap(), null, "John", "+490000");
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), "Unknown", new JSONObject(createMap()), "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -154,7 +182,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel2.getName(), createMap(), null, "John", "+490000");
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel2.getName(), new JSONObject(createMap()), "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -168,7 +196,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(UUID.randomUUID().toString(), template.getName(), channel.getName(), createMap(), null, "John", "+490000");
+        SoapSendModel payload = getSendRequestPayload(UUID.randomUUID().toString(), template.getName(), channel.getName(), new JSONObject(createMap()), "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -182,7 +210,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), createMap(), null, "John", "");
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), new JSONObject(createMap()), "John", "");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -196,7 +224,7 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload("", template.getName(), channel.getName(), createMap(), null, "John", "+490000");
+        SoapSendModel payload = getSendRequestPayload("", template.getName(), channel.getName(), new JSONObject(createMap()), "John", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
@@ -210,33 +238,24 @@ public class TestSendService extends AbstractServiceTest {
         Template template = getCommon().createTemplate();
         getCommon().createChannelTemplate(template, channel, "", "");
 
-        SendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), createMap(), null, "", "+490000");
+        SoapSendModel payload = getSendRequestPayload(token.getExposableId(), template.getName(), channel.getName(), new JSONObject(createMap()), "", "+490000");
         SendService port = getService().getWs_002fSend_002fPort();
         SendServiceResponse response = port.send(payload);
 
         Assert.assertEquals(ErrorCode.OK, (long)response.getError());
     }
 
-    private SendModel getSendRequestPayload(String token, String templateName, String channelName, Map<String, Object> model, JSONObject modelJson, String recipientName, String recipientAddress) {
+    private SoapSendModel getSendRequestPayload(String token, String templateName, String channelName, JSONObject modelJson, String recipientName, String recipientAddress) {
         AddressModel recipient = new AddressModel();
         recipient.setName(recipientName);
         recipient.setAddress(recipientAddress);
 
-        SendModel payload = new SendModel();
+        SoapSendModel payload = new SoapSendModel();
         payload.setToken(token);
         payload.setEcho(true);
         payload.setTemplate(templateName);
         payload.setChannel(channelName);
         payload.setRecipient(recipient);
-
-        if (model != null) {
-            for (String key : model.keySet()) {
-                KeyValueModel entry = new KeyValueModel();
-                entry.setKey(key);
-                entry.setValue(model.get(key));
-                payload.getModel().add(entry);
-            }
-        }
 
         if (modelJson != null) {
             payload.setModelJson(modelJson.toString());

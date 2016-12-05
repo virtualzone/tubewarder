@@ -1,8 +1,10 @@
 package net.weweave.tubewarder.test;
 
-import net.weweave.tubewarder.dao.*;
+import net.weweave.tubewarder.dao.AppTokenDao;
+import net.weweave.tubewarder.dao.ChannelDao;
+import net.weweave.tubewarder.dao.ChannelTemplateDao;
+import net.weweave.tubewarder.dao.TemplateDao;
 import net.weweave.tubewarder.domain.*;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -93,7 +95,6 @@ public class TestSendServiceCommon {
                                                 String templateName,
                                                 String channelName,
                                                 Map<String, Object> model,
-                                                JSONObject modelJson,
                                                 String recipientName,
                                                 String recipientAddress,
                                                 String keyword,
@@ -102,27 +103,14 @@ public class TestSendServiceCommon {
         recipient.put("name", recipientName);
         recipient.put("address", recipientAddress);
 
-        JSONArray modelArray = new JSONArray();
-        if (model != null) {
-            for (String key : model.keySet()) {
-                JSONObject entry = new JSONObject();
-                entry.put("key", key);
-                entry.put("value", model.get(key));
-                modelArray.put(entry);
-            }
-        }
-
         JSONObject payload = new JSONObject();
         payload.put("token", token);
         payload.put("echo", true);
         payload.put("template", templateName);
         payload.put("channel", channelName);
         payload.put("recipient", recipient);
-        if (modelArray.length() > 0) {
-            payload.put("model", modelArray);
-        }
-        if (modelJson != null) {
-            payload.put("modelJson", modelJson.toString());
+        if (model != null) {
+            payload.put("model", new JSONObject(model));
         }
         payload.put("keyword", keyword);
         payload.put("details", details);

@@ -1,7 +1,7 @@
 package net.weweave.tubewarder.service.rest;
 
 import net.weweave.tubewarder.service.common.SendServiceCommon;
-import net.weweave.tubewarder.service.model.SendModel;
+import net.weweave.tubewarder.service.model.RestSendModel;
 import net.weweave.tubewarder.service.response.AbstractResponse;
 
 import javax.enterprise.context.RequestScoped;
@@ -21,7 +21,7 @@ public class SendService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
-    public AbstractResponse action(SendModel sendModel) {
+    public AbstractResponse action(RestSendModel sendModel) {
         return getSendServiceCommon().process(sendModel);
     }
 
