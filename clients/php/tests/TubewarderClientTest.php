@@ -41,10 +41,8 @@ class TubewarderClientTest extends TestCase {
         $this->assertNotEmpty($o['recipient']);
         $this->assertEquals('noreply@weweave.net', $o['recipient']['address']);
         $this->assertEquals('weweave GbR', $o['recipient']['name']);
-        $this->assertEquals('firstname', $o['model'][0]['key']);
-        $this->assertEquals('John', $o['model'][0]['value']);
-        $this->assertEquals('code', $o['model'][1]['key']);
-        $this->assertEquals('123456', $o['model'][1]['value']);
+        $this->assertEquals('John', $o['model']['firstname']);
+        $this->assertEquals('123456', $o['model']['code']);
         $this->assertEquals('test.txt', $o['attachments'][0]['filename']);
         $this->assertEquals('text/plain', $o['attachments'][0]['contentType']);
         $this->assertEquals('VGhpcyBpcyBqdXN0IGEgdGVzdCBjYXNl', $o['attachments'][0]['payload']);

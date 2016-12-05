@@ -9,7 +9,6 @@ class SendRequest {
     private $channel;
     private $recipient;
     private $model = array();
-    private $modelJson;
     private $attachments = array();
     private $keyword;
     private $details;
@@ -88,7 +87,7 @@ class SendRequest {
      * @param mixed $value
      */
     public function addModelParam($key, $value) {
-        $this->model[] = new KeyValue($key, $value);
+        $this->model[$key] = $value;
     }
 
     /**
@@ -155,17 +154,12 @@ class SendRequest {
         foreach ($this->getAttachments() as $a) {
             $attachmentsArray[] = $a->getObject();
         }
-        $modelArray = array();
-        foreach ($this->getModel() as $kv) {
-            $modelArray[] = $kv->getObject();
-        }
         $o = array(
             'token' => $this->getToken(),
             'template' => $this->getTemplate(),
             'channel' => $this->getChannel(),
             'recipient' => $this->getRecipient()->getObject(),
-            'model' => $modelArray,
-            'modelJson' => $modelJson,
+            'model' => $this->getModel(),
             'attachments' => $attachmentsArray,
             'keyword' => $this->getKeyword(),
             'details' => $this->getDetails(),

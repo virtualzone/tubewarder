@@ -3,7 +3,6 @@ namespace Tubewarder;
 require('SendRequest.php');
 require('SendResponse.php');
 require('ErrorCode.php');
-require('KeyValue.php');
 
 /**
  * Class TubewarderClient
