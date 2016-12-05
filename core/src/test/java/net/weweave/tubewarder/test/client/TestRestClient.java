@@ -33,7 +33,7 @@ public class TestRestClient extends AbstractServiceTest {
         SendRequest request = new SendRequest(token.getExposableId());
         request.setChannel(channel.getName());
         request.setTemplate(template.getName());
-        request.addModelParam(new KeyValue("code", "12345"));
+        request.addModelParam("code", "12345");
         request.setRecipient(new Address("no-reply@weweave.net", "weweave"));
         request.setEcho(true);
         SendResponse response = client.send(request);
@@ -51,7 +51,7 @@ public class TestRestClient extends AbstractServiceTest {
         SendRequest request = new SendRequest("000000");
         request.setChannel("test");
         request.setTemplate("test");
-        request.addModelParam(new KeyValue("code", "12345"));
+        request.addModelParam("code", "12345");
         request.setRecipient(new Address("no-reply@weweave.net", "weweave"));
         request.setEcho(true);
         SendResponse response = client.send(request);
@@ -67,7 +67,7 @@ public class TestRestClient extends AbstractServiceTest {
         SendRequest request = new SendRequest("000000");
         request.setChannel("test");
         request.setTemplate("test");
-        request.addModelParam(new KeyValue("code", "12345"));
+        request.addModelParam("code", "12345");
         request.setRecipient(new Address("no-reply@weweave.net", "weweave"));
         request.setEcho(true);
         client.send(request);
@@ -85,7 +85,7 @@ public class TestRestClient extends AbstractServiceTest {
         SendRequest request = new SendRequest("000000");
         request.setChannel("test");
         request.setTemplate("test");
-        request.addModelParam(new KeyValue("code", "12345"));
+        request.addModelParam("code", "12345");
         request.setRecipient(new Address("no-reply@weweave.net", "weweave"));
         request.setEcho(true);
         client.send(request);

@@ -2,6 +2,7 @@ package net.weweave.tubewarder.client;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +16,7 @@ public class SendRequest implements Serializable {
     private String template;
     private String channel;
     private Address recipient;
-    private List<KeyValue> model = new ArrayList<>();
-    private String modelJson;
+    private Map<String, Object> model = new HashMap<>();
     private List<Attachment> attachments = new ArrayList<>();
     private String keyword;
     private String details;
@@ -62,27 +62,17 @@ public class SendRequest implements Serializable {
         this.recipient = recipient;
     }
 
-    public List<KeyValue> getModel() {
+    public Map<String, Object> getModel() {
         return model;
     }
 
-    public void addModelParam(KeyValue kv) {
-        this.model.add(kv);
+    public void addModelParam(String key, Object value) {
+        this.model.put(key, value);
     }
 
     public void setModelFromMap(Map<String, Object> map) {
-        this.model = new ArrayList<>();
-        for (Map.Entry<String, Object> e : map.entrySet()) {
-            addModelParam(new KeyValue(e.getKey(), e.getValue()));
-        }
-    }
-
-    public String getModelJson() {
-        return modelJson;
-    }
-
-    public void setModelJson(String modelJson) {
-        this.modelJson = modelJson;
+        this.model = new HashMap<>();
+        this.model.putAll(map);
     }
 
     public List<Attachment> getAttachments() {
