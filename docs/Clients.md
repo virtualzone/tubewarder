@@ -19,7 +19,7 @@ To get started with the Java Client library, the easiest way is to include the f
 <dependency>
     <groupId>net.weweave.tubewarder</groupId>
     <artifactId>client</artifactId>
-    <version>1.0.5</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -30,7 +30,7 @@ TubewarderClient client = new TubewarderRestClient("http://your-tubewarder-serve
 SendRequest req = new SendRequest("your-app-token");
 req.setChannel("Email");
 req.setTemplate("Welcome");
-req.addModelParam(new KeyValue("firstname", "..."));
+req.addModelParam("firstname", "...");
 SendResponse resp = client.send(req);
 ```
 

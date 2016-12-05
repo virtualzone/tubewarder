@@ -13,6 +13,16 @@ Request format: SOAP-XML (application/soap+xml)
 
 Response format: SOAP-XML (application/soap+xml)
 
+Please note that the data model for rendering the template is provided as a stringified JSON object when using the SOAP Send API. Example:
+
+```
+...
+<modelJson>
+    {"firstname": "John", "code": "12345"}
+</modelJson>
+...
+``` 
+
 
 # REST API
 Endpoint: /rs/send
@@ -33,17 +43,12 @@ Request {
     template (string, required - the template's name)
     channel (string, required - the channel's name)
     recipient (Address, required - the recipient's address)
-    model (array of Model, optional - a key-value-list of template parameters)
-    modelJson (string, optional - a string representation of a JSON Object)
+    model (object, optional - an object of template parameters)
     attachments (array of Attachment, optional - a key-value-list of template parameters)
 }
 Address {
     name (string, optional - recipient's name)
     address (string, required - recipient's address (email, number, ...))
-}
-Model {
-    key (string, required - template parameter name)
-    value (string, optional - template parameter value)
 }
 Attachment {
     filename (string, required - filename)
@@ -84,13 +89,12 @@ Response {
       "name": "Unknown",
       "address": "+49000000000000"
    },
-   "model": [
-      {"key": "firstname", "value": "John"},
-      {"key": "lastname", "value": "Doe"},
-      {"key": "code", "value": "1234567890"},
-      {"key": "includeDisclaimer", "value": false}
-   ],
-   "modelJson": "{\"firstname\": \"John\"}",
+   "model": {
+      "firstname": "John",
+      "lastname": "Doe",
+      "code": "1234567890",
+      "includeDisclaimer": false
+   },
    "attachments": [
       {
         "filename": "Terms.pdf",

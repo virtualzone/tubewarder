@@ -203,6 +203,8 @@ Interactive HTTP resources are exposed at these URLs:
 
 All other HTTP resources are static files that do not expose information about your infrastructure and should not harm your installation.
 
+[Cross-Origin Resource Sharing]([https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS]) (CORS) is disabled by default for the RESTful services available at /rs/. Thus, modern browsers should prevent access from third-party domains. You can enable CORS from the administrative web interface if you have to.
+
 # High availibility
 You can run multiple instances of Tubewarder behind an HTTP load balancer to establish high availibility. It's critical to use the same database in all of your instances because Tubewarder uses the database to keep track of the status (dead/alive) of all instances running in one cluster. You don't need to explicitly configure the instances in one cluster - as long as all instances connect to the same database, they'll find it each other. If one instance fails, the others will automatically process dangling send queue items.
 
