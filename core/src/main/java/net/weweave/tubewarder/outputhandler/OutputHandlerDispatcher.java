@@ -1,11 +1,13 @@
 package net.weweave.tubewarder.outputhandler;
 
-import net.weweave.tubewarder.domain.ChannelTemplate;
-import net.weweave.tubewarder.domain.SendQueueItem;
+import net.weweave.tubewarder.dao.AttachmentDao;
+import net.weweave.tubewarder.domain.*;
 import net.weweave.tubewarder.outputhandler.api.*;
+import net.weweave.tubewarder.outputhandler.api.Attachment;
 
 import javax.ejb.*;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Singleton
@@ -14,6 +16,9 @@ public class OutputHandlerDispatcher {
 
     @Inject
     private OutputHandlerFactory outputHandlerFactory;
+
+    @Inject
+    private AttachmentDao attachmentDao;
 
     @Asynchronous
     public void processSendQueueItem(SendQueueItem item, SendQueueCallback callback) {
@@ -36,7 +41,8 @@ public class OutputHandlerDispatcher {
     }
 
     private void createAttachmentList(SendQueueItem item, SendItem payload) {
-        for (net.weweave.tubewarder.domain.Attachment atm : item.getAttachments()) {
+        List<net.weweave.tubewarder.domain.Attachment> attachments = getAttachmentDao().getAttachmentsForSendQueueItem(item.getId());
+        for (net.weweave.tubewarder.domain.Attachment atm : attachments) {
             Attachment attachment = new Attachment();
             attachment.setContentType(atm.getContentType());
             attachment.setFilename(atm.getFilename());
@@ -69,5 +75,13 @@ public class OutputHandlerDispatcher {
 
     public void setOutputHandlerFactory(OutputHandlerFactory outputHandlerFactory) {
         this.outputHandlerFactory = outputHandlerFactory;
+    }
+
+    public AttachmentDao getAttachmentDao() {
+        return attachmentDao;
+    }
+
+    public void setAttachmentDao(AttachmentDao attachmentDao) {
+        this.attachmentDao = attachmentDao;
     }
 }

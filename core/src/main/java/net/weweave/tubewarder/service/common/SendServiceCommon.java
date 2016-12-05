@@ -26,7 +26,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.System;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.logging.Logger;

@@ -16,16 +16,30 @@ public class TemplateDao extends AbstractDao<Template> {
     @Inject
     private ChannelTemplateDao channelTemplateDao;
 
+    @Inject
+    private UserGroupDao userGroupDao;
+
+    @Override
+    public void initObject(Template obj) {
+        if (obj != null) {
+            getUserGroupDao().initObject(obj.getUserGroup());
+        }
+    }
+
     public Template getByName(String name) throws ObjectNotFoundException {
         TypedQuery<Template> query = getEntityManager().createQuery("SELECT t FROM Template t WHERE t.name = :name", Template.class);
         query.setParameter("name", name);
         query.setMaxResults(1);
-        return (Template) DbValueRetriever.getObjectOrException(query);
+        Template result = (Template) DbValueRetriever.getObjectOrException(query);
+        initObject(result);
+        return result;
     }
 
     public List<Template> getAll() {
         TypedQuery<Template> query = getEntityManager().createQuery("SELECT t FROM Template t ORDER BY t.name", Template.class);
-        return query.getResultList();
+        List<Template> result = query.getResultList();
+        initObject(result);
+        return result;
     }
 
     public List<Long> getTemplateIdsWithGroups(List<Long> groupIds) {
@@ -59,5 +73,13 @@ public class TemplateDao extends AbstractDao<Template> {
 
     public void setChannelTemplateDao(ChannelTemplateDao channelTemplateDao) {
         this.channelTemplateDao = channelTemplateDao;
+    }
+
+    public UserGroupDao getUserGroupDao() {
+        return userGroupDao;
+    }
+
+    public void setUserGroupDao(UserGroupDao userGroupDao) {
+        this.userGroupDao = userGroupDao;
     }
 }

@@ -28,7 +28,11 @@
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs-cdi</artifactId>
+            <artifactId>jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>cdi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -37,6 +41,10 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>datasources</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -96,6 +104,7 @@
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>net.weweave.tubewarder</groupId>
             <artifactId>core</artifactId>
@@ -103,6 +112,7 @@
             <scope>system</scope>
             <systemPath>${basedir}/../core/target/core.jar</systemPath>
         </dependency>
+        -->
     </dependencies>
 
     <build>
@@ -148,6 +158,10 @@
                         <configuration>
                             <outputDirectory>../target/libs</outputDirectory>
                             <resources>
+                                <resource>
+                                    <directory>../core/target</directory>
+                                    <includes><include>*.jar</include></includes>
+                                </resource>
                                 <resource>
                                     <directory>../static/target</directory>
                                     <includes><include>*.jar</include></includes>

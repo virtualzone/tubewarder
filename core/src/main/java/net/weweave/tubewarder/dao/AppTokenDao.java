@@ -8,8 +8,15 @@ import java.util.List;
 
 @Stateless
 public class AppTokenDao extends AbstractDao<AppToken> {
+    @Override
+    public void initObject(AppToken obj) {
+        // Nothing to do
+    }
+
     public List<AppToken> getAll() {
         TypedQuery<AppToken> query = getEntityManager().createQuery("SELECT at FROM AppToken at ORDER BY at.name", AppToken.class);
-        return query.getResultList();
+        List<AppToken> result = query.getResultList();
+        initObject(result);
+        return result;
     }
 }

@@ -22,6 +22,11 @@ public class LogDao extends AbstractDao<Log> {
     @Inject
     private ChannelDao channelDao;
 
+    @Override
+    public void initObject(Log obj) {
+        // Nothing to do
+    }
+
     /**
      * @param startDate minimum date (inclusive)
      * @param endDate maximum date (inclusive)
@@ -70,7 +75,9 @@ public class LogDao extends AbstractDao<Log> {
         }
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
-        return query.getResultList();
+        List<Log> result = query.getResultList();
+        initObject(result);
+        return result;
     }
 
     public UserGroupDao getUserGroupDao() {

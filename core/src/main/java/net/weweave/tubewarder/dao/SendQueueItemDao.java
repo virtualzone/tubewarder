@@ -8,15 +8,26 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 @Stateless
 public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
     @Inject
     private AttachmentDao attachmentDao;
+
+    @Inject
+    private ChannelTemplateDao channelTemplateDao;
+
+    @Inject
+    private LogDao logDao;
+
+    @Override
+    public void initObject(SendQueueItem obj) {
+        if (obj != null) {
+            getChannelTemplateDao().initObject(obj.getChannelTemplate());
+            getLogDao().initObject(obj.getLog());
+        }
+    }
 
     @Override
     public void store(SendQueueItem item) {
@@ -102,7 +113,7 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
 
     @Override
     public void delete(SendQueueItem item) {
-        List<Attachment> attachments = item.getAttachments();
+        List<Attachment> attachments = getAttachmentDao().getAttachmentsForSendQueueItem(item.getId());
         if (attachments != null) {
             for (Attachment attachment : attachments) {
                 getAttachmentDao().delete(attachment);
@@ -120,5 +131,21 @@ public class SendQueueItemDao extends AbstractDao<SendQueueItem> {
 
     public void setAttachmentDao(AttachmentDao attachmentDao) {
         this.attachmentDao = attachmentDao;
+    }
+
+    public ChannelTemplateDao getChannelTemplateDao() {
+        return channelTemplateDao;
+    }
+
+    public void setChannelTemplateDao(ChannelTemplateDao channelTemplateDao) {
+        this.channelTemplateDao = channelTemplateDao;
+    }
+
+    public LogDao getLogDao() {
+        return logDao;
+    }
+
+    public void setLogDao(LogDao logDao) {
+        this.logDao = logDao;
     }
 }

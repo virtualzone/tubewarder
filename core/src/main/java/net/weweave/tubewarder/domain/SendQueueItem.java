@@ -1,9 +1,9 @@
 package net.weweave.tubewarder.domain;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class SendQueueItem extends AbstractPersistentObject {
@@ -14,8 +14,6 @@ public class SendQueueItem extends AbstractPersistentObject {
     private String subject;
     @Column(length = 100000)
     private String content;
-    @OneToMany(mappedBy = "sendQueueItem", fetch = FetchType.EAGER)
-    private List<Attachment> attachments = new ArrayList<>();
     private String keyword;
     @Column(length = 100000)
     private String details;
@@ -123,14 +121,6 @@ public class SendQueueItem extends AbstractPersistentObject {
 
     public void setInProcessing(Boolean inProcessing) {
         this.inProcessing = inProcessing;
-    }
-
-    public List<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
     }
 
     public Log getLog() {

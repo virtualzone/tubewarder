@@ -9,5 +9,17 @@
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
 		</properties>
+		<class>net.weweave.tubewarder.domain.AppToken</class>
+		<class>net.weweave.tubewarder.domain.Attachment</class>
+		<class>net.weweave.tubewarder.domain.Channel</class>
+		<class>net.weweave.tubewarder.domain.ChannelTemplate</class>
+		<class>net.weweave.tubewarder.domain.ConfigItem</class>
+		<class>net.weweave.tubewarder.domain.Log</class>
+		<class>net.weweave.tubewarder.domain.SendQueueItem</class>
+		<class>net.weweave.tubewarder.domain.Session</class>
+		<class>net.weweave.tubewarder.domain.System</class>
+		<class>net.weweave.tubewarder.domain.Template</class>
+		<class>net.weweave.tubewarder.domain.User</class>
+		<class>net.weweave.tubewarder.domain.UserGroup</class>
 	</persistence-unit>
 </persistence>

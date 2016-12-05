@@ -19,6 +19,11 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
     private static final Logger LOG = Logger.getLogger(ConfigItemDao.class.getName());
     private final Map<String, String> cache = new ConcurrentHashMap<>();
 
+    @Override
+    public void initObject(ConfigItem obj) {
+        // Nothing to do
+    }
+
     public boolean hasKey(String key) {
         if (cache.containsKey(key)) {
             return true;
@@ -119,7 +124,9 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
     public List<ConfigItem> getAll() {
         TypedQuery<ConfigItem> query = getEntityManager().createQuery("SELECT i FROM ConfigItem i " +
                 "ORDER BY i.label ASC", ConfigItem.class);
-        return query.getResultList();
+        List<ConfigItem> result = query.getResultList();
+        initObject(result);
+        return result;
     }
 
     public void clearCache() {
@@ -155,6 +162,7 @@ public class ConfigItemDao extends AbstractDao<ConfigItem> {
         query.setMaxResults(1);
         ConfigItem item = (ConfigItem) DbValueRetriever.getObjectOrException(query);
         cache.put(key, item.getValue());
+        initObject(item);
         getEntityManager().detach(item);
         return item;
     }

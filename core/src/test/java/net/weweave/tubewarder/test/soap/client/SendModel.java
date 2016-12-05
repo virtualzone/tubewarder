@@ -189,7 +189,7 @@ public class SendModel {
      */
     public List<KeyValueModel> getModel() {
         if (model == null) {
-            model = new ArrayList<KeyValueModel>();
+            model = new ArrayList<>();
         }
         return this.model;
     }
@@ -242,7 +242,7 @@ public class SendModel {
      */
     public List<AttachmentModel> getAttachments() {
         if (attachments == null) {
-            attachments = new ArrayList<AttachmentModel>();
+            attachments = new ArrayList<>();
         }
         return this.attachments;
     }

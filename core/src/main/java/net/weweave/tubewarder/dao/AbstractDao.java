@@ -10,12 +10,21 @@ import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 public abstract class AbstractDao<T extends IdObject> {
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	public abstract void initObject(T obj);
+
+	public void initObject(Collection<T> objs) {
+		for (T obj : objs) {
+			initObject(obj);
+		}
+	}
 
 	public void store(T item) {
 		if (item instanceof ExposableId) {
@@ -40,6 +49,7 @@ public abstract class AbstractDao<T extends IdObject> {
 		if (item == null) {
 			throw new ObjectNotFoundException();
 		}
+		initObject(item);
 		getEntityManager().detach(item);
 		return item;
 	}
@@ -59,8 +69,10 @@ public abstract class AbstractDao<T extends IdObject> {
 		if (list.isEmpty()) {
 			throw new ObjectNotFoundException();
 		}
-		getEntityManager().detach(list.get(0));
-		return list.get(0);
+		T item = list.get(0);
+		initObject(item);
+		getEntityManager().detach(item);
+		return item;
 	}
 
 	public void delete(T item) {

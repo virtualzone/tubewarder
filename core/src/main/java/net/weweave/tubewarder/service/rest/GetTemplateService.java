@@ -1,6 +1,8 @@
 package net.weweave.tubewarder.service.rest;
 
+import net.weweave.tubewarder.dao.ChannelTemplateDao;
 import net.weweave.tubewarder.dao.UserGroupDao;
+import net.weweave.tubewarder.domain.ChannelTemplate;
 import net.weweave.tubewarder.domain.Session;
 import net.weweave.tubewarder.domain.User;
 import net.weweave.tubewarder.exception.AuthRequiredException;
@@ -30,6 +32,9 @@ public class GetTemplateService extends AbstractService {
 
     @Inject
     private UserGroupDao userGroupDao;
+
+    @Inject
+    private ChannelTemplateDao channelTemplateDao;
 
     @GET
     @Produces(JaxApplication.APPLICATION_JSON_UTF8)
@@ -65,13 +70,15 @@ public class GetTemplateService extends AbstractService {
             List<Template> templates = getTemplateDao().getAll();
             for (Template template : templates) {
                 if (getTemplateDao().canUserAcccessTemplate(template, userGroupMembershipIds)) {
-                    response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
+                    List<ChannelTemplate> channelTemplates = getChannelTemplateDao().getChannelTemplatesForTemplate(template.getId());
+                    response.templates.add(TemplateModel.factory(template, channelTemplates, getOutputHandlerFactory()));
                 }
             }
         } else {
             Template template = getTemplateDao().get(id);
             if (getTemplateDao().canUserAcccessTemplate(template, userGroupMembershipIds)) {
-                response.templates.add(TemplateModel.factory(template, getOutputHandlerFactory()));
+                List<ChannelTemplate> channelTemplates = getChannelTemplateDao().getChannelTemplatesForTemplate(template.getId());
+                response.templates.add(TemplateModel.factory(template, channelTemplates, getOutputHandlerFactory()));
             } else {
                 throw new ObjectNotFoundException();
             }
@@ -100,5 +107,13 @@ public class GetTemplateService extends AbstractService {
 
     public void setUserGroupDao(UserGroupDao userGroupDao) {
         this.userGroupDao = userGroupDao;
+    }
+
+    public ChannelTemplateDao getChannelTemplateDao() {
+        return channelTemplateDao;
+    }
+
+    public void setChannelTemplateDao(ChannelTemplateDao channelTemplateDao) {
+        this.channelTemplateDao = channelTemplateDao;
     }
 }

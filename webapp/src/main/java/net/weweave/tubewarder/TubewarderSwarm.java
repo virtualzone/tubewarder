@@ -6,8 +6,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.config.datasources.DataSource;
 import org.wildfly.swarm.datasources.DatasourceArchive;
-import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.undertow.WARArchive;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -123,20 +123,20 @@ public class TubewarderSwarm extends Swarm {
     }
 
     private void deployApp() throws Exception {
-        JAXRSArchive appDeployment = ShrinkWrap.create(JAXRSArchive.class, "tubewarder.war");
+        WARArchive appDeployment = ShrinkWrap.create(WARArchive.class, "tubewarder.war");
         appDeployment.addPackages(true, "net.weweave.tubewarder");
         appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence-"+getConfig().getDb()+".xml", TubewarderSwarm.class.getClassLoader()), "classes/META-INF/persistence.xml");
         if ("postgresql".equals(getConfig().getDb())) {
             appDeployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/" + getConfig().getDb() + "-mapping.xml", TubewarderSwarm.class.getClassLoader()), "classes/META-INF/postgresql-mapping.xml");
         }
-        appDeployment.addAllDependencies();
-        appDeployment.staticContent();
 
         File[] libs = getAdditionalJars();
         for (File lib : libs) {
             appDeployment.addAsLibrary(lib, lib.getName());
         }
 
+        appDeployment.addAllDependencies();
+        appDeployment.staticContent();
         deploy(appDeployment);
     }
 

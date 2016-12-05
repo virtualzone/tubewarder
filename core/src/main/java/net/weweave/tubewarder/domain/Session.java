@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 public class Session extends AbstractPersistentObject {
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private User user;
     private Date loginDate;
     private Date lastActionDate;

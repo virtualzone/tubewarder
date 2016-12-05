@@ -5,6 +5,7 @@ import net.weweave.tubewarder.exception.ObjectNotFoundException;
 import org.apache.commons.validator.GenericValidator;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,16 @@ import java.util.GregorianCalendar;
 @Stateless
 public class SessionDao extends AbstractDao<Session> {
     public static final Integer TIMEOUT = 30;
+
+    @Inject
+    private UserDao userDao;
+
+    @Override
+    public void initObject(Session obj) {
+        if (obj != null) {
+            getUserDao().initObject(obj.getUser());
+        }
+    }
 
     public Session getAndCleanup(String token) throws ObjectNotFoundException {
         if (GenericValidator.isBlankOrNull(token)) {
@@ -34,5 +45,13 @@ public class SessionDao extends AbstractDao<Session> {
         Query query = getEntityManager().createQuery("DELETE FROM Session s WHERE s.lastActionDate < :date");
         query.setParameter("date", c.getTime());
         query.executeUpdate();
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }

@@ -18,7 +18,7 @@ public class ChannelTemplateModel extends AbstractRestModel {
         ChannelTemplateModel model = new ChannelTemplateModel();
         model.id = channelTemplate.getExposableId();
         if (includeTemplate) {
-            model.template = TemplateModel.factory(channelTemplate.getTemplate(), factory);
+            model.template = TemplateModel.factory(channelTemplate.getTemplate(), null, factory);
         }
         model.channel = ChannelModel.factory(channelTemplate.getChannel(), factory);
         model.subject = channelTemplate.getSubject();

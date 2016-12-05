@@ -1,15 +1,17 @@
 package net.weweave.tubewarder.domain;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class UserGroup extends AbstractPersistentObject {
     @Column(unique = true)
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<User> members = new ArrayList<>();
+    @ManyToMany
+    private Set<User> members = new HashSet<>();
 
     public String getName() {
         return name;
@@ -19,11 +21,11 @@ public class UserGroup extends AbstractPersistentObject {
         this.name = name;
     }
 
-    public List<User> getMembers() {
+    public Set<User> getMembers() {
         return members;
     }
 
-    public void setMembers(List<User> members) {
+    public void setMembers(Set<User> members) {
         this.members = members;
     }
 }

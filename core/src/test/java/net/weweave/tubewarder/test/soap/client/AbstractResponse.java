@@ -175,7 +175,7 @@ public class AbstractResponse {
          */
         public List<AbstractResponse.FieldErrors.Entry> getEntry() {
             if (entry == null) {
-                entry = new java.util.ArrayList<AbstractResponse.FieldErrors.Entry>();
+                entry = new java.util.ArrayList<>();
             }
             return this.entry;
         }

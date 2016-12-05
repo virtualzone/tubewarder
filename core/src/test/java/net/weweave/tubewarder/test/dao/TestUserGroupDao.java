@@ -80,14 +80,14 @@ public class TestUserGroupDao extends AbstractServiceTest {
         // Check if group1 has u1 und u2 as members
         group1 = getUserGroupDao().getByName("g1");
         Assert.assertEquals(2, group1.getMembers().size());
-        Assert.assertEquals("u1", group1.getMembers().get(0).getUsername());
-        Assert.assertEquals("u2", group1.getMembers().get(1).getUsername());
+        Assert.assertTrue(group1.getMembers().contains(u1));
+        Assert.assertTrue(group1.getMembers().contains(u2));
 
         // Check if group2 has u2 und u3 as members
         group2 = getUserGroupDao().getByName("g2");
         Assert.assertEquals(2, group2.getMembers().size());
-        Assert.assertEquals("u2", group2.getMembers().get(0).getUsername());
-        Assert.assertEquals("u3", group2.getMembers().get(1).getUsername());
+        Assert.assertTrue(group2.getMembers().contains(u2));
+        Assert.assertTrue(group2.getMembers().contains(u3));
     }
 
     @Test
@@ -119,14 +119,14 @@ public class TestUserGroupDao extends AbstractServiceTest {
         getUserGroupDao().removeUserFromGroup(u2, group);
         UserGroup checkGroup = getUserGroupDao().getByName("g1");
         Assert.assertEquals(2, checkGroup.getMembers().size());
-        Assert.assertEquals("u1", checkGroup.getMembers().get(0).getUsername());
-        Assert.assertEquals("u3", checkGroup.getMembers().get(1).getUsername());
+        Assert.assertTrue(checkGroup.getMembers().contains(u1));
+        Assert.assertTrue(checkGroup.getMembers().contains(u3));
 
         // Remove u1 from group and check
         getUserGroupDao().removeUserFromGroup(u1, group);
         checkGroup = getUserGroupDao().getByName("g1");
         Assert.assertEquals(1, checkGroup.getMembers().size());
-        Assert.assertEquals("u3", checkGroup.getMembers().get(0).getUsername());
+        Assert.assertTrue(checkGroup.getMembers().contains(u3));
     }
 
     @Test

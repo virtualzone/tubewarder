@@ -13,17 +13,26 @@ import java.util.Map;
 
 @Stateless
 public class UserDao extends AbstractDao<User> {
+    @Override
+    public void initObject(User obj) {
+        // Nothing to do
+    }
+
     public User getByUsername(String username) throws ObjectNotFoundException {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
                 "WHERE u.username = :username AND u.enabled = TRUE", User.class);
         query.setParameter("username", username);
-        return (User) DbValueRetriever.getObjectOrException(query);
+        User result = (User) DbValueRetriever.getObjectOrException(query);
+        initObject(result);
+        return result;
     }
 
     public List<User> getAll() {
         TypedQuery<User> query = getEntityManager().createQuery("SELECT u FROM User u " +
                 "ORDER BY u.username ASC", User.class);
-        return query.getResultList();
+        List<User> result = query.getResultList();
+        initObject(result);
+        return result;
     }
 
     public Boolean existsAnyAdminUser() {
