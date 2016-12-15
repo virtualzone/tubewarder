@@ -31,6 +31,7 @@
     
     <modules>
         <module>outputhandlers/email</module>
+        <module>outputhandlers/facebook</module>
         <module>outputhandlers/null</module>
         <module>outputhandlers/sysout</module>
         <module>outputhandlers/webservice</module>
