@@ -9,7 +9,8 @@ require.config({
         'bootstrap-datetimepicker': 'lib/bootstrap-datetimepicker-4.17.37.min',
         'autofill-event': 'lib/autofill-event',
 		'typeahead': 'lib/typeahead-0.11.1.min',
-		'bloodhound': 'lib/bloodhound-0.11.1.min'
+		'bloodhound': 'lib/bloodhound-0.11.1.min',
+		'webfontloader': 'lib/webfontloader-1.6.27'
 	},
 	shim: {
         'bootstrap': {
@@ -41,6 +42,9 @@ require.config({
         'autofill-event': {
             deps: ['angular', 'jquery']
         },
+		'webfontloader': {
+			exports: 'WebFont'
+		},
 		'app': {
 			deps: [
 				'bootstrap',
@@ -49,7 +53,8 @@ require.config({
 				'angular-route-resolver',
                 'autofill-event',
 				'typeahead',
-				'bloodhound'
+				'bloodhound',
+				'webfontloader'
 			],
 			exports: 'app'
 		},

@@ -1,4 +1,4 @@
-define(['angular-route-resolver', 'moment'], function(routeResolver, moment) {
+define(['angular-route-resolver', 'moment', 'webfontloader'], function(routeResolver, moment, WebFont) {
     'use strict';
 
     var ERROR = {
@@ -312,6 +312,11 @@ define(['angular-route-resolver', 'moment'], function(routeResolver, moment) {
     app.init = function() {
         angular.bootstrap(document, ['app'], {
             strictDi: true
+        });
+        WebFont.load({
+            google: {
+                families: ['Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en']
+            }
         });
     };
 
