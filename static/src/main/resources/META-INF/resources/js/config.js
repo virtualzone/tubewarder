@@ -10,7 +10,9 @@ require.config({
         'autofill-event': 'lib/autofill-event',
 		'typeahead': 'lib/typeahead-0.11.1.min',
 		'bloodhound': 'lib/bloodhound-0.11.1.min',
-		'webfontloader': 'lib/webfontloader-1.6.27'
+		'webfontloader': 'lib/webfontloader-1.6.27',
+		'ace-ext-language_tools': 'lib/ace/ext-language_tools',
+		'ace': 'lib/ace/ace'
 	},
 	shim: {
         'bootstrap': {
@@ -45,6 +47,9 @@ require.config({
 		'webfontloader': {
 			exports: 'WebFont'
 		},
+		'ace-ext-language_tools': {
+			deps: ['ace']
+		},
 		'app': {
 			deps: [
 				'bootstrap',
@@ -54,7 +59,9 @@ require.config({
                 'autofill-event',
 				'typeahead',
 				'bloodhound',
-				'webfontloader'
+				'webfontloader',
+				'ace',
+				'ace-ext-language_tools'
 			],
 			exports: 'app'
 		},
