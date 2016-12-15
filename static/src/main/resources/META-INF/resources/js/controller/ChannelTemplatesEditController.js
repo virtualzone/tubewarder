@@ -17,6 +17,33 @@ define(['angular', 'app'], function(angular, app) {
         $scope.channels = [];
         $scope.channelTemplates = [];
 
+        var helperCompleter = {
+            getCompletions: function(editor, session, pos, prefix, callback) {
+                var wordList = ["each", "if", "unless", "with"];
+                callback(null, wordList.map(function(word) {
+                    return {
+                        caption: "#"+word,
+                        value: "{{#"+word+"}}\n{{/"+word+"}}",
+                        meta: "helper"
+                    };
+                }));
+
+            }
+        };
+        $scope.aceOptions = {
+            theme: 'monokai',
+            mode: 'handlebars',
+            advanced: {
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
+                enableSnippets: true
+            },
+            onLoad: function(_editor) {
+                _editor.completers.push(helperCompleter);
+                _editor.$blockScrolling = Infinity;
+            }
+        };
+
         $scope.submit = function(form) {
             appServices.setLoading(true);
             var payload = {

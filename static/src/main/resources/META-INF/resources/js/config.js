@@ -12,7 +12,8 @@ require.config({
 		'bloodhound': 'lib/bloodhound-0.11.1.min',
 		'webfontloader': 'lib/webfontloader-1.6.27',
 		'ace-ext-language_tools': 'lib/ace/ext-language_tools',
-		'ace': 'lib/ace/ace'
+		'ace': 'lib/ace/ace',
+		'ui-ace': 'lib/ui-ace-0.2.3'
 	},
 	shim: {
         'bootstrap': {
@@ -50,6 +51,9 @@ require.config({
 		'ace-ext-language_tools': {
 			deps: ['ace']
 		},
+		'ui-ace': {
+			deps: ['ace', 'ace-ext-language_tools', 'angular']
+		},
 		'app': {
 			deps: [
 				'bootstrap',
@@ -60,8 +64,7 @@ require.config({
 				'typeahead',
 				'bloodhound',
 				'webfontloader',
-				'ace',
-				'ace-ext-language_tools'
+				'ui-ace'
 			],
 			exports: 'app'
 		},

@@ -1,4 +1,4 @@
-define(['angular-route-resolver', 'moment', 'webfontloader'], function(routeResolver, moment, WebFont) {
+define(['angular-route-resolver', 'moment', 'webfontloader', 'ui-ace'], function(routeResolver, moment, WebFont, ace) {
     'use strict';
 
     var ERROR = {
@@ -13,7 +13,7 @@ define(['angular-route-resolver', 'moment', 'webfontloader'], function(routeReso
     };
 
     var angular = require('angular');
-    var app = angular.module('app', ['ngRoute', 'controllers', 'routeResolverServices'])
+    var app = angular.module('app', ['ngRoute', 'controllers', 'routeResolverServices', 'ui.ace'])
 
     .factory('appServices', ['$rootScope', '$injector', function($rootScope, $injector) {
         var appServices = {
