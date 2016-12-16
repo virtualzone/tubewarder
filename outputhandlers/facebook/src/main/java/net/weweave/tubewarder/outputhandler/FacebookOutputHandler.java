@@ -23,17 +23,7 @@ public class FacebookOutputHandler implements IOutputHandler {
         WebTarget target = client.target("https://graph.facebook.com/v2.6/me/messages?access_token="+config.getString("accessToken"));
         Response response = target.request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(req, MediaType.APPLICATION_JSON));
-        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-            throw new TemporaryProcessingException("Got invalid HTTP status code " + response.getStatus());
-        }
-        FacebookMessageResponse resp = response.readEntity(FacebookMessageResponse.class);
-        if (resp.getError() != null && resp.getError().getCode() != null) {
-            if (resp.getError().getCode() == 1200) {
-                throw new TemporaryProcessingException("Internal Facebook Error");
-            } else {
-                throw new PermanentProcessingException("Facebook Error Code = " + resp.getError().getCode());
-            }
-        }
+        handleResponse(response);
     }
 
     private FacebookMessageRequest createRequest(SendItem item) {
@@ -41,6 +31,28 @@ public class FacebookOutputHandler implements IOutputHandler {
         FacebookMessage message = new FacebookMessage(item.getContent());
         FacebookMessageRequest req = new FacebookMessageRequest(recipient, message);
         return req;
+    }
+
+    private void handleResponse(Response response) throws TemporaryProcessingException, PermanentProcessingException {
+        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            FacebookMessageResponse resp = null;
+            try {
+                resp = response.readEntity(FacebookMessageResponse.class);
+            } catch (Exception e) {
+                throw new TemporaryProcessingException("Got invalid HTTP status code " + response.getStatus());
+            }
+            handleError(resp);
+        }
+    }
+
+    private void handleError(FacebookMessageResponse resp) throws TemporaryProcessingException, PermanentProcessingException {
+        if (resp.getError() != null && resp.getError().getCode() != null) {
+            if (resp.getError().getCode() == 1200) {
+                throw new TemporaryProcessingException("Internal Facebook Error");
+            } else {
+                throw new PermanentProcessingException("Facebook Error Code = " + resp.getError().getCode());
+            }
+        }
     }
 
     @Override
