@@ -186,6 +186,10 @@
                                     <directory>../outputhandlers/facebook/target</directory>
                                     <includes><include>*.jar</include></includes>
                                 </resource>
+                                <resource>
+                                    <directory>../outputhandlers/twitter/target</directory>
+                                    <includes><include>*.jar</include></includes>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
