@@ -13,7 +13,7 @@ Tubewarder is easy to deploy, has low overhead, and is a good idea if you have a
 # Features
 * Connect applications to Tubewarder using SOAP web services or RESTful services
 * Easy-to-use templating system based on [Handlebars](http://handlebarsjs.com/)
-* Built-in outbound connectors: Email, HTTP(S)
+* Built-in outbound connectors: Email, Facebook, Twitter, generic HTTP(S) service, Console (for testing purposes)
 * Configurable, extendable outbound connectors (API available)
 * Error handling for outgoing messages
 * Asynchronous processing
@@ -26,7 +26,7 @@ Tubewarder is easy to deploy, has low overhead, and is a good idea if you have a
 # Architecture
 Tubewarder employs a loose coupling of Output Handlers, Channels and Templates:
 
-**An Output Handler** is a generic technical component that consumes a message to be sent and does something with it. For example, there is a built-in Output Handler for sending a message to an Email Servers, or for sending a message to an HTTP(S) URL.
+**An Output Handler** is a generic technical component that consumes a message to be sent and does something with it. For example, there is a built-in Output Handler for sending a message to an Email Servers, for sending a message to an HTTP(S) URL and for sending direct messages to Facebook and Twitter users.
 
 **A Channel** is a specific route to send an outbound message by using a specific configuration of an Output Handler. For example, you can have a Channel for sending HTML Mails via your company's SMTP Server reachable at a specific TCP/IP address and port and by establishing a TLS connection, or you can have a Channel for sending text messages (SMS) via some RESTful web service reachable via HTTP POST at a specific URL.
 

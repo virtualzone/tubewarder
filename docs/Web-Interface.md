@@ -33,6 +33,27 @@ Channels are routes to send outbound messages by using a specific configuration 
 * Content Type (POST only): Value of HTTP request header "Content-Type".
 * Payload (POST only): Optional HTTP POST request body payload. 
 
+## Facebook configuration options
+* Access Token: A Page Access Token for your Facebook app.
+
+Get the token from [Facebook's Developer website](https://developers.facebook.com/apps/). Follow [Facebook's quick start guide](https://developers.facebook.com/docs/messenger-platform/guides/quick-start) for setting up a new for the messenger platform. 
+
+Note: Tubewarder uses [Facebook's Messenger Platform](https://developers.facebook.com/docs/messenger-platform) for delivering the messages. Due to restrictions of this API, the recipient must have sent you a message first before you're able to send messages to him.
+
+## Twitter configuration options
+* Consumer Key: Your Twitter app's Consumer Key (API Key).
+* Consumer Secret: Your Twitter app's Consumer Secret (API Secret).
+* Access Token: Your personal Twitter Access Token to make API requests on your own account's behalf.
+* Access Token Secret: Your personal Twitter Access Token Secret to make API requests on your own account's behalf.
+
+Get the required keys and secrets from [Twitter's Application Management website](https://apps.twitter.com/).
+
+Note: Due to restrictions of Twitter's API, you can only send messages on your own account's behalf. In most cases, the recipient must follow you on Twitter in order to be able to send direct messages to him. Alternatively, the recipient must have his/her "allow_dms_from" account setting set to "all". Read more on the [API documentation page for "direct_messages/new"](https://dev.twitter.com/rest/reference/post/direct_messages/new) that's being used for delivering the Twitter messages.
+
+## Console configuration options
+* Prefix: Text printed on the console before the actual content.
+* Suffix: Text printed on the console after the actual content.
+
 # Templates
 Templats are concrete messages you want to send. A Template can contain variables and control structures (e.g. placeholders for salutation, name, and personalized URLs). A Template can be bound to one or more Channels, each with different texts as desired. So, you could have a Template called "New User Welcome Message", with different contents for saying Welcome to your new user via Plain Text Email, HTML Email, or SMS.
 

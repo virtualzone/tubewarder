@@ -1,12 +1,12 @@
 # Tubewarder ![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/Tubewarder64.png)
-A centric, extensible, template-based solution for outbound messaging (email, sms, etc.). 
+A centric, extensible, template-based solution for outbound messaging (email, sms, Twitter, Facebook, etc.). 
 
 ## Enjoy a new quality of outbound communication
 Tubewarder makes sending messages to your users easier than ever:
 * All your outbound communication in one place
 * Easy-to-use templating system based on [Handlebars](http://handlebarsjs.com/)
 * Connect your applications using SOAP web services or RESTful services
-* Built-in outbound connectors: Email, HTTP(S)
+* Built-in outbound connectors: Email, Facebook, Twitter, generic HTTP(S) service, Console (for testing purposes)
 * Configurable, extendable outbound connectors (API available)
 * Powerful administrative web interface
 * Send Queue Scheduler with configurable max. concurrent threads and retry count
@@ -89,7 +89,7 @@ This will expose Tubewarder's web interface on port 8080. Access it at: http://l
 Please refer to the [documentation](http://tubewarder.readthedocs.io/) for information on how to set up persistence.
 
 ## Output Handler API
-Output Handlers do the actual work, as they perform the outbound processing. There are built-in output handlers for email and console output. You can easily develop additional output handlers by using the Output Handler API.
+Output Handlers do the actual work, as they perform the outbound processing. There are built-in output handlers for email, Facebook, Twitter and console output. You can easily develop additional output handlers by using the Output Handler API.
 
 If you're using Maven, add the following dependency to your pom.xml:
 ```
