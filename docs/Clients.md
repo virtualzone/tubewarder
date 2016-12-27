@@ -34,6 +34,8 @@ req.addModelParam("firstname", "...");
 SendResponse resp = client.send(req);
 ```
 
+Check out our simple example project [on GitHub](https://github.com/weweave/tubewarder-java-client-example).
+
 # NodeJS (NPM)
 The [NodeJS/NPM Client](https://www.npmjs.com/package/tubewarder-client) supports the REST API. It is written in ECMAScript 2015 (ES6), so make sure you're using an up-to-date version of NodeJS (successfully tested in NodeJS 6 and newer versions).
 
