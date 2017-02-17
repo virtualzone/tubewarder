@@ -51,7 +51,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <version.swarm>2016.12.1</version.swarm>
+        <version.swarm>2017.2.0</version.swarm>
     </properties>
     
     <dependencyManagement>
