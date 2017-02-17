@@ -18,15 +18,7 @@ define(['angular', 'app'], function(angular, app) {
                     $location.path('/login');
                 }
             });
-        } else {
-			$http.get('/rs/checklicense').success(function(data) {
-				$rootScope.licensed = data.licensed;
-                if (!data.termsAccepted) {
-                    appServices.setSession(null);
-                    $location.path('/terms');
-                }
-            });
-		}
+        }
 	}]);
 
 	controllers.controller('RootController', ['$scope', '$rootScope', '$location', '$http', 'appServices', function($scope, $rootScope, $location, $http, appServices) {
@@ -38,7 +30,7 @@ define(['angular', 'app'], function(angular, app) {
 		$rootScope.$on('$routeChangeStart', function(event, next, current) {
 			appServices.setLoading(true);
             if (!$rootScope.isLoggedIn) {
-				if (next.originalPath != '/login' && next.originalPath != '/terms') {
+				if (next.originalPath != '/login') {
 					$location.path('/login');
 				}
 			}

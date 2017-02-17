@@ -32,7 +32,6 @@ public abstract class AbstractServiceTest {
     public final void initialize() {
         getDbTestAssist().cleanDb();
         getConfigItemDao().clearCache();
-        getConfigItemDao().setValue(ConfigManager.CONFIG_TERMS_ACCEPTED, true);
     }
 
     public String getUri(String serviceName) {

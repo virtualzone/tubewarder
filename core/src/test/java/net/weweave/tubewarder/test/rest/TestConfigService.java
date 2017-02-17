@@ -2,7 +2,6 @@ package net.weweave.tubewarder.test.rest;
 
 import com.jayway.restassured.specification.ResponseSpecification;
 import net.weweave.tubewarder.service.model.ErrorCode;
-import net.weweave.tubewarder.util.ConfigManager;
 import org.jboss.arquillian.junit.Arquillian;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,19 +19,17 @@ public class TestConfigService extends AbstractRestTest {
 
         validateGetConfigResponse(token,
                 "error", equalTo(ErrorCode.OK),
-                "items.size()", is(1),
-                "items[0].key", equalTo(ConfigManager.CONFIG_TERMS_ACCEPTED),
-                "items[0].value", equalTo("1"));
+                "items.size()", is(0));
 
         validateSetConfigResponse(token, "key1", "value 1",
                 "error", equalTo(ErrorCode.OK));
 
         validateGetConfigResponse(token,
                 "error", equalTo(ErrorCode.OK),
-                "items.size()", is(2),
-                "items[1].key", equalTo("key1"),
-                "items[1].label", equalTo("key1"),
-                "items[1].value", equalTo("value 1"));
+                "items.size()", is(1),
+                "items[0].key", equalTo("key1"),
+                "items[0].label", equalTo("key1"),
+                "items[0].value", equalTo("value 1"));
 
         validateSetConfigResponse(token, "key1", "value 1.1",
                 "error", equalTo(ErrorCode.OK));
@@ -42,13 +39,13 @@ public class TestConfigService extends AbstractRestTest {
 
         validateGetConfigResponse(token,
                 "error", equalTo(ErrorCode.OK),
-                "items.size()", is(3),
-                "items[1].key", equalTo("key1"),
-                "items[1].label", equalTo("key1"),
-                "items[1].value", equalTo("value 1.1"),
-                "items[2].key", equalTo("key2"),
-                "items[2].label", equalTo("key2"),
-                "items[2].value", equalTo("value 2"));
+                "items.size()", is(2),
+                "items[0].key", equalTo("key1"),
+                "items[0].label", equalTo("key1"),
+                "items[0].value", equalTo("value 1.1"),
+                "items[1].key", equalTo("key2"),
+                "items[1].label", equalTo("key2"),
+                "items[1].value", equalTo("value 2"));
     }
 
     private JSONObject validateSetConfigResponse(String token, String key, String value, Object... body) {

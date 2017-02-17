@@ -9,15 +9,6 @@ define(['angular', 'app'], function(angular, app) {
         };
         $scope.saveSuccess = false;
 
-        var isTermsAccepted = function() {
-            for (var i=0; i<$scope.model.items.length; i++) {
-                var item = $scope.model.items[i];
-                if (item.key == "TERMS_ACCEPTED") {
-                    return (item.value && item.value == '1' ? true : false);
-                }
-            }
-        };
-
         var checkNextKey = function(keys, cbSuccess) {
             if (keys.length === 0) {
                 cbSuccess();
@@ -61,9 +52,6 @@ define(['angular', 'app'], function(angular, app) {
                 $http.post('/rs/config/set', payload).success(function(data) {
                     appServices.success('Settings successfully saved.');
                     appServices.setLoading(false);
-                    if (!isTermsAccepted()) {
-                        appServices.logout();
-                    }
                 });
             });
         };
