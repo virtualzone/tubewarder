@@ -32,6 +32,15 @@ public class ConfigManager {
         if (!getConfigItemDao().hasKey(CONFIG_CORS_ENABLED)) {
             getConfigItemDao().setValue(CONFIG_CORS_ENABLED, false, "Enable Cross-origin resource sharing for REST Services");
         }
+        
+        // Clean-up old variables
+        cleanup();
+    }
+    
+    private void cleanup () {
+        if (getConfigItemDao().hasKey("TERMS_ACCEPTED")) {
+            getConfigItemDao().remove("TERMS_ACCEPTED");
+        }
         for (int i=1; i<=4; i++) {
             if (getConfigItemDao().hasKey("LICENSE_KEY_" + i)) {
                 getConfigItemDao().remove("LICENSE_KEY_" + i);
