@@ -109,4 +109,4 @@ You can find the log files in these locations:
 * Stderr log: /var/log/tubewarder.err
 
 ## License
-Tubewarder can be used under the terms of this [License Agreement](https://weweave.net/products/tubewarder/license-agreement/).
+Tubewarder can be used under the terms of the [GPLv3](LICENSE.md).
