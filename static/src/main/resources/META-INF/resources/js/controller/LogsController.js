@@ -37,8 +37,8 @@ define(['angular', 'moment', 'app'], function(angular, moment, app) {
             appServices.setLoading(true);
             var payload = {
                 token: appServices.getToken(),
-                startDate: $scope.model.startDate,
-                endDate: $scope.model.endDate,
+                startDate: moment($scope.model.startDate).format(dateTimeFormat),
+                endDate: moment($scope.model.endDate).format(dateTimeFormat),
                 keyword: $scope.model.keyword,
                 searchString: $scope.model.searchString
             };

@@ -19,10 +19,13 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RequestScoped
 @Path("/log/get")
 public class GetLogService extends AbstractService {
+    private static final Logger LOG = Logger.getLogger(GetLogService.class.getName());
+    
     @Inject
     private LogDao logDao;
 
@@ -42,6 +45,7 @@ public class GetLogService extends AbstractService {
             Session session = getSession(token);
             checkPermissions(session.getUser());
             validateInputParameters(id, startDate, endDate, firstResult, maxResults);
+            LOG.info("Generating log result for start="+startDate + " to end="+endDate);
             setResponseList(session.getUser(), response, id, DateTimeFormat.parse(startDate), DateTimeFormat.parse(endDate), keyword, searchString, firstResult, maxResults);
         } catch (ObjectNotFoundException e) {
             response.error = ErrorCode.OBJECT_LOOKUP_ERROR;

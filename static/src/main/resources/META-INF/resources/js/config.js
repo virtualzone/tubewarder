@@ -6,7 +6,7 @@ require.config({
 		'angular-route-resolver': 'lib/angular-route-resolver',
         'bootstrap': 'lib/bootstrap-3.3.6.min',
         'moment': 'lib/moment-2.11.2.min',
-        'bootstrap-datetimepicker': 'lib/bootstrap-datetimepicker-4.17.37.min',
+        'bootstrap-datetimepicker': 'lib/bootstrap-datetimepicker-4.17.45.min',
         'autofill-event': 'lib/autofill-event',
 		'typeahead': 'lib/typeahead-0.11.1.min',
 		'bloodhound': 'lib/bloodhound-0.11.1.min',
