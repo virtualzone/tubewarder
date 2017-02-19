@@ -3,6 +3,7 @@ package net.weweave.tubewarder.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ public class UserGroup extends AbstractPersistentObject {
     @Column(unique = true)
     private String name;
     @ManyToMany
+    @OrderBy("username ASC")
     private Set<User> members = new HashSet<>();
 
     public String getName() {
