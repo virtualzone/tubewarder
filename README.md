@@ -36,6 +36,10 @@ http://tubewarder.readthedocs.io/
 ## Technology
 Tubewarder uses [WildFly Swarm](http://wildfly-swarm.io), a lightweight, modular approach for building and running Java applications. You don't need an application server - running Tubewarder out-of-the box is easy with Java installed on your server.
 
+The software is highly extensible. You can easily write custom Output Handlers by implementing the Java Output Handler API.
+
+![Architecture](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/architecture.png)
+
 ## Getting started
 Make sure you have Java 1.8 installed.
 
