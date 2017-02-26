@@ -13,7 +13,11 @@ Tubewarder makes sending messages to your users easier than ever:
 * Archiving of outbound messages
 * Get rid of message-sending, templating, channel-specific error handling, and logging code in your applications
 
-![Tubewarder Icon](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
+![Tubewarder Screenshot](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/screenshot.png)
+
+The built-in template editor allows for efficient online-editing, featuring auto-completion and syntax-highlighting – no matter which taste your Handlebars templates have (plain-text, HTML, etc.).
+
+![Template Editor](https://raw.githubusercontent.com/weweave/tubewarder/master/icon/tubewarder-ace-editor.gif)
 
 ## Purpose
 Traditional infrastructures usually look similar to the following diagram: All of your applications have an n:m relationship with all of your outbound messaging services. Besides the vast connectivities, you have lots of duplicated code for logging, archiving, templating, error handling, etc. 
