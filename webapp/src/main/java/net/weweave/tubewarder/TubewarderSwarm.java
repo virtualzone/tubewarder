@@ -30,6 +30,7 @@ public class TubewarderSwarm extends Swarm {
 
     public void setUndertow() {
         System.setProperty("swarm.http.port", getConfig().getHttpPort());
+        System.setProperty("java.net.preferIPv4Stack", "true");
     }
 
     private void deployDatasource() throws Exception {
